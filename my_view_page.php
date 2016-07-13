@@ -94,9 +94,10 @@ $t_project_id = helper_get_current_project();
 <?php html_status_legend( STATUS_LEGEND_POSITION_TOP ); ?>
 
 <div>
-<?php include( $g_core_path . 'timeline_inc.php' ); ?>
+<?php //include( $g_core_path . 'timeline_inc.php' ); ?>
 
-<div class="myview_boxes_area">
+<!--<div class="myview_boxes_area">-->
+<div>
 
 <table class="hide" cellspacing="3" cellpadding="0">
 <?php
