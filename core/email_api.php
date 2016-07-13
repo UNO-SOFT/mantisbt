@@ -1142,7 +1142,7 @@ function email_send( EmailData $p_email_data ) {
 
 	# Setup new line and encoding to avoid extra new lines with some smtp gateways like sendgrid.net
 	$t_mail->LE         = "\r\n";
-	$t_mail->Encoding   = 'quoted-printable';
+	$t_mail->Encoding   = '8bit';
 
 	if( !empty( $t_debug_email ) ) {
 		$t_message = 'To: ' . $t_recipient . "\n\n" . $t_message;
