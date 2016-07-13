@@ -1318,7 +1318,7 @@ function email_send( EmailData $p_email_data ) {
 
 	# Setup new line and encoding to avoid extra new lines with some smtp gateways like sendgrid.net
 	$t_mail->LE         = "\r\n";
-	$t_mail->Encoding   = 'quoted-printable';
+	$t_mail->Encoding   = '8bit';
 
 	if( isset( $t_email_data->metadata['priority'] ) ) {
 		$t_mail->Priority = $t_email_data->metadata['priority'];  # Urgent = 1, Not Urgent = 5, Disable = 0
