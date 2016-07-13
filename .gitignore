@@ -22,6 +22,8 @@ build/
 
 # Untracked plugins
 plugins/*
+!plugins/ForceMonitor
+!plugins/ShowAttacher
 !plugins/MantisCoreFormatting
 !plugins/MantisGraph
 !plugins/XmlImportExport

@@ -22,3 +22,12 @@
 	path = library/ezc/Graph
 	url = https://github.com/mantisbt/ZetaGraph.git
 	branch = mantis
+[submodule "plugins/ForceMonitor"]
+	path = plugins/ForceMonitor
+	url = git@git.unosoft.local:tgulacsi/mantisbt-plugins-ForceMonitor.git
+[submodule "plugins/ShowAttacher"]
+	path = plugins/ShowAttacher
+	url = git@github.com:tgulacsi/mantisbt-plugins-ShowAttacher
+[submodule "plugins/Markdown"]
+	path = plugins/Markdown
+	url = https://github.com/tgulacsi/mantisbt-plugins-Markdown.git
