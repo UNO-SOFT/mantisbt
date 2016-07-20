@@ -24,10 +24,10 @@
 	branch = mantis
 [submodule "plugins/ForceMonitor"]
 	path = plugins/ForceMonitor
-	url = git@git.unosoft.local:tgulacsi/mantisbt-plugins-ForceMonitor.git
+	url = https://github.com/tgulacsi/mantisbt-plugins-ForceMonitor.git
 [submodule "plugins/ShowAttacher"]
 	path = plugins/ShowAttacher
-	url = git@github.com:tgulacsi/mantisbt-plugins-ShowAttacher
+	url = https://github.com/tgulacsi/mantisbt-plugins-ShowAttacher.git
 [submodule "plugins/Markdown"]
 	path = plugins/Markdown
 	url = https://github.com/tgulacsi/mantisbt-plugins-Markdown.git
