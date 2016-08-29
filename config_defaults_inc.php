@@ -851,13 +851,27 @@ $g_fallback_language = 'english';
 $g_window_title = 'MantisBT';
 
 /**
+ * OpenSearch engine title prefix.
+ * This is used to describe Browser Search entries, and must be short enough
+ * so that when inserted into the 'opensearch_XXX_short' language string, the
+ * resulting text is 16 characters or less, to be compliant with the limit for
+ * the ShortName element as defined in the OpenSearch specification.
+ * @link http://www.opensearch.org/Specifications/OpenSearch/1.1
+ * @see $g_window_title
+ * @global string $g_search_title
+ */
+$g_search_title = '%window_title%';
+
+/**
  * Check for admin directory, database upgrades, etc.
  * @global integer $g_admin_checks
  */
 $g_admin_checks = ON;
 
 /**
- * Favicon image
+ * Favicon image.
+ * This icon should be of 'image/x-icon' MIME type, and its size 16x16 pixels.
+ * It is also used to decorate OpenSearch Browser search entries.
  * @global string $g_favicon_image
  */
 $g_favicon_image = 'images/favicon.ico';
@@ -3191,19 +3205,26 @@ $g_bug_list_cookie = '%cookie_prefix%_BUG_LIST_COOKIE';
 #############################
 
 /**
- *
+ * Show custom fields in the filter dialog and use these in filtering.
  * @global integer $g_filter_by_custom_fields
  */
 $g_filter_by_custom_fields = ON;
 
 /**
- *
+ * The number of custom fields to display per row.
+ * The default is 8. The value should be greater than or equal to 8.
+ * If lower, whitespace will appear on the right
  * @global integer $g_filter_custom_fields_per_row
  */
 $g_filter_custom_fields_per_row = 8;
 
 /**
- *
+ * Controls the display of the filter pages.
+ * Possible values are:
+ * - SIMPLE_ONLY - only simple view
+ * - ADVANCED_ONLY - only advanced view (allows multiple value selections)
+ * - SIMPLE_DEFAULT - defaults to simple view, but shows a link for advanced
+ * - ADVANCED_DEFAULT - defaults to advanced view, but shows a link for simple
  * @global integer $g_view_filters
  */
 $g_view_filters = SIMPLE_DEFAULT;
@@ -4515,6 +4536,7 @@ $g_public_config_names = array(
 	'roadmap_update_threshold',
 	'roadmap_view_threshold',
 	'rss_enabled',
+	'search_title',
 	'set_bug_sticky_threshold',
 	'set_configuration_threshold',
 	'set_view_status_threshold',

@@ -731,7 +731,6 @@ function custom_field_get_ids() {
 	global $g_cache_cf_list, $g_cache_custom_field;
 
 	if( $g_cache_cf_list === null ) {
-		db_param_push();
 		$t_query = 'SELECT * FROM {custom_field} ORDER BY name ASC';
 		$t_result = db_query( $t_query );
 		$t_ids = array();
@@ -961,15 +960,7 @@ function custom_field_get_sequence( $p_field_id, $p_project_id ) {
  * @access public
  */
 function custom_field_validate( $p_field_id, $p_value ) {
-	custom_field_ensure_exists( $p_field_id );
-
-	db_param_push();
-	$t_query = 'SELECT name, type, possible_values, valid_regexp,
-				  		 access_level_rw, length_min, length_max, default_value
-				  FROM {custom_field}
-				  WHERE id=' . db_param();
-	$t_result = db_query( $t_query, array( $p_field_id ) );
-	$t_row = db_fetch_array( $t_result );
+	$t_row = custom_field_get_definition( $p_field_id );
 
 	$t_name = $t_row['name'];
 	$t_type = $t_row['type'];
@@ -983,6 +974,7 @@ function custom_field_validate( $p_field_id, $p_value ) {
 	$t_length = utf8_strlen( $p_value );
 	switch( $t_type ) {
 		case CUSTOM_FIELD_TYPE_STRING:
+		case CUSTOM_FIELD_TYPE_TEXTAREA:
 			# Empty fields are valid
 			if( $t_length == 0 ) {
 				break;

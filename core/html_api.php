@@ -205,8 +205,16 @@ function html_page_top1( $p_page_title = null ) {
 	}
 
 	# Advertise the availability of the browser search plug-ins.
-	echo "\t", '<link rel="search" type="application/opensearchdescription+xml" title="MantisBT: Text Search" href="' . string_sanitize_url( 'browser_search_plugin.php?type=text', true ) . '" />' . "\n";
-	echo "\t", '<link rel="search" type="application/opensearchdescription+xml" title="MantisBT: Issue Id" href="' . string_sanitize_url( 'browser_search_plugin.php?type=id', true ) . '" />' . "\n";
+	$t_title = config_get( 'search_title' );
+	$t_searches = array( 'text', 'id' );
+	foreach( $t_searches as $t_type ) {
+		echo "\t",
+			'<link rel="search" type="application/opensearchdescription+xml" ',
+			'title="' . sprintf( lang_get( "opensearch_{$t_type}_description" ), $t_title ) . '" ',
+			'href="' . string_sanitize_url( 'browser_search_plugin.php?type=' . $t_type, true ) .
+			'"/>',
+			"\n";
+	}
 
 	html_head_javascript();
 }
@@ -1626,12 +1634,6 @@ function html_button_bug_change_status( BugData $p_bug ) {
  */
 function html_button_bug_assign_to( BugData $p_bug ) {
 	# make sure status is allowed of assign would cause auto-set-status
-	# workflow implementation
-	if( ON == config_get( 'auto_set_status_to_assigned' )
-		&& !bug_check_workflow( $p_bug->status, config_get( 'bug_assigned_status' ) )
-	) {
-		return;
-	}
 
 	# make sure current user has access to modify bugs.
 	if( !access_has_bug_level( config_get( 'update_bug_assign_threshold', config_get( 'update_bug_threshold' ) ), $p_bug->id ) ) {
