@@ -261,21 +261,17 @@ function html_page_top2a() {
 
 /**
  * Print the part of the page that comes below the page content
- * $p_file should always be the __FILE__ variable. This is passed to show source
- * @param string $p_file Should always be the __FILE__ variable. This is passed to show source.
  * @return void
  */
-function html_page_bottom( $p_file = null ) {
-	html_page_bottom1( $p_file );
+function html_page_bottom() {
+	html_page_bottom1();
 }
 
 /**
  * Print the part of the page that comes below the page content
- * $p_file should always be the __FILE__ variable. This is passed to show source
- * @param string $p_file Should always be the __FILE__ variable. This is passed to show source.
  * @return void
  */
-function html_page_bottom1( $p_file = null ) {
+function html_page_bottom1() {
 	if( !db_is_connected() ) {
 		return;
 	}
@@ -287,21 +283,16 @@ function html_page_bottom1( $p_file = null ) {
 		print_menu();
 	}
 
-	html_page_bottom1a( $p_file );
+	html_page_bottom1a();
 }
 
 /**
  * Print the part of the page that comes below the page content but leave off
  * the menu.  This is used during the login process and other times when the
  * user may not be authenticated.
- * @param string $p_file Should always be the __FILE__ variable.
  * @return void
  */
-function html_page_bottom1a( $p_file = null ) {
-	if( null === $p_file ) {
-		$p_file = basename( $_SERVER['SCRIPT_NAME'] );
-	}
-
+function html_page_bottom1a() {
 	error_print_delayed();
 
 	html_bottom_banner();
