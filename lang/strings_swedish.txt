@@ -49,6 +49,7 @@
  * @author Skalman
  * @author Thosjo
  * @author Tor.klingberg
+ * @author Velg
  * @author Warrakkk
  * @author WikiPhoenix
  */
@@ -148,6 +149,10 @@ $s_make_private = 'Gör privat';
 $s_make_public = 'Gör publik';
 $s_create_new_project_link = 'Skapa nytt projekt';
 $s_login_link = 'Logga in';
+$s_opensearch_id_short = '%s ID';
+$s_opensearch_id_description = '%s: sök genom att utfärda ID';
+$s_opensearch_text_short = '%s text';
+$s_opensearch_text_description = '%s: fulltextsökning';
 $s_select_option = '(välj)';
 $s_bug_actiongroup_access = 'Du hade inte tillräckliga rättigheter för att utföra åtgärden.';
 $s_bug_actiongroup_status = 'Detta ärende kan inte ändras till den valda statusen.';
@@ -206,6 +211,7 @@ $s_myself = 'Mig själv';
 $s_default_access_level = 'Förvald åtkomstnivå';
 $s_issue_status_percentage = 'Ärendestatus i procent';
 $s_access_levels_enum_string = '10:läsare,25:rapporterare,40:uppdaterare,55:utvecklare,70:projektledare,90:administratör';
+$s_no_access = 'ingen åtkomst';
 $s_project_status_enum_string = '10:utveckling,30:release,50:stabil,70:inaktuell';
 $s_project_view_state_enum_string = '10:publik,50:privat';
 $s_view_state_enum_string = '10:publik,50:privat';
@@ -487,7 +493,7 @@ $s_all_revisions = 'Alla revisioner';
 $s_back_to_issue = 'Tillbaka till ärende';
 $s_confirm_revision_drop = 'Är du säker på att du vill släppa denna ärenderevision?';
 $s_vote_added_msg = 'Röst har lagts till...';
-$s_bugnote_added_msg = 'Lade till meddelande...';
+$s_bugnote_attached_files = 'Bifogade filer:';
 $s_bugnote_deleted_msg = 'Meddelandet har raderats...';
 $s_bug_notes_title = 'Meddelanden';
 $s_edit_bugnote_title = 'Redigera meddelande';
@@ -785,6 +791,7 @@ $s_edit_news_link = 'Redigera nyheter';
 $s_docs_link = 'Dokument';
 $s_logout_link = 'Logga ut';
 $s_my_view_link = 'Min vy';
+$s_invite_users = 'Bjud in användare';
 $s_my_view_title_unassigned = 'Ej tilldelade';
 $s_my_view_title_recent_mod = 'Nyligen ändrade';
 $s_my_view_title_reported = 'Rapporterade av mig';
@@ -944,7 +951,7 @@ $s_ok = 'OK';
 $s_select_all = 'Välj alla';
 $s_use_query = 'Använd filter';
 $s_delete_query = 'Radera filter';
-$s_query_deleted = 'Filter raderat';
+$s_query_deleted = 'Filter Raderat';
 $s_save_query = 'Spara aktuellt filter';
 $s_reset_query = 'Återställ filter';
 $s_query_name = 'Filternamn';
@@ -1387,3 +1394,12 @@ $MANTIS_ERROR[ERROR_BUG_CONFLICTING_EDIT] = 'Denna fråga har uppdaterats av en 
 $MANTIS_ERROR[ERROR_SPAM_SUSPECTED] = 'Du har nått gränsen för tillåten aktivitet på %d händelser inom de senaste %d sekunderna; din åtgärd har blockerats för att undvika spam. Försök igen senare.';
 $MANTIS_ERROR[ERROR_FIELD_TOO_LONG] = 'Fältet "%1$s" måste vara kortare eller lika med %2$d tecken.';
 $MANTIS_ERROR[ERROR_API_TOKEN_NAME_NOT_UNIQUE] = 'API-tokennamnet "%s" används redan. Vänligen gå tillbaka och välj ett annat.';
+$s_dropzone_default_message = 'Släpp filer här för att ladda upp (eller klicka)';
+$s_dropzone_fallback_message = 'Din webbläsare stödjer inte filuppladdning med dra-och-släpp.';
+$s_dropzone_file_too_big = 'Filen är för stor ({{filesize}}MiB). Maximal filstorlek: {{maxFilesize}}MiB.';
+$s_dropzone_invalid_file_type = 'Kan du inte ladda upp filer av denna typ.';
+$s_dropzone_response_error = 'Servern svarade med koden {{statusCode}}.';
+$s_dropzone_cancel_upload = 'Avbryt uppladdning';
+$s_dropzone_cancel_upload_confirmation = 'Är du säker på att du vill avbryta denna uppladdning?';
+$s_dropzone_remove_file = 'Ta bort fil';
+$s_dropzone_max_files_exceeded = 'Du kan inte ladda upp fler filer.';

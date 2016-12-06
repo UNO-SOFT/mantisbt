@@ -20,11 +20,11 @@
 
 /**
  * Mantis Gravatar Plugin
- * 
+ *
  * This is an avatar provider plugin that is based on http://www.gravatar.com.
  * Users will need to register there the same email address used in this
  * MantisBT installation to have their avatar shown.
- * 
+ *
  * Please note: upon registration or avatar change, it takes some time for
  * the updated gravatar images to show on sites
  */
@@ -66,9 +66,9 @@ class GravatarPlugin extends MantisPlugin {
 		$this->description = lang_get( 'description' );
 		$this->page = '';
 
-		$this->version = '1.0';
+		$this->version = MANTIS_VERSION;
 		$this->requires = array(
-			'MantisCore' => '1.3.0',
+			'MantisCore' => '2.0.0',
 		);
 
 		$this->author = 'Victor Boctor';
@@ -147,8 +147,14 @@ class GravatarPlugin extends MantisPlugin {
 
 		# Build Gravatar URL
 		$t_avatar_url = self::getAvatarUrl() .
-			'avatar/' . $t_email_hash . '?d=' . $t_default_avatar .
-			'&r=' . $t_rating . '&s=' . $p_size;
+			'avatar/' . $t_email_hash . '?' .
+			http_build_query(
+				array(
+					'd' => $t_default_avatar,
+					'r' => $t_rating,
+					's' => $p_size,
+				)
+			);
 
 		$t_avatar = new Avatar();
 		$t_avatar->image = $t_avatar_url;

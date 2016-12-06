@@ -214,20 +214,29 @@ function http_security_headers() {
 		http_csp_add( 'default-src', "'self'" );
 		http_csp_add( 'frame-ancestors', "'none'" );
 		http_csp_add( 'style-src', "'self'" );
+		http_csp_add( 'style-src', "'unsafe-inline'" );
 		http_csp_add( 'script-src', "'self'" );
 		http_csp_add( 'img-src', "'self'" );
 
 		# White list the CDN urls (if enabled)
 		if ( config_get_global( 'cdn_enabled' ) == ON ) {
 			http_csp_add( 'style-src', 'ajax.googleapis.com' );
+			http_csp_add( 'style-src', 'maxcdn.bootstrapcdn.com' );
+			http_csp_add( 'style-src', 'fonts.googleapis.com' );
+
+			http_csp_add( 'font-src', 'fonts.gstatic.com' );
+			http_csp_add( 'font-src', 'maxcdn.bootstrapcdn.com' );
+
 			http_csp_add( 'script-src', 'ajax.googleapis.com' );
+			http_csp_add( 'script-src', 'maxcdn.bootstrapcdn.com' );
+
 			http_csp_add( 'img-src', 'ajax.googleapis.com' );
 		}
 
-		# Relaxing policy for roadmap page to allow inline styles
-		# This is a workaround to fix the broken progress bars (see #19501)
-		if( 'roadmap_page.php' == basename( $_SERVER['SCRIPT_NAME'] ) ) {
-			http_csp_add( 'style-src', "'unsafe-inline'" );
+		# Relaxing policy for bug report page to allow inline scripts.
+		# Should be removed once #20040 is fixed.
+		if( 'bug_report_page.php' == basename( $_SERVER['SCRIPT_NAME'] ) ) {
+			http_csp_add( 'script-src', "'unsafe-inline'" );
 		}
 
 		# The JS Calendar control does unsafe eval, remove once we upgrade the control (see #20040)

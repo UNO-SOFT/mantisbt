@@ -30,11 +30,11 @@ class MantisGraphPlugin extends MantisPlugin  {
 	function register() {
 		$this->name = lang_get( 'plugin_graph_title' );
 		$this->description = lang_get( 'plugin_graph_description' );
-		$this->page = 'config';
+		$this->page = '';
 
-		$this->version = '1.3.0';
+		$this->version = MANTIS_VERSION;
 		$this->requires = array(
-			'MantisCore' => '1.3.0',
+			'MantisCore' => '2.0.0',
 		);
 
 		$this->author = 'MantisBT Team';
@@ -47,36 +47,7 @@ class MantisGraphPlugin extends MantisPlugin  {
 	 * @return array
 	 */
 	function config() {
-		return array(
-			'eczlibrary' => ON,
-
-			'window_width' => 800,
-			'bar_aspect' => 0.9,
-			'summary_graphs_per_row' => 2,
-			'font' => 'arial',
-
-			'jpgraph_path' => '',
-			'jpgraph_antialias' => ON,
-		);
-	}
-
-	/**
-	 * init function
-	 * @return void
-	 */
-	function init() {
-		spl_autoload_register( array( 'MantisGraphPlugin', 'autoload' ) );
-	}
-
-	/**
-	 * class auto loader
-	 * @param string $p_class Class name to autoload.
-	 * @return void
-	 */
-	public static function autoload( $p_class ) {
-		if( class_exists( 'ezcBase' ) ) {
-			ezcBase::autoload( $p_class );
-		}
+		return array();
 	}
 
 	/**
@@ -85,7 +56,8 @@ class MantisGraphPlugin extends MantisPlugin  {
 	 */
 	function hooks() {
 		$t_hooks = array(
-			'EVENT_MENU_SUMMARY' => 'summary_menu',
+			'EVENT_LAYOUT_RESOURCES' => 'resources',
+			'EVENT_CORE_HEADERS' => 'csp_headers',
 			'EVENT_SUBMENU_SUMMARY' => 'summary_submenu',
 			'EVENT_MENU_FILTER' => 'graph_filter_menu'
 		);
@@ -93,11 +65,13 @@ class MantisGraphPlugin extends MantisPlugin  {
 	}
 
 	/**
-	 * generate summary menu
-	 * @return array
+	 * Add Content-Security-Policy directives that are needed to load scripts for CDN.
+	 * @return void
 	 */
-	function summary_menu() {
-		return array( '<a href="' . plugin_page( 'summary_jpgraph_page' ) . '">' . plugin_lang_get( 'menu_advanced_summary' ) . '</a>', );
+	function csp_headers() {
+		if ( config_get_global( 'cdn_enabled' ) == ON ) {
+			http_csp_add( 'script-src', 'https://cdnjs.cloudflare.com' );
+		}
 	}
 
 	/**
@@ -106,10 +80,26 @@ class MantisGraphPlugin extends MantisPlugin  {
 	 */
 	function graph_filter_menu() {
 		if( access_has_project_level( config_get( 'view_summary_threshold' ) ) ) {
-			return array( '<a href="' . plugin_page( 'bug_graph_page.php' ) . '">' . plugin_lang_get( 'graph_bug_page_link' ) . '</a>', );
+			return array( '<a class="btn btn-sm btn-primary btn-white btn-round" href="' .
+				plugin_page( 'issues_trend_page.php' ) . '">' . plugin_lang_get( 'issue_trends_link' ) . '</a>', );
 		} else {
 			return '';
 		}
+	}
+
+	/**
+	 * Include javascript files for chart.js
+	 * @return void
+	 */
+	function resources() {
+		if ( config_get_global( 'cdn_enabled' ) == ON ) {
+			html_javascript_cdn_link( 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/' . CHARTJS_VERSION . '/Chart.min.js', CHARTJS_HASH );
+			html_javascript_cdn_link( 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/' . CHARTJS_VERSION . '/Chart.bundle.min.js', CHARTJSBUNDLE_HASH );
+		} else {
+			echo '<script src="' . plugin_file( 'chart-' . CHARTJS_VERSION . '.min.js' ) . '"></script>';
+			echo '<script src="' . plugin_file( 'chart.bundle-' . CHARTJS_VERSION . '.min.js' ) . '"></script>';
+		}
+		echo '<script src="' . plugin_file( "MantisGraph.js" ) . '"></script>';
 	}
 
 	/**
@@ -117,13 +107,16 @@ class MantisGraphPlugin extends MantisPlugin  {
 	 * @return array
 	 */
 	function summary_submenu() {
-		$t_icon_path = config_get( 'icon_path' );
-		return array( '<a href="' . helper_mantis_url( 'summary_page.php' ) . '"><img src="' . $t_icon_path . 'synthese.gif" alt="" />' . plugin_lang_get( 'synthesis_link' ) . '</a>',
-			'<a href="' . plugin_page( 'summary_graph_imp_status.php' ) . '"><img src="' . $t_icon_path . 'synthgraph.gif" alt="" />' . plugin_lang_get( 'status_link' ) . '</a>',
-			'<a href="' . plugin_page( 'summary_graph_imp_priority.php' ) . '"><img src="' . $t_icon_path . 'synthgraph.gif" alt="" />' . plugin_lang_get( 'priority_link' ) . '</a>',
-			'<a href="' . plugin_page( 'summary_graph_imp_severity.php' ) . '"><img src="' . $t_icon_path . 'synthgraph.gif" alt="" />' . plugin_lang_get( 'severity_link' ) . '</a>',
-			'<a href="' . plugin_page( 'summary_graph_imp_category.php' ) . '"><img src="' . $t_icon_path . 'synthgraph.gif" alt="" />' . plugin_lang_get( 'category_link' ) . '</a>',
-			'<a href="' . plugin_page( 'summary_graph_imp_resolution.php' ) . '"><img src="' . $t_icon_path . 'synthgraph.gif" alt="" />' . plugin_lang_get( 'resolution_link' ) . '</a>',
+		return array(
+            '<a class="btn btn-sm btn-primary btn-white" href="' . helper_mantis_url( 'summary_page.php' ) . '"> <i class="fa fa-table"></i> ' . plugin_lang_get( 'synthesis_link' ) . '</a>',
+			'<a class="btn btn-sm btn-primary btn-white" href="' . plugin_page( 'developer_graph.php' ) . '"> <i class="fa fa-bar-chart"></i> ' . lang_get( 'by_developer' ) . '</a>',
+			'<a class="btn btn-sm btn-primary btn-white" href="' . plugin_page( 'reporter_graph.php' ) . '"> <i class="fa fa-bar-chart"></i> ' . lang_get( 'by_reporter' ) . '</a>',
+			'<a class="btn btn-sm btn-primary btn-white" href="' . plugin_page( 'status_graph.php' ) . '"> <i class="fa fa-bar-chart"></i> ' . plugin_lang_get( 'status_link' ) . '</a>',
+			'<a class="btn btn-sm btn-primary btn-white" href="' . plugin_page( 'resolution_graph.php' ) . '"> <i class="fa fa-bar-chart"></i> ' . plugin_lang_get( 'resolution_link' ) . '</a>',
+			'<a class="btn btn-sm btn-primary btn-white" href="' . plugin_page( 'priority_graph.php' ) . '"> <i class="fa fa-bar-chart"></i> ' . plugin_lang_get( 'priority_link' ) . '</a>',
+			'<a class="btn btn-sm btn-primary btn-white" href="' . plugin_page( 'severity_graph.php' ) . '"> <i class="fa fa-bar-chart"></i> ' . plugin_lang_get( 'severity_link' ) . '</a>',
+			'<a class="btn btn-sm btn-primary btn-white" href="' . plugin_page( 'category_graph.php' ) . '"> <i class="fa fa-bar-chart"></i> ' . plugin_lang_get( 'category_link' ) . '</a>',
+			'<a class="btn btn-sm btn-primary btn-white" href="' . plugin_page( 'issues_trend_graph.php' ) . '"> <i class="fa fa-bar-chart"></i> ' . plugin_lang_get( 'issue_trends_link' ) . '</a>',
 		);
 	}
 }

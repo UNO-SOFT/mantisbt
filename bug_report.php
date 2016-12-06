@@ -300,13 +300,29 @@ if( $t_bug_data->resolution != config_get( 'default_bug_resolution' ) ) {
 
 form_security_purge( 'bug_report' );
 
-html_page_top1();
+layout_page_header_begin();
 
-if( !$f_report_stay ) {
+if( $f_report_stay ) {
+	$t_fields = array(
+		'category_id', 'severity', 'reproducibility', 'profile_id', 'platform',
+		'os', 'os_build', 'target_version', 'build', 'view_state', 'due_date'
+	);
+	foreach( $t_fields as $t_field ) {
+		$t_data[$t_field] = $t_bug_data->$t_field;
+	}
+	$t_data['product_version'] = $t_bug_data->version;
+	$t_data['report_stay'] = 1;
+
+	$t_report_more_bugs_url = string_get_bug_report_url() . '?' . http_build_query($t_data);
+
+	html_meta_redirect( $t_report_more_bugs_url );
+} else {
 	html_meta_redirect( 'view_all_bug_page.php' );
 }
 
-html_page_top2();
+layout_page_header_end();
+
+layout_page_begin( 'bug_report_page.php' );
 
 # Process tags
 if( !is_blank( $f_tag_string ) || $f_tag_select != 0 ) {
@@ -314,43 +330,21 @@ if( !is_blank( $f_tag_string ) || $f_tag_select != 0 ) {
 	if ( $t_result !== true ) {
 		$t_tags_failed = $t_result;
 		if( count( $t_tags_failed ) > 0 ) {
-			echo '<div class="failure-msg">';
+			echo '<div class="alert alert-danger">';
 			print_tagging_errors_table( $t_tags_failed );
 			echo '</div>';
 		}
 	}
 }
 
-echo '<div class="success-msg">';
-echo lang_get( 'operation_successful' ) . '<br />';
-print_bracket_link( string_get_bug_view_url( $t_bug_id ), sprintf( lang_get( 'view_submitted_bug_link' ), $t_bug_id ) );
-print_bracket_link( 'view_all_bug_page.php', lang_get( 'view_bugs_link' ) );
-
+$t_buttons = array(
+	array( string_get_bug_view_url( $t_bug_id ), sprintf( lang_get( 'view_submitted_bug_link' ), $t_bug_id ) ),
+	array( 'view_all_bug_page.php', lang_get( 'view_bugs_link' ) ),
+);
 if( $f_report_stay ) {
-?>
-	<p>
-	<form method="post" action="<?php echo string_get_bug_report_url() ?>">
-	<?php # CSRF protection not required here - form does not result in modifications ?>
-		<input type="hidden" name="category_id" value="<?php echo string_attribute( $t_bug_data->category_id ) ?>" />
-		<input type="hidden" name="severity" value="<?php echo string_attribute( $t_bug_data->severity ) ?>" />
-		<input type="hidden" name="reproducibility" value="<?php echo string_attribute( $t_bug_data->reproducibility ) ?>" />
-		<input type="hidden" name="profile_id" value="<?php echo string_attribute( $t_bug_data->profile_id ) ?>" />
-		<input type="hidden" name="platform" value="<?php echo string_attribute( $t_bug_data->platform ) ?>" />
-		<input type="hidden" name="os" value="<?php echo string_attribute( $t_bug_data->os ) ?>" />
-		<input type="hidden" name="os_build" value="<?php echo string_attribute( $t_bug_data->os_build ) ?>" />
-		<input type="hidden" name="product_version" value="<?php echo string_attribute( $t_bug_data->version ) ?>" />
-		<input type="hidden" name="target_version" value="<?php echo string_attribute( $t_bug_data->target_version ) ?>" />
-		<input type="hidden" name="build" value="<?php echo string_attribute( $t_bug_data->build ) ?>" />
-		<input type="hidden" name="report_stay" value="1" />
-		<input type="hidden" name="view_state" value="<?php echo string_attribute( $t_bug_data->view_state ) ?>" />
-		<input type="hidden" name="due_date" value="<?php echo string_attribute( $t_bug_data->due_date ) ?>" />
-		<input type="submit" class="button" value="<?php echo lang_get( 'report_more_bugs' ) ?>" />
-	</form>
-	</p>
-<?php
+	$t_buttons[] = array( $t_report_more_bugs_url, lang_get( 'report_more_bugs' ) );
 }
-?>
-</div>
 
-<?php
-html_page_bottom();
+html_operation_confirmation( $t_buttons, '', CONFIRMATION_TYPE_SUCCESS );
+
+layout_page_end();

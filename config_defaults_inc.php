@@ -24,7 +24,7 @@
  * In general a value of OFF means the feature is disabled and ON means the
  * feature is enabled.  Any other cases will have an explanation.
  *
- * For more details see http://www.mantisbt.org/docs/master-1.2.x/
+ * For more details see https://www.mantisbt.org/docs/master/
  *
  * @package MantisBT
  * @copyright Copyright 2000 - 2002  Kenzaburo Ito - kenito@300baud.org
@@ -63,12 +63,6 @@ $g_db_password			= '';
 $g_database_name		= 'bugtracker';
 
 /**
- * Database Schema Name - used in the case of db2.
- * @global string $g_db_schema
- */
-$g_db_schema			= '';
-
-/**
  * Defines the database type. Supported types are listed below;
  * the corresponding PHP extension must be enabled.
  *
@@ -79,7 +73,6 @@ $g_db_schema			= '';
  * PostgreSQL      pgsql         pgsql
  * MS SQL Server   mssqlnative   sqlsrv    experimental
  * Oracle          oci8          oci8      experimental
- * DB2             db2           ibm-db2   experimental
  *
  * @global string $g_db_type
  */
@@ -218,13 +211,6 @@ if( isset ( $_SERVER['SCRIPT_NAME'] ) ) {
  * @global string $g_path
  */
 $g_path	= $t_protocol . '://' . $t_host . $t_path;
-
-/**
- * path to your images directory (for icons)
- * requires trailing /
- * @global string $g_icon_path
- */
-$g_icon_path = '%path%images/';
 
 /**
  * Short web path without the domain name
@@ -434,6 +420,15 @@ $g_return_path_email	= 'admin@example.com';
  */
 $g_enable_email_notification	= ON;
 
+/**
+ * When enabled, the email notifications will send the full issue with
+ * a hint about the change type at the top, rather than using dedicated
+ * notifications that are focused on what changed.  This change can be
+ * overridden in the database per user.
+ *
+ * @global integer $g_email_notifications_verbose
+ */
+$g_email_notifications_verbose = ON;
 
 /**
  * The following two config options allow you to control who should get email
@@ -593,14 +588,6 @@ $g_show_user_email_threshold = NOBODY;
  * @global integer $g_show_user_realname_threshold
  */
 $g_show_user_realname_threshold = NOBODY;
-
-/**
- * If use_x_priority is set to ON, what should the value be?
- * Urgent = 1, Not Urgent = 5, Disable = 0
- * Note: some MTAs interpret X-Priority = 0 to mean 'Very Urgent'
- * @global integer $g_mail_priority
- */
-$g_mail_priority = 3;
 
 /**
  * select the method to mail by:
@@ -1011,17 +998,6 @@ $g_excel_columns = array (
  * @global integer $g_show_bug_project_links
  */
 $g_show_bug_project_links = ON;
-
-/**
- * Position of the status color legend
- * Allowed values are:
- * - STATUS_LEGEND_POSITION_NONE - do not display the legend at all
- * - STATUS_LEGEND_POSITION_TOP
- * - STATUS_LEGEND_POSITION_BOTTOM (default)
- * - STATUS_LEGEND_POSITION_BOTH
- * @global integer $g_status_legend_position
- */
-$g_status_legend_position = STATUS_LEGEND_POSITION_BOTTOM;
 
 /**
  * Show a legend with percentage of bug status
@@ -1717,6 +1693,13 @@ $g_allow_file_upload = ON;
 $g_file_upload_method = DATABASE;
 
 /**
+ * Use File dropzone: enable drag and drop into a drop zone functionality for
+ * file upload fields
+ * @global integer $g_dropzone_enabled
+ */
+$g_dropzone_enabled = ON;
+
+/**
  * When using DISK for storing uploaded files, this setting control
  * the access permissions they will have on the web server: with the default
  * value (0400) files will be read-only, and accessible only by the user
@@ -1739,7 +1722,7 @@ $g_max_file_size = 5000000;
  * Maximum number of files that can be uploaded simultaneously
  * @global integer $g_file_upload_max_num
  */
-$g_file_upload_max_num = 1;
+$g_file_upload_max_num = 10;
 
 /**
  * Files that are allowed or not allowed.  Separate items by commas.
@@ -2319,80 +2302,6 @@ $g_bug_report_page_fields = array(
  * @global array $g_bug_view_page_fields
  */
 $g_bug_view_page_fields = array (
-	'additional_info',
-	'attachments',
-	'category_id',
-	'date_submitted',
-	'description',
-	'due_date',
-	'eta',
-	'fixed_in_version',
-	'handler',
-	'id',
-	'last_updated',
-	'os',
-	'os_version',
-	'platform',
-	'priority',
-	'product_build',
-	'product_version',
-	'project',
-	'projection',
-	'reporter',
-	'reproducibility',
-	'resolution',
-	'severity',
-	'status',
-	'steps_to_reproduce',
-	'summary',
-	'tags',
-	'target_version',
-	'view_state',
-);
-
-/**
- * An array of optional fields to show on the bug print page.
- *
- * The following optional fields are allowed:
- *   - additional_info
- *   - attachments
- *   - category_id
- *   - date_submitted
- *   - description
- *   - due_date
- *   - eta
- *   - fixed_in_version
- *   - handler
- *   - id
- *   - last_updated
- *   - os
- *   - os_version
- *   - platform
- *   - priority
- *   - product_build
- *   - product_version
- *   - project
- *   - projection
- *   - reporter
- *   - reproducibility
- *   - resolution
- *   - severity
- *   - status
- *   - steps_to_reproduce
- *   - summary
- *   - tags
- *   - target_version
- *   - view_state
- *
- * Fields not listed above cannot be shown on the bug print page. All custom
- * field values are shown on the bug print page.
- *
- * This setting can be set on a per-project basis by using the
- * Manage => Manage Configuration administrator page.
- *
- * @global array $g_bug_print_page_fields
- */
-$g_bug_print_page_fields = array (
 	'additional_info',
 	'attachments',
 	'category_id',
@@ -3108,7 +3017,7 @@ $g_status_colors = array(
 
 /**
  * The padding level when displaying project ids
- *  The bug id will be padded with 0's up to the size given
+ *  The project id will be padded with 0's up to the size given
  * @global integer $g_display_project_padding
  */
 $g_display_project_padding = 3;
@@ -3530,14 +3439,32 @@ $g_custom_field_edit_after_create = ON;
 
 /**
  * Add custom options to the main menu.  For example:
+ *
  * $g_main_menu_custom_options = array(
- *     array( "My Link",  MANAGER,       'my_link.php' ),
- *     array( "My Link2", ADMINISTRATOR, 'my_link2.php' )
+ *     array(
+ *         'title'        => 'My Link',
+ *         'access_level' => MANAGER,
+ *         'url'          => 'my_link.php',
+ *         'icon'         => 'fa-plug'
+ *     ),
+ *     array(
+ *         'title'        => 'My Link2',
+ *         'access_level' => ADMINISTRATOR,
+ *         'url'          => 'my_link2.php',
+ *         'icon'         => 'fa-plug'
+ *     )
  * );
  *
- * Note that if the caption is found in custom_strings_inc.php, then it will be
- * replaced by the translated string.  Options will only be added to the menu
- * if the current logged in user has the appropriate access level.
+ * Note that if the caption is a localized string name (in strings_english.txt
+ * or custom_strings_inc.php), then it will be replaced by the translated
+ * string.  Options will only be added to the menu if the current logged in
+ * user has the appropriate access level.
+ *
+ * Access level is an optional field, and no check will be done if it is not set.
+ * Icon is an optional field, and 'fa-plug' will be used if it is not set.
+ *
+ * Use icons from http://fontawesome.io/icons/ - Add "fa-" prefix to icon name.
+ *
  * @global array $g_main_menu_custom_options
  */
 $g_main_menu_custom_options = array();
@@ -3555,73 +3482,73 @@ $g_main_menu_custom_options = array();
  * @global array $g_file_type_icons
  */
 $g_file_type_icons = array(
-	''	=> 'text.gif',
-	'7z'	=> 'zip.gif',
-	'ace'	=> 'zip.gif',
-	'arj'	=> 'zip.gif',
-	'bz2'	=> 'zip.gif',
-	'c'	=> 'cpp.gif',
-	'chm'	=> 'chm.gif',
-	'cpp'	=> 'cpp.gif',
-	'css'	=> 'css.gif',
-	'csv'	=> 'csv.gif',
-	'cxx'	=> 'cpp.gif',
-	'diff'	=> 'text.gif',
-	'doc'	=> 'doc.gif',
-	'docx'	=> 'doc.gif',
-	'dot'	=> 'doc.gif',
-	'eml'	=> 'eml.gif',
-	'htm'	=> 'html.gif',
-	'html'	=> 'html.gif',
-	'gif'	=> 'gif.gif',
-	'gz'	=> 'zip.gif',
-	'jpe'	=> 'jpg.gif',
-	'jpg'	=> 'jpg.gif',
-	'jpeg'	=> 'jpg.gif',
-	'log'	=> 'text.gif',
-	'lzh'	=> 'zip.gif',
-	'mhtml'	=> 'html.gif',
-	'mid'	=> 'mid.gif',
-	'midi'	=> 'mid.gif',
-	'mov'	=> 'mov.gif',
-	'msg'	=> 'eml.gif',
-	'one'	=> 'one.gif',
-	'patch'	=> 'text.gif',
-	'pcx'	=> 'pcx.gif',
-	'pdf'	=> 'pdf.gif',
-	'png'	=> 'png.gif',
-	'pot'	=> 'pot.gif',
-	'pps'	=> 'pps.gif',
-	'ppt'	=> 'ppt.gif',
-	'pptx'	=> 'ppt.gif',
-	'pub'	=> 'pub.gif',
-	'rar'	=> 'zip.gif',
-	'reg'	=> 'reg.gif',
-	'rtf'	=> 'doc.gif',
-	'tar'	=> 'zip.gif',
-	'tgz'	=> 'zip.gif',
-	'txt'	=> 'text.gif',
-	'uc2'	=> 'zip.gif',
-	'vsd'	=> 'vsd.gif',
-	'vsl'	=> 'vsl.gif',
-	'vss'	=> 'vsd.gif',
-	'vst'	=> 'vst.gif',
-	'vsu'	=> 'vsd.gif',
-	'vsw'	=> 'vsd.gif',
-	'vsx'	=> 'vsd.gif',
-	'vtx'	=> 'vst.gif',
-	'wav'	=> 'wav.gif',
-	'wbk'	=> 'wbk.gif',
-	'wma'	=> 'wav.gif',
-	'wmv'	=> 'mov.gif',
-	'wri'	=> 'wri.gif',
-	'xlk'	=> 'xls.gif',
-	'xls'	=> 'xls.gif',
-	'xlsx'	=> 'xls.gif',
-	'xlt'	=> 'xlt.gif',
-	'xml'	=> 'xml.gif',
-	'zip'	=> 'zip.gif',
-	'?'	=> 'generic.gif' );
+	''		=> 'fa-file-text-o',
+	'7z'	=> 'fa-file-archive-o',
+	'ace'	=> 'fa-file-archive-o',
+	'arj'	=> 'fa-file-archive-o',
+	'bz2'	=> 'fa-file-archive-o',
+	'c'		=> 'fa-file-code-o',
+	'chm'	=> 'fa-file-o',
+	'cpp'	=> 'fa-file-code-o',
+	'css'	=> 'fa-file-code-o',
+	'csv'	=> 'fa-file-text-o',
+	'cxx'	=> 'fa-file-code-o',
+	'diff'	=> 'fa-file-text-o',
+	'doc'	=> 'fa-file-word-o',
+	'docx'	=> 'fa-file-word-o',
+	'dot'	=> 'fa-file-word-o',
+	'eml'	=> 'fa-envelope-o',
+	'htm'	=> 'fa-file-code-o',
+	'html'	=> 'fa-file-code-o',
+	'gif'	=> 'fa-file-image-o',
+	'gz'	=> 'fa-file-archive-o',
+	'jpe'	=> 'fa-file-image-o',
+	'jpg'	=> 'fa-file-image-o',
+	'jpeg'	=> 'fa-file-image-o',
+	'log'	=> 'fa-file-text-o',
+	'lzh'	=> 'fa-file-archive-o',
+	'mhtml'	=> 'fa-file-code-o',
+	'mid'	=> 'fa-file-audio-o',
+	'midi'	=> 'fa-file-audio-o',
+	'mov'	=> 'fa-file-movie-o',
+	'msg'	=> 'fa-envelope-o',
+	'one'	=> 'fa-file-o',
+	'patch'	=> 'fa-file-text-o',
+	'pcx'	=> 'fa-file-image-o',
+	'pdf'	=> 'fa-file-pdf-o',
+	'png'	=> 'fa-file-image-o',
+	'pot'	=> 'fa-file-word-o',
+	'pps'	=> 'fa-file-powerpoint-o',
+	'ppt'	=> 'fa-file-powerpoint-o',
+	'pptx'	=> 'fa-file-powerpoint-o',
+	'pub'	=> 'fa-file-o',
+	'rar'	=> 'fa-file-archive-o',
+	'reg'	=> 'fa-file',
+	'rtf'	=> 'fa-file-word-o',
+	'tar'	=> 'fa-file-archive-o',
+	'tgz'	=> 'fa-file-archive-o',
+	'txt'	=> 'fa-file-text-o',
+	'uc2'	=> 'fa-file-archive-o',
+	'vsd'	=> 'fa-file-o',
+	'vsl'	=> 'fa-file-o',
+	'vss'	=> 'fa-file-o',
+	'vst'	=> 'fa-file-o',
+	'vsu'	=> 'fa-file-o',
+	'vsw'	=> 'fa-file-o',
+	'vsx'	=> 'fa-file-o',
+	'vtx'	=> 'fa-file-o',
+	'wav'	=> 'fa-file-audio-o',
+	'wbk'	=> 'fa-file-word-o',
+	'wma'	=> 'fa-file-audio-o',
+	'wmv'	=> 'fa-file-movie-o',
+	'wri'	=> 'fa-file-word-o',
+	'xlk'	=> 'fa-file-excel-o',
+	'xls'	=> 'fa-file-excel-o',
+	'xlsx'	=> 'fa-file-excel-o',
+	'xlt'	=> 'fa-file-excel-o',
+	'xml'	=> 'fa-file-code-o',
+	'zip'	=> 'fa-file-archive-o',
+	'?'	=> 'fa-file-o' );
 
 /**
  *
@@ -3646,11 +3573,11 @@ $g_file_download_content_type_overrides = array (
  */
 $g_status_icon_arr = array (
 	NONE      => '',
-	LOW       => 'priority_low_1.gif',
-	NORMAL    => 'priority_normal.gif',
-	HIGH      => 'priority_1.gif',
-	URGENT    => 'priority_2.gif',
-	IMMEDIATE => 'priority_3.gif'
+	LOW       => 'fa-chevron-down fa-lg green',
+	NORMAL    => 'fa-minus fa-lg orange2',
+	HIGH      => 'fa-chevron-up fa-lg red',
+	URGENT    => 'fa-arrow-up fa-lg red',
+	IMMEDIATE => 'fa-exclamation-triangle fa-lg red'
 );
 
 /**
@@ -3658,8 +3585,8 @@ $g_status_icon_arr = array (
  * @global array $g_sort_icon_arr
  */
 $g_sort_icon_arr = array (
-	ASCENDING  => 'up.gif',
-	DESCENDING => 'down.gif'
+	ASCENDING  => 'fa-caret-up',
+	DESCENDING => 'fa-caret-down'
 );
 
 /**
@@ -3667,8 +3594,8 @@ $g_sort_icon_arr = array (
  * @global array $g_unread_icon_arr
  */
 $g_unread_icon_arr = array (
-	READ   => 'mantis_space.gif',
-	UNREAD => 'unread.gif'
+	READ   => '',
+	UNREAD => 'fa-circle'
 );
 
 ####################
@@ -4281,14 +4208,14 @@ $g_global_settings = array(
 	'cookie_prefix', 'string_cookie', 'project_cookie', 'view_all_cookie',
 	'manage_config_cookie', 'manage_user_cookie', 'logout_cookie',
 	'bug_list_cookie', 'crypto_master_salt', 'custom_headers',
-	'database_name', 'db_username', 'db_password', 'db_schema', 'db_type',
+	'database_name', 'db_username', 'db_password', 'db_type',
 	'db_table_prefix','db_table_suffix', 'display_errors', 'form_security_validation',
 	'hostname','html_valid_tags', 'html_valid_tags_single_line', 'default_language',
 	'language_auto_map', 'fallback_language', 'login_method', 'plugins_enabled', 'session_handler',
 	'session_save_path', 'session_validation', 'show_detailed_errors', 'show_queries_count',
 	'stop_on_errors', 'version_suffix', 'debug_email',
 	'fileinfo_magic_db_file', 'css_include_file', 'css_rtl_include_file', 'meta_include_file',
-	'file_type_icons', 'path', 'icon_path', 'short_path', 'absolute_path', 'core_path',
+	'file_type_icons', 'path', 'short_path', 'absolute_path', 'core_path',
 	'class_path','library_path', 'language_path', 'absolute_path_default_upload_folder',
 	'ldap_simulation_file_path', 'plugin_path', 'bottom_include_page', 'top_include_page',
 	'default_home_page', 'logout_redirect_page', 'manual_url', 'logo_url', 'wiki_engine_url',
@@ -4428,6 +4355,7 @@ $g_public_config_names = array(
 	'due_date_view_threshold',
 	'email_ensure_unique',
 	'email_login_enabled',
+	'email_notifications_verbose',
 	'email_padding_length',
 	'email_receive_own',
 	'email_separator1',
@@ -4459,6 +4387,7 @@ $g_public_config_names = array(
 	'html_valid_tags',
 	'impersonate_user_threshold',
 	'inline_file_exts',
+	'issue_activity_note_attachments_seconds_threshold',
 	'limit_reporters',
 	'logo_image',
 	'logo_url',
@@ -4466,7 +4395,6 @@ $g_public_config_names = array(
 	'logout_redirect_page',
 	'long_process_timeout',
 	'lost_password_feature',
-	'mail_priority',
 	'manage_config_cookie',
 	'manage_configuration_threshold',
 	'manage_custom_fields_threshold',
@@ -4754,3 +4682,12 @@ $g_webservice_error_when_version_not_found = ON;
  */
 $g_webservice_version_when_not_found = '';
 
+####################
+# Issue Activities #
+####################
+
+/**
+ * If a user submits a note with an attachments (with the specified # of seconds)
+ * the attachment is linked to the note.  Or 0 for disabling this feature.
+ */
+$g_issue_activity_note_attachments_seconds_threshold = 3;

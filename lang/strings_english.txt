@@ -103,6 +103,8 @@ $s_actiongroup_error_issue_is_readonly = 'Issue is readonly.';
 $s_all_projects = 'All Projects';
 $s_move_bugs = 'Move Issues';
 $s_operation_successful = 'Operation successful.';
+$s_operation_warnings = 'Operation completed with warnings.';
+$s_operation_failed = 'Operation did not complete successfully.';
 $s_date_order = 'Date Order';
 $s_print_all_bug_page_link = 'Print Reports';
 $s_csv_export = 'CSV Export';
@@ -396,7 +398,7 @@ $s_minutes = 'minutes';
 $s_redirect_delay = 'Redirect Delay';
 $s_seconds = 'seconds';
 $s_with_minimum_severity = 'With Minimum Severity of';
-$s_bugnote_order = 'Notes Sort Order';
+$s_bugnote_order = 'Activities Sort Order';
 $s_bugnote_order_asc = 'Ascending';
 $s_bugnote_order_desc = 'Descending';
 $s_email_on_new = 'E-mail on New';
@@ -409,6 +411,7 @@ $s_email_on_bugnote_added = 'E-mail on Note Added';
 $s_email_on_status_change = 'E-mail on Status Change';
 $s_email_on_priority_change = 'E-mail on Priority Change';
 $s_email_bugnote_limit = 'E-mail Notes Limit';
+$s_email_full_issue_details = 'E-mail Full Issue Details';
 $s_language = 'Language';
 $s_update_prefs_button = 'Update Prefs';
 $s_reset_prefs_button = 'Reset Prefs';
@@ -624,12 +627,13 @@ $s_bugnote_revision_dropped_history = 'Note Revision Dropped';
 $s_all_revisions = 'All Revisions';
 $s_back_to_issue = 'Back to Issue';
 $s_confirm_revision_drop = 'Are you sure you want to drop this issue revision?';
+$s_activities_title = 'Activities';
 
 # bug_vote_add.php
 $s_vote_added_msg = 'Vote has been added...';
 
 # bugnote_add.php
-$s_bugnote_added_msg = 'Note added...';
+$s_bugnote_attached_files = 'Attached Files:';
 
 # bugnote_delete.php
 $s_bugnote_deleted_msg = 'Note has been successfully deleted...';
@@ -1029,6 +1033,7 @@ $s_edit_news_link = 'Edit News';
 $s_docs_link = 'Docs';
 $s_logout_link = 'Logout';
 $s_my_view_link = 'My View';
+$s_invite_users = 'Invite Users';
 
 # my_view_page.php
 $s_my_view_title_unassigned = 'Unassigned';
@@ -1133,7 +1138,7 @@ $s_submission_thanks_msg = 'Thank you for your submission.';
 
 # report_bug_advanced_page.php
 $s_simple_report_link = 'Simple Report';
-$s_enter_report_details_title = 'Enter Report Details';
+$s_enter_report_details_title = 'Enter Issue Details';
 $s_required = 'required';
 $s_select_category = 'Select Category';
 $s_select_reproducibility = 'Select Reproducibility';
@@ -1141,7 +1146,7 @@ $s_select_severity = 'Select Severity';
 $s_or_fill_in = 'Or Fill In';
 $s_assign_to = 'Assign To';
 $s_additional_information = 'Additional Information';
-$s_submit_report_button = 'Submit Report';
+$s_submit_report_button = 'Submit Issue';
 $s_check_report_more_bugs = 'check to report more issues';
 
 # report_bug_page.php
@@ -1254,7 +1259,7 @@ $s_select_all = 'Select All';
 # stored query strings
 $s_use_query = 'Use Filter';
 $s_delete_query = 'Delete Filter';
-$s_query_deleted = 'Filter Deleted';
+$s_query_deleted = 'Filter "%s" Deleted';
 $s_save_query = 'Save Current Filter';
 $s_reset_query = 'Reset Filter';
 $s_query_name = 'Filter Name';
@@ -1767,3 +1772,16 @@ $MANTIS_ERROR[ERROR_SPAM_SUSPECTED] = 'You have reached the allowed activity lim
 $MANTIS_ERROR[ERROR_FIELD_TOO_LONG] = 'Field "%1$s" must be shorter or equal to %2$d characters long.';
 $MANTIS_ERROR[ERROR_API_TOKEN_NAME_NOT_UNIQUE] = 'API token name "%s" is already being used. Please go back and select another one.';
 
+# dropzone.js - placeholders format is defined by the library
+$s_dropzone_default_message = 'Drop files here to upload (or click)';
+$s_dropzone_fallback_message = 'Your browser does not support drag\'n\'drop file uploads.';
+$s_dropzone_fallback_text = '';
+$s_dropzone_file_too_big = 'File is too big ({{filesize}}MiB). Max filesize: {{maxFilesize}}MiB.';
+$s_dropzone_invalid_file_type = 'You cannot upload files of this type.';
+$s_dropzone_response_error = 'Server responded with {{statusCode}} code.';
+$s_dropzone_cancel_upload = 'Cancel upload';
+$s_dropzone_cancel_upload_confirmation = 'Are you sure you want to cancel this upload?';
+$s_dropzone_remove_file = 'Remove file';
+$s_dropzone_remove_file_confirmation = '';
+$s_dropzone_max_files_exceeded = 'You cannot upload any more files.';
+$s_dropzone_not_supported = 'Dropzone.js does not support older browsers!';

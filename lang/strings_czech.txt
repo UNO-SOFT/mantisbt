@@ -41,6 +41,7 @@
  * @author Adam Zivner
  * @author Chmee2
  * @author Cvanca
+ * @author Dvorapa
  * @author Jezevec
  * @author Kuvaly
  * @author Luk
@@ -465,7 +466,6 @@ $s_all_revisions = 'Všechny revize';
 $s_back_to_issue = 'Zpět na problém';
 $s_confirm_revision_drop = 'Jste si jistí, že chcete zahodit tuto revizi problému?';
 $s_vote_added_msg = 'Hlas byl přidán.';
-$s_bugnote_added_msg = 'Poznámka k problému byla přidána.';
 $s_bugnote_deleted_msg = 'Poznámka k problému byla úspěšně smazána.';
 $s_bug_notes_title = 'Poznámky k problému';
 $s_edit_bugnote_title = 'Upravit poznámku k problému';
@@ -733,6 +733,7 @@ $s_edit_news_link = 'Upravit novinky';
 $s_docs_link = 'Dokumenty';
 $s_logout_link = 'Odhlásit';
 $s_my_view_link = 'Přehled';
+$s_invite_users = 'Pozvat uživatele';
 $s_my_view_title_unassigned = 'Nepřiřazeno';
 $s_my_view_title_recent_mod = 'Nedávno změněno';
 $s_my_view_title_reported = 'Mnou oznámeno';
@@ -983,7 +984,7 @@ $s_bug = 'problém';
 $s_bugs = 'problémy';
 $s_add_new_relationship = 'Nový vztah';
 $s_add_new_relationship_button = 'Přidat';
-$s_this_bug = 'Aktuání problém';
+$s_this_bug = 'Aktuální problém';
 $s_relationship_added = 'Vztah přidán';
 $s_relationship_deleted = 'Vztah odebrán';
 $s_no_relationship = 'beze vztahu';
@@ -1268,3 +1269,12 @@ $MANTIS_ERROR[ERROR_INVALID_REQUEST_METHOD] = 'Tato stránka není touto metodou
 $MANTIS_ERROR[ERROR_INVALID_SORT_FIELD] = 'Neplatné řadicí pole.';
 $MANTIS_ERROR[ERROR_INVALID_DATE_FORMAT] = 'Neplatný formát data.';
 $MANTIS_ERROR[ERROR_UPDATING_TIMEZONE] = 'Nelze aktualizovat časové pásmo.';
+$s_dropzone_default_message = 'Soubory k nahrání přetáhněte sem (nebo sem klikněte)';
+$s_dropzone_fallback_message = 'Váš prohlížeč nepodporuje nahrávání souborů pomocí přetáhnutí souborů do prohlížeče.';
+$s_dropzone_file_too_big = 'Soubor je příliš velký ({{filesize}}MiB). Maximální velikost souboru: {{maxFilesize}}MiB.';
+$s_dropzone_invalid_file_type = 'Nemůžete nahrát soubory tohoto typu.';
+$s_dropzone_response_error = 'Server odpověděl kódem {{statusCode}}.';
+$s_dropzone_cancel_upload = 'Zrušit nahrávání';
+$s_dropzone_cancel_upload_confirmation = 'Opravdu chcete stornovat toto nahrávání?';
+$s_dropzone_remove_file = 'Odstranit soubor';
+$s_dropzone_max_files_exceeded = 'Již nemůžete nahrát žádné další soubory.';

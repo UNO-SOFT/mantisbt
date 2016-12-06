@@ -35,25 +35,61 @@ if (a!= -1) {
 style_display = 'block';
 
 $(document).ready( function() {
-	$('.collapse-open').show();
-	$('.collapse-closed').hide();
-	$('.collapse-link')
-		.show()
-		.css('cursor', 'pointer')
-		.click( function(event) {
-			event.preventDefault();
-			var id = $(this).attr('id');
-			var t_pos = id.indexOf('_closed_link' );
-			if( t_pos == -1 ) {
-				t_pos = id.indexOf('_open_link' );
-			}
-			var t_div = id.substring(0, t_pos );
-			ToggleDiv( t_div );
-		});
-	// Hack to adjust spacing between collapse icon and search div
-	$('.search-box').css('padding-left', '0');
+    $('.collapse-open').show();
+    $('.collapse-closed').hide();
+    $('.collapse-link').click( function(event) {
+        event.preventDefault();
+        var id = $(this).attr('id');
+        var t_pos = id.indexOf('_closed_link' );
+        if( t_pos == -1 ) {
+            t_pos = id.indexOf('_open_link' );
+        }
+        var t_div = id.substring(0, t_pos );
+        ToggleDiv( t_div );
+    });
 
-	$('input[type=text].autocomplete').autocomplete({
+    $('.widget-box').on('shown.ace.widget' , function(event) {
+       var t_id = $(this).attr('id');
+       var t_cookie = GetCookie( "collapse_settings" );
+        if ( 1 == g_collapse_clear ) {
+            t_cookie = "";
+            g_collapse_clear = 0;
+        }
+        t_cookie = t_cookie.replace("|" + t_id + ":1", '' );
+        t_cookie = t_cookie + "|" + t_id + ":0";
+        SetCookie( "collapse_settings", t_cookie );
+	});
+
+    $('.widget-box').on('hidden.ace.widget' , function(event) {
+        var t_id = $(this).attr('id');
+        var t_cookie = GetCookie( "collapse_settings" );
+        if ( 1 == g_collapse_clear ) {
+            t_cookie = "";
+            g_collapse_clear = 0;
+        }
+        t_cookie = t_cookie.replace( "|" + t_id + ":0", '' );
+        t_cookie = t_cookie + "|" + t_id + ":1";
+        SetCookie( "collapse_settings", t_cookie );
+    });
+
+    $('#sidebar.sidebar-toggle').on('click', function (event) {
+        var t_id = $(this).attr('id');
+        var t_cookie = GetCookie("collapse_settings");
+        if (1 == g_collapse_clear) {
+            t_cookie = "";
+            g_collapse_clear = 0;
+        }
+        if( $(this).parent().hasClass( "menu-min" ) ) {
+            t_cookie = t_cookie.replace("|" + t_id + ":1", '');
+            t_cookie = t_cookie + "|" + t_id + ":0";
+        } else {
+            t_cookie = t_cookie.replace("|" + t_id + ":0", '');
+            t_cookie = t_cookie + "|" + t_id + ":1";
+        }
+        SetCookie("collapse_settings", t_cookie);
+    });
+
+    $('input[type=text].autocomplete').autocomplete({
 		source: function(request, callback) {
 			var fieldName = $(this).attr('element').attr('id');
 			var postData = {};
@@ -174,7 +210,7 @@ $(document).ready( function() {
 	});
 
 	$('input[type=text].datetime').each(function(index, element) {
-		$(this).after('<input type="image" class="button datetime" id="' + element.id + '_datetime_button' + '" src="' + config['icon_path'] + 'calendar-img.gif" />');
+		$(this).after('&nbsp;<i class="fa fa-calendar fa-lg datetime" id="' + element.id + '_datetime_button' + '"></i>');
 		Calendar.setup({
 			inputField: element.id,
 			timeFormat: 24,
@@ -184,6 +220,12 @@ $(document).ready( function() {
 		});
 	});
 
+	if( $( ".dropzone-form" ).length ) {
+		enableDropzone( "dropzone", false );
+	}
+	if( $( ".auto-dropzone-form" ).length ) {
+		enableDropzone( "auto-dropzone", true );
+	}
 
 	$('.bug-jump').find('[name=bug_id]').focus( function() {
 		var bug_label = $('.bug-jump-form').find('[name=bug_label]').val();
@@ -298,6 +340,16 @@ $(document).ready( function() {
 	$('a.click-url').bind("click", function() {
 		$(this).attr("href", $(this).attr("url"));
 	});
+
+	$('input[name=private].ace').bind("click", function() {
+		if ($(this).is(":checked")){
+			$('textarea[name=bugnote_text]').addClass("bugnote-private");
+			$('tr[id=bugnote-attach-files]').hide();
+		} else {
+			$('textarea[name=bugnote_text]').removeClass("bugnote-private");
+			$('tr[id=bugnote-attach-files]').show();
+		}
+	});
 });
 
 function setBugLabel() {
@@ -389,8 +441,10 @@ function ToggleDiv( p_div ) {
 	}
 
 	if ( t_open_display == "none" ) {
+        t_cookie = t_cookie.replace( "|" + p_div + ":0", '' );
 		t_cookie = t_cookie + "|" + p_div + ":1";
 	} else {
+        t_cookie = t_cookie.replace( "|" + p_div + ":1", '' );
 		t_cookie = t_cookie + "|" + p_div + ":0";
 	}
 
@@ -411,4 +465,58 @@ function setDisplay(idTag, state)
 function toggleDisplay(idTag)
 {
 	setDisplay( idTag, (document.getElementById(idTag).style.display == 'none')?1:0 );
+}
+
+// Dropzone handler
+Dropzone.autoDiscover = false;
+function enableDropzone( classPrefix, autoUpload ) {
+	try {
+		var zone = new Dropzone( "." + classPrefix + "-form", {
+			forceFallback: $(this).data('force-fallback'),
+			paramName: "ufile",
+			autoProcessQueue: autoUpload,
+			clickable: '.' + classPrefix,
+			previewsContainer: '#' + classPrefix + '-previews-box',
+			uploadMultiple: true,
+			parallelUploads: 100,
+			maxFilesize: $(this).data('max-filesize'),
+			addRemoveLinks: !autoUpload,
+			acceptedFiles: $(this).data('accepted-files'),
+			previewTemplate: "<div class=\"dz-preview dz-file-preview\">\n  <div class=\"dz-details\">\n    <div class=\"dz-filename\"><span data-dz-name></span></div>\n    <div class=\"dz-size\" data-dz-size></div>\n    <img data-dz-thumbnail />\n  </div>\n  <div class=\"progress progress-small progress-striped active\"><div class=\"progress-bar progress-bar-success\" data-dz-uploadprogress></div></div>\n  <div class=\"dz-success-mark\"><span></span></div>\n  <div class=\"dz-error-mark\"><span></span></div>\n  <div class=\"dz-error-message\"><span data-dz-errormessage></span></div>\n</div>",
+			dictDefaultMessage: $(this).data('default-message'),
+			dictFallbackMessage: $(this).data('fallback-message'),
+			dictFallbackText: $(this).data('fallback-text'),
+			dictFileTooBig: $(this).data('file-too-big'),
+			dictInvalidFileType: $(this).data('invalid-file-type'),
+			dictResponseError: $(this).data('response-error'),
+			dictCancelUpload: $(this).data('cancel-upload'),
+			dictCancelUploadConfirmation: $(this).data('cancel-upload-confirmation'),
+			dictRemoveFile: $(this).data('remove-file'),
+			dictRemoveFileConfirmation: $(this).data('remove-file-confirmation'),
+			dictMaxFilesExceeded: $(this).data('max-files-exceeded'),
+
+			init: function () {
+				var dropzone = this;
+				$( "input[type=submit]" ).on( "click", function (e) {
+					if( dropzone.getQueuedFiles().length ) {
+						e.preventDefault();
+						e.stopPropagation();
+						dropzone.processQueue();
+					}
+				});
+				this.on( "successmultiple", function( files, response ) {
+					document.open();
+					document.write( response );
+					document.close();
+				});
+			},
+			fallback: function() {
+				if( $( "." + classPrefix ).length ) {
+					$( "." + classPrefix ).hide();
+				}
+			}
+		});
+	} catch (e) {
+		alert( $(this).data('dropzone-not-supported') );
+	}
 }

@@ -2,6 +2,27 @@ var begin_form = '';
 var form_fields = new Array();
 var serialized_form_fields = new Array();
 $(document).ready(function(){
+	$('#filter-toggle').on('click', function (event) {
+		$('#filter-bar-queries').toggle();
+		$('#filter-bar-search').toggle();
+	});
+
+	$('#filter-bar-search-txt').on('change', function (event) {
+		var t_term = $('#filter-bar-search-txt').val();
+		$('#filter-search-txt').val(t_term);
+	});
+
+	$('#filter-search-txt').on('change', function (event) {
+		var t_term = $('#filter-search-txt').val();
+		$('#filter-bar-search-txt').val(t_term);
+	});
+
+	$('#filter-bar-query-id').on('change', function(e) {
+		var id = $(this).val();
+		$('select[name=source_query_id]').val(id);
+		$('#filter-queries-form').submit();
+	});
+
 	var i = 0;
 	$('[name=filters_open]').find('input').each(function() {
 		var formname = $(this).parent('form').attr('name');
@@ -9,8 +30,10 @@ $(document).ready(function(){
 			// serialize the field and add it to an array
 
 			if( $.inArray($(this).attr('name'),form_fields) == -1 ) {
-				form_fields[i] = $(this).attr('name');
-				i++;
+				if($(this).attr('name')) {
+					form_fields[i] = $(this).attr('name');
+					i++;
+				}
 			}
 		}
 	});
@@ -62,7 +85,7 @@ function filter_highlight_changes(item) {
 function filter_named_filter_clean() {
 	/* be sure it's clean whether it's stored filter or not */
 	var selected_text = $('[name=source_query_id] option:selected').html();
-	if( selected_text.charAt(0) == '*' ) {
+	if(selected_text && selected_text.charAt(0) == '*' ) {
 		$('[name=source_query_id]').removeClass('tainted');
 		var reset_text = selected_text.substring(2,selected_text.length);
 		$('[name=source_query_id] option:selected').html(reset_text);

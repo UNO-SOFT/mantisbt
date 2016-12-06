@@ -1,18 +1,34 @@
 Mantis Bug Tracker (MantisBT)
 =============================
+
 [![Build Status](https://img.shields.io/travis/mantisbt/mantisbt/master.svg)](https://travis-ci.org/mantisbt/mantisbt)
 [![Gitter](https://img.shields.io/gitter/room/mantisbt/mantisbt.svg)](https://gitter.im/mantisbt/mantisbt?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+Screenshots
+-----------
+
+![Build Status](doc/modern_view_issues.png)
+
+![Build Status](doc/modern_my_view.png)
+
+![Build Status](doc/modern_view_issue.png)
+
+Documentation
+-------------
 
 For complete documentation, please read the administration guide included with
 this release in the doc/<lang> directory.  The guide is available in text, PDF,
 and HTML formats.
 
+
 Requirements
 ------------
 
- * MySQL 4.1.1+, PostgreSQL 8+, or other supported database
- * PHP 5.3.2+
+ * MySQL 5.5.35+, PostgreSQL 9.2+, or other supported database
+ * PHP 5.5.9+
  * a webserver (e.g. Apache or IIS)
+
+Please refer to section 2.2 in the administration guide for further details.
 
 Installation
 ------------

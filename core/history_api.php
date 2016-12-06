@@ -244,7 +244,7 @@ function history_get_range_result_filter( $p_filter, $p_start_time = null, $p_en
  * @param  integer $p_start_time     The start time to filter by, or null for all.
  * @param  integer $p_end_time       The end time to filter by, or null for all.
  * @param  string  $p_history_order  The sort order.
- * @return database result to pass into history_get_event_from_row().
+ * @return IteratorAggregate|boolean database result to pass into history_get_event_from_row().
  */
 function history_get_range_result( $p_bug_id = null, $p_start_time = null, $p_end_time = null, $p_history_order = null ) {
 	if ( $p_history_order === null ) {
@@ -340,12 +340,20 @@ function history_get_event_from_row( $p_result, $p_user_id = null, $p_check_acce
 		if( $t_user_id != $v_user_id ) {
 			# bypass if user originated note
 			if( ( $v_type == BUGNOTE_ADDED ) || ( $v_type == BUGNOTE_UPDATED ) || ( $v_type == BUGNOTE_DELETED ) ) {
+				if( !bugnote_exists( $v_old_value ) ) {
+					continue;
+				}
+
 				if( !access_has_bug_level( config_get( 'private_bugnote_threshold' ), $v_bug_id, $t_user_id ) && ( bugnote_get_field( $v_old_value, 'view_state' ) == VS_PRIVATE ) ) {
 					continue;
 				}
 			}
 
 			if( $v_type == BUGNOTE_STATE_CHANGED ) {
+				if( !bugnote_exists( $v_new_value ) ) {
+					continue;
+				}
+
 				if( !access_has_bug_level( config_get( 'private_bugnote_threshold' ), $v_bug_id, $t_user_id ) && ( bugnote_get_field( $v_new_value, 'view_state' ) == VS_PRIVATE ) ) {
 					continue;
 				}
