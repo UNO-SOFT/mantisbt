@@ -94,16 +94,6 @@ $t_timeline_view_class = ( $t_timeline_view_threshold_access ) ? "col-md-7" : "c
 ?>
 <div class="col-xs-12 <?php echo $t_timeline_view_class ?>">
 
-<div>
-<?php html_status_legend( STATUS_LEGEND_POSITION_TOP ); ?>
-
-<div>
-<?php //include( $g_core_path . 'timeline_inc.php' ); ?>
-
-<!--<div class="myview_boxes_area">-->
-<div>
-
-<table class="hide" cellspacing="3" cellpadding="0">
 <?php
 $t_number_of_boxes = count ( $t_boxes );
 $t_boxes_position = config_get( 'my_view_boxes_fixed_position' );
