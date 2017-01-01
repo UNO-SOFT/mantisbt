@@ -376,7 +376,7 @@ for( $i = 0; $i < $t_count; $i++ ) {
 <tr class="my-buglist-bug <?php echo $t_bug_class?>">
 	<?php
 	# -- Bug ID and details link + Pencil shortcut --?>
-	<td class="nowrap width-13 my-buglist-id">
+	<td class="<?php echo $t_status_label?> nowrap width-13 my-buglist-id">
 		<?php
 			print_bug_link( $t_bug->id, false );
 
