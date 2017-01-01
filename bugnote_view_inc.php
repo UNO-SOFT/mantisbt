@@ -152,9 +152,13 @@ $t_block_icon = $t_collapse_block ? 'fa-chevron-down' : 'fa-chevron-up';
 		} else {
 			$t_time_tracking_hhmm = '';
 		}
+		$t_category_class = 'category';
+		if( $t_activity['private'] ) {
+			$t_category_class = 'bugnote-private';
+		}
 ?>
 <tr class="bugnote" id="c<?php echo $t_activity['id'] ?>">
-		<td class="category">
+		<td class="<?php echo $t_category_class?>">
 		<div class="pull-left padding-2"><?php print_avatar( $t_activity['user_id'] ); ?>
 		</div>
 		<div class="pull-left padding-2">
