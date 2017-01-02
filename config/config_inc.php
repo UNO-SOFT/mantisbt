@@ -113,14 +113,15 @@ $g_log_level = LOG_NONE | LOG_EMAIL | LOG_EMAIL_RECIPIENT | LOG_AJAX | LOG_FILTE
 $g_show_timer = ON;
 
 define( 'MAX_EVENTS', 5 );
-$g_my_view_boxes_fixed_position = ON;
+$g_my_view_boxes_fixed_position = OFF;
 $g_my_view_bug_count = 30;
+
 $g_my_view_boxes = array (
   'assigned'      => '1',
   'reported'      => '2',
   'feedback'      => '0',
   'unassigned'    => '4',
-  'monitored'     => '5',
+  'monitored'     => '3',
   'recent_mod'    => '6',
   'resolved'      => '7',
   'verify'        => '0',
