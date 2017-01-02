@@ -118,6 +118,7 @@ $g_my_view_bug_count = 30;
 $t_monitored = $g_my_view_boxes['monitored'];
 $g_my_view_boxes['monitored'] = $g_my_view_boxes['recent_mod'];
 $g_my_view_boxes['recent_mod'] = $t_monitored;
+$g_my_view_boxes['resolved'] = '3';
 
 # Toggle whether 'My View' boxes are shown in a fixed position (i.e. adjacent boxes start at the same vertical position)
 $g_my_view_boxes_fixed_position = OFF;
