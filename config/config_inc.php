@@ -115,10 +115,17 @@ $g_show_timer = ON;
 define( 'MAX_EVENTS', 5 );
 $g_my_view_bug_count = 30;
 
-$t_monitored = $g_my_view_boxes['monitored'];
-$g_my_view_boxes['monitored'] = $g_my_view_boxes['recent_mod'];
-$g_my_view_boxes['recent_mod'] = $t_monitored;
-$g_my_view_boxes['resolved'] = '3';
+$g_my_view_boxes = array (
+	'assigned'      => '1',
+	'unassigned'    => '2',
+	'reported'      => '3',
+	'monitored'     => '4',
+	'recent_mod'    => '5',
+	'resolved'      => '6',
+	'feedback'      => '0',
+	'verify'        => '0',
+	'my_comments'   => '0'
+);
 
 # Toggle whether 'My View' boxes are shown in a fixed position (i.e. adjacent boxes start at the same vertical position)
 $g_my_view_boxes_fixed_position = OFF;
