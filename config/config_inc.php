@@ -207,7 +207,8 @@ $g_time_tracking_stopwatch = ON;
 $g_create_permalink_threshold = REPORTER;
 $g_stored_query_create_threshold = REPORTER;
 
-#$g_css_include_file = "/css/rockstar/default.css";
+$g_css_include_file = "unosoft.css";
+$g_cdn_enabled = ON;
 
 //if(file_exists('config_statuses_inc.php'))
     require_once(dirname(__FILE__) . '/config_statuses_inc.php');
