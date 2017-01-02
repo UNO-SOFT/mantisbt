@@ -23,3 +23,6 @@
 [submodule "plugins/Markdown"]
 	path = plugins/Markdown
 	url = https://github.com/tgulacsi/mantisbt-plugins-Markdown.git
+[submodule "plugins/AttachmentsPile"]
+	path = plugins/AttachmentsPile
+	url = https://github.com/tgulacsi/mantisbt-plugins-AttachmentsPile.git
