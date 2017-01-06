@@ -1932,9 +1932,10 @@ function print_bug_attachment( array $p_attachment, $p_security_token ) {
  */
 function print_bug_attachment_header( array $p_attachment, $p_security_token ) {
 	echo "\n";
+	$t_id = 'file-' . $p_attachment['id'];
 	if( $p_attachment['exists'] ) {
 		if( $p_attachment['can_download'] ) {
-			echo '<a href="' . string_attribute( $p_attachment['download_url'] ) . '">';
+			echo '<a id="' . $t_id . '" href="' . string_attribute( $p_attachment['download_url'] ) . '">';
 		}
 		print_file_icon( $p_attachment['display_name'] );
 		if( $p_attachment['can_download'] ) {
@@ -1942,7 +1943,7 @@ function print_bug_attachment_header( array $p_attachment, $p_security_token ) {
 		}
 		echo lang_get( 'word_separator' );
 		if( $p_attachment['can_download'] ) {
-			echo '<a href="' . string_attribute( $p_attachment['download_url'] ) . '">';
+			echo '<a id="' . $t_id . '" href="' . string_attribute( $p_attachment['download_url'] ) . '">';
 		}
 		echo string_display_line( $p_attachment['display_name'] );
 		if( $p_attachment['can_download'] ) {
@@ -1953,7 +1954,7 @@ function print_bug_attachment_header( array $p_attachment, $p_security_token ) {
 		event_signal( 'EVENT_VIEW_BUG_ATTACHMENT', array( $p_attachment ) );
 	} else {
 		print_file_icon( $p_attachment['display_name'] );
-		echo lang_get( 'word_separator' ) . '<s>' . string_display_line( $p_attachment['display_name'] ) . '</s>' . lang_get( 'word_separator' ) . '(' . lang_get( 'attachment_missing' ) . ')';
+		echo lang_get( 'word_separator' ) . '<s id="' . $t_id . '">' . string_display_line( $p_attachment['display_name'] ) . '</s>' . lang_get( 'word_separator' ) . '(' . lang_get( 'attachment_missing' ) . ')';
 	}
 
 	if( $p_attachment['can_delete'] ) {
