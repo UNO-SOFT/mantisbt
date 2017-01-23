@@ -19,6 +19,9 @@ select {
 textarea {
     color: unset !important;
 }
+div.widget-toolbox > input[type="submit"] {
+	margin-left: 20%;
+}
 
 @media print {
 	#view-issue-page .bugnote .btn { display: none; }
