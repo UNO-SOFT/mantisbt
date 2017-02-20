@@ -14,6 +14,10 @@
 	path = library/securimage
 	url = https://github.com/mantisbt/securimage.git
 	branch = mantis
+[submodule "library/parsedown"]
+	path = library/parsedown
+	url = https://github.com/mantisbt/parsedown.git
+	branch = mantisbt
 [submodule "plugins/ForceMonitor"]
 	path = plugins/ForceMonitor
 	url = https://github.com/tgulacsi/mantisbt-plugins-ForceMonitor.git

@@ -254,6 +254,11 @@ select.input-xs option, select.form-control.input-xs option {
     padding: 0px 2px !important;
 }
 
+select[disabled] {
+    background-color: #eee !important;
+    color: #848484 !important;
+}
+
 textarea.input-xs, select.input-xs[multiple] {
     height: auto;
 }
@@ -292,6 +297,35 @@ i.datetimepicker {
 
 .bootstrap-datetimepicker-widget.dropdown-menu {
     color: #333333;
+}
+
+.dropdown-menu .divider {
+    margin: 2px 0;
+}
+
+.list > li {
+    height: 30px;
+    line-height: 22px;
+}
+.list > li > a {
+    display: block;
+    padding: 3px 12px;
+    white-space: nowrap;
+    margin: 1px 0;
+    color: #333;
+    font-weight: 400;
+    text-decoration: none;
+}
+
+.list > li > a:focus, list > li > a:hover {
+    color: #262626;
+    text-decoration: none;
+    background-color: #f5f5f5;
+}
+
+.projects-searchbox input {
+    height: 30px;
+    margin: 6px 10px;
 }
 
 /* Small devices (tablets, 768px and up) */

@@ -498,7 +498,7 @@ function print_news_item_option_list() {
  * @return void
  */
 function print_news_entry( $p_headline, $p_body, $p_poster_id, $p_view_state, $p_announcement, $p_date_posted ) {
-	$t_headline = string_display_links( $p_headline );
+	$t_headline = string_display_line_links( $p_headline );
 	$t_body = string_display_links( $p_body );
 	$t_date_posted = date( config_get( 'normal_date_format' ), $p_date_posted );
 
@@ -1313,38 +1313,26 @@ function print_formatted_severity_string( BugData $p_bug ) {
  * @return void
  */
 function print_view_bug_sort_link( $p_string, $p_sort_field, $p_sort, $p_dir, $p_columns_target = COLUMNS_TARGET_VIEW_PAGE ) {
-	if( $p_columns_target == COLUMNS_TARGET_PRINT_PAGE ) {
-		if( $p_sort_field == $p_sort ) {
-			# We toggle between ASC and DESC if the user clicks the same sort order
-			if( 'ASC' == $p_dir ) {
-				$p_dir = 'DESC';
+	switch( $p_columns_target ) {
+		case COLUMNS_TARGET_PRINT_PAGE:
+		case COLUMNS_TARGET_VIEW_PAGE:
+			if( $p_sort_field == $p_sort ) {
+				# We toggle between ASC and DESC if the user clicks the same sort order
+				if( 'ASC' == $p_dir ) {
+					$p_dir = 'DESC';
+				} else {
+					$p_dir = 'ASC';
+				}
 			} else {
+				# Otherwise always start with ascending
 				$p_dir = 'ASC';
 			}
-		} else {
-			# Otherwise always start with ascending
-			$p_dir = 'ASC';
-		}
-
-		$t_sort_field = rawurlencode( $p_sort_field );
-		print_link( 'view_all_set.php?sort=' . $t_sort_field . '&dir=' . $p_dir . '&type=2&print=1', $p_string );
-	} else if( $p_columns_target == COLUMNS_TARGET_VIEW_PAGE ) {
-		if( $p_sort_field == $p_sort ) {
-
-			# we toggle between ASC and DESC if the user clicks the same sort order
-			if( 'ASC' == $p_dir ) {
-				$p_dir = 'DESC';
-			} else {
-				$p_dir = 'ASC';
-			}
-		} else {
-			# Otherwise always start with ascending
-			$p_dir = 'ASC';
-		}
-		$t_sort_field = rawurlencode( $p_sort_field );
-		print_link( 'view_all_set.php?sort=' . $t_sort_field . '&dir=' . $p_dir . '&type=2', $p_string );
-	} else {
-		echo $p_string;
+			$t_sort_field = rawurlencode( $p_sort_field );
+			$t_print_parameter = ( $p_columns_target == COLUMNS_TARGET_PRINT_PAGE ) ? '&print=1' : '';
+			print_link( 'view_all_set.php?sort_add=' . $t_sort_field . '&dir_add=' . $p_dir . '&type=2' . $t_print_parameter, $p_string );
+			break;
+		default:
+			echo $p_string;
 	}
 }
 
@@ -2105,7 +2093,11 @@ function print_max_filesize( $p_size, $p_divider = 1000, $p_unit = 'kb' ) {
 function print_dropzone_form_data() {
 	echo 'data-force-fallback="' . ( config_get( 'dropzone_enabled' ) ? 'false' : 'true' ) . '"' . "\n";
 	echo "\t" . 'data-max-filesize="'. ceil( config_get( 'max_file_size' ) / (1000 * 1024) ) . '"' . "\n";
-	echo "\t" . 'data-accepted-files="' . config_get( 'allowed_files' ) . '"' . "\n";
+	$t_allowed_files = config_get( 'allowed_files' );
+	if ( !empty ( $t_allowed_files ) ) {
+		$t_allowed_files = '.' . implode ( ',.', explode ( ',', config_get( 'allowed_files' ) ) );
+	}
+	echo "\t" . 'data-accepted-files="' . $t_allowed_files . '"' . "\n";
 	echo "\t" . 'data-default-message="' . htmlspecialchars( lang_get( 'dropzone_default_message' ) ) . '"' . "\n";
 	echo "\t" . 'data-fallback-message="' . htmlspecialchars( lang_get( 'dropzone_fallback_message' ) ) . '"' . "\n";
 	echo "\t" . 'data-fallback-text="' . htmlspecialchars( lang_get( 'dropzone_fallback_text' ) ) . '"' . "\n";

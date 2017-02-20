@@ -21,7 +21,7 @@
 /**
  * Mantis Version
  */
-define( 'MANTIS_VERSION', '2.0.0' );
+define( 'MANTIS_VERSION', '2.1.0' );
 define( 'FILTER_VERSION', 'v9' );
 
 # --- constants -------------------
@@ -627,6 +627,11 @@ define( 'DATETIME_PICKER_HASH', 'sha256-I8vGZkA2jL0PptxyJBvewDVqNXcgIhcgeqi+GD/a
 define( 'CHARTJS_VERSION', '2.1.6' );
 define( 'CHARTJS_HASH', 'sha256-Emd9qupGNNjtRpaQjhpA4hn+PWAETkO2GB3gzBL3thM=' );
 define( 'CHARTJSBUNDLE_HASH', 'sha256-OBi9RJU9sFk/2JEV23eSQSqe/eUK4km5NxGgo/XMiqY=' );
+
+# List JS
+define( 'LISTJS_VERSION', '1.4.1' );
+define( 'LISTJS_HASH', 'sha256-lFOz0Sg8djWQPKOfRce9A9EcYSWhFMsYo+ulRYVnjrw=' );
+
 
 # Byte Order Markers
 define( 'UTF8_BOM', "\xEF\xBB\xBF" );
