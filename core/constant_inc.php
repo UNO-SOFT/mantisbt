@@ -21,7 +21,7 @@
 /**
  * Mantis Version
  */
-define( 'MANTIS_VERSION', '2.1.0' );
+define( 'MANTIS_VERSION', '2.2.0' );
 define( 'FILTER_VERSION', 'v9' );
 
 # --- constants -------------------
@@ -368,7 +368,7 @@ define( 'ERROR_SPONSORSHIP_ASSIGNER_ACCESS_LEVEL_TOO_LOW', 1704 );
 define( 'ERROR_SPONSORSHIP_SPONSOR_NO_EMAIL', 1705 );
 
 # ERROR RELATIONSHIP
-define( 'ERROR_RELATIONSHIP_ALREADY_EXISTS', 1800 );
+define( 'ERROR_RELATIONSHIP_ALREADY_EXISTS', 1800 );  # TODO: remove once no longer used in lang files
 define( 'ERROR_RELATIONSHIP_ACCESS_LEVEL_TO_DEST_BUG_TOO_LOW', 1801 );
 define( 'ERROR_RELATIONSHIP_NOT_FOUND', 1802 );
 define( 'ERROR_RELATIONSHIP_SAME_BUG', 1803 );
@@ -461,6 +461,10 @@ define( 'META_FILTER_MYSELF', -1 );
 define( 'META_FILTER_NONE', - 2 );
 define( 'META_FILTER_CURRENT', - 3 );
 define( 'META_FILTER_ANY', 0 );
+
+# Filter view types
+define( 'FILTER_VIEW_TYPE_SIMPLE', 'simple' );
+define( 'FILTER_VIEW_TYPE_ADVANCED', 'advanced' );
 
 # Custom filter types
 define( 'FILTER_TYPE_STRING', 0 );
@@ -605,12 +609,10 @@ define( 'LOG_SOAP', 64 );                           # LOG_WEBSERVICE
 define( 'FTP', 1 );                                 # DISK
 define( 'ERROR_FTP_CONNECT_ERROR', 16 );            # N/A
 
-# JQuery and JQuery UI
+# JQuery
 # hashes acquired with command 'cat file.js | openssl dgst -sha256 -binary | openssl enc -base64 -A'
 define( 'JQUERY_VERSION', '2.2.4' );
 define( 'JQUERY_HASH', 'sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=' );
-define( 'JQUERY_UI_VERSION', '1.11.4' );
-define( 'JQUERY_UI_HASH', 'sha256-xNjb53/rY+WmG+4L6tTl9m6PpqknWZvRt0rO1SRnJzw=' );
 
 # Bootstrap & FontAwesome
 define( 'BOOTSTRAP_VERSION', '3.3.6' );
@@ -628,10 +630,17 @@ define( 'CHARTJS_VERSION', '2.1.6' );
 define( 'CHARTJS_HASH', 'sha256-Emd9qupGNNjtRpaQjhpA4hn+PWAETkO2GB3gzBL3thM=' );
 define( 'CHARTJSBUNDLE_HASH', 'sha256-OBi9RJU9sFk/2JEV23eSQSqe/eUK4km5NxGgo/XMiqY=' );
 
+# Tyeahead JS
+define( 'TYPEAHEAD_VERSION', '1.1.1' );
+define( 'TYPEAHEAD_HASH', 'sha256-qZIhMVBV4/crmcmYXNq5ZE5gPRiiPPMKVYbapf5HDBs=' );
+
 # List JS
 define( 'LISTJS_VERSION', '1.4.1' );
 define( 'LISTJS_HASH', 'sha256-lFOz0Sg8djWQPKOfRce9A9EcYSWhFMsYo+ulRYVnjrw=' );
 
+# Dropzone JS
+define( 'DROPZONE_VERSION', '4.3.0' );
+define( 'DROPZONE_HASH', 'sha256-p2l8VeL3iL1J0NxcXbEVtoyYSC+VbEbre5KHbzq1fq8=' );
 
 # Byte Order Markers
 define( 'UTF8_BOM', "\xEF\xBB\xBF" );
