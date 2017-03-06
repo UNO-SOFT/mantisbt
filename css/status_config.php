@@ -82,7 +82,7 @@ foreach( $t_statuses as $t_id => $t_label ) {
 	# Status color class
 	if( array_key_exists( $t_label, $t_colors ) ) {
 		echo '.' . $t_css_class
-			. " { color: {$t_colors[$t_label]}; background-color: {$t_colors[$t_label]}; }\n";
+			. " { background-color: {$t_colors[$t_label]}; }\n";
 	}
 
 	# Status percentage width class
