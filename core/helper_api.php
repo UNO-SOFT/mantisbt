@@ -510,7 +510,9 @@ function helper_get_columns_to_view( $p_columns_target = COLUMNS_TARGET_VIEW_PAG
 		$t_cf_name = column_get_custom_field_name( $t_column_name );
 		if( $t_cf_name ) {
 			$t_cf_id = custom_field_get_id_from_name( $t_cf_name );
-			$t_column_name = column_get_custom_field_column_name( $t_cf_id );
+			if( $t_cf_id !== false ) {
+				$t_column_name = column_get_custom_field_column_name( $t_cf_id );
+			}
 		}
 	}
 
