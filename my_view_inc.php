@@ -57,6 +57,7 @@ require_api( 'lang_api.php' );
 require_api( 'print_api.php' );
 require_api( 'project_api.php' );
 require_api( 'string_api.php' );
+require_api( 'bug_last_reporter_api.php' );
 
 $t_filter = current_user_get_bug_filter();
 if( $t_filter === false ) {
@@ -88,16 +89,24 @@ $t_url_link_parameters['recent_mod'] = FILTER_PROPERTY_HIDE_STATUS . '=none'
 $c_filter['reported'] = filter_create_reported_by( helper_get_current_project(), $t_current_user_id );
 $t_url_link_parameters['reported'] = FILTER_PROPERTY_REPORTER_ID . '=' . $t_current_user_id . '&' . FILTER_PROPERTY_HIDE_STATUS . '=' . $t_hide_status_default;
 
+$t_available_statuses = MantisEnum::getValues( config_get( 'status_enum_string' ) );
+$t_resolved_statuses = array();
+foreach( $t_available_statuses as $t_status ) {
+	if( $t_bug_resolved_status_threshold <= $t_status && $t_status < 999) {
+		$t_resolved_statuses[] = $t_status;
+	}
+}
+
 $c_filter['resolved'] = array(
+	'_view_type' => 'advanced',
+
 	FILTER_PROPERTY_CATEGORY_ID => array(
 		'0' => META_FILTER_ANY,
 	),
 	FILTER_PROPERTY_SEVERITY => array(
 		'0' => META_FILTER_ANY,
 	),
-	FILTER_PROPERTY_STATUS => array(
-		'0' => $t_bug_resolved_status_threshold,
-	),
+	FILTER_PROPERTY_STATUS => $t_resolved_statuses,
 	FILTER_PROPERTY_HIGHLIGHT_CHANGED => $t_default_show_changed,
 	FILTER_PROPERTY_REPORTER_ID => array(
 		'0' => META_FILTER_ANY,
@@ -114,14 +123,14 @@ $c_filter['resolved'] = array(
 	FILTER_PROPERTY_VERSION => array(
 		'0' => META_FILTER_ANY,
 	),
-	FILTER_PROPERTY_HIDE_STATUS => array(
-		'0' => $t_hide_status_default,
-	),
+	//FILTER_PROPERTY_HIDE_STATUS => array(
+		//'0' => $t_hide_status_default,
+	//),
 	FILTER_PROPERTY_MONITOR_USER_ID => array(
 		'0' => META_FILTER_ANY,
 	),
 );
-$t_url_link_parameters['resolved'] = FILTER_PROPERTY_STATUS . '=' . $t_bug_resolved_status_threshold . '&' . FILTER_PROPERTY_HIDE_STATUS . '=' . $t_hide_status_default;
+$t_url_link_parameters['resolved'] = 'view_type=advanced&' . FILTER_PROPERTY_STATUS . '[]=' . join( '&' . FILTER_PROPERTY_STATUS . '[]=', $t_resolved_statuses );
 
 
 $c_filter['unassigned'] = filter_create_assigned_to_unresolved( helper_get_current_project(), 0 );
@@ -312,11 +321,18 @@ $t_count = count( $t_rows );
 if( $t_count == 0 ) {
 	echo '<tr><td>&#160;</td></tr>';
 }
-for( $i = 0;$i < $t_count; $i++ ) {
+for( $i = 0; $i < $t_count; $i++ ) {
 	$t_bug = $t_rows[$i];
 
 	$t_summary = string_display_line_links( $t_bug->summary );
 	$t_last_updated = date( config_get( 'normal_date_format' ), $t_bug->last_updated );
+
+	$t_last_reporter = '';
+	$t_last_reporter_id = bug_get_last_bugnote_reporter( $t_bug->id );
+	$t_last_reporter = $t_last_reporter_id ? user_get_name( $t_last_reporter_id ) : '';
+-
+	# choose color based on status
+	$t_status_label = html_get_status_css_class( $t_bug->status, auth_get_current_user_id(), $t_bug->project_id );
 
 	# Check for attachments
 	$t_attachment_count = 0;
@@ -385,14 +401,18 @@ for( $i = 0;$i < $t_count; $i++ ) {
 			echo '<span><a href="' . $t_bug_url . '">' . $t_summary . '</a></span><br />';
 	?>
 		<?php
+	$t_lr = '';
+	if ( strlen( $t_last_reporter ) > 0 ) {
+		$t_lr = " - $t_last_reporter";
+	}
 	# type project name if viewing 'all projects' or bug is in subproject
 	echo '<span class="small">', string_display_line( category_full_name( $t_bug->category_id, true, $t_bug->project_id ) ), '</span>';
 
 	echo '<span class="small"> - ';
 	if( $t_bug->last_updated > strtotime( '-' . $t_filter[FILTER_PROPERTY_HIGHLIGHT_CHANGED] . ' hours' ) ) {
-		echo '<strong>' . $t_last_updated . '</strong>';
+		echo '<strong>' . $t_last_updated . $t_lr . '</strong>';
 	} else {
-		echo $t_last_updated;
+		echo $t_last_updated . $t_lr;
 	}
 	echo '</span>';
 	?>
