@@ -21,7 +21,7 @@
 /**
  * Mantis Version
  */
-define( 'MANTIS_VERSION', '2.2.0' );
+define( 'MANTIS_VERSION', '2.2.4' );
 define( 'FILTER_VERSION', 'v9' );
 
 # --- constants -------------------
@@ -655,3 +655,7 @@ define( 'EXPORT_BLOCK_SIZE', 500 );
 # types, 2^31 is a safe limit to be used for all.
 define( 'DB_MAX_INT', 2147483647 );
 
+# Configuration management actions (adm_config_report.php)
+define( 'MANAGE_CONFIG_ACTION_CREATE', 'create' );
+define( 'MANAGE_CONFIG_ACTION_CLONE', 'clone' );
+define( 'MANAGE_CONFIG_ACTION_EDIT', 'edit' );
