@@ -30,3 +30,6 @@
 [submodule "plugins/AttachmentsPile"]
 	path = plugins/AttachmentsPile
 	url = https://github.com/tgulacsi/mantisbt-plugins-AttachmentsPile.git
+[submodule "plugins/Snippets"]
+	path = plugins/Snippets
+	url = https://github.com/mantisbt-plugins/snippets.git
