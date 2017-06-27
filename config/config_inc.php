@@ -181,6 +181,7 @@ $g_hidden_reporters = array(); //array( 'mail_watcher' );
 $g_create_permalink_threshold = REPORTER;
 $g_allow_delete_own_attachments = ON;
 $g_bugnote_allow_user_edit_delete = OFF;
+$g_set_bug_sticky_threshold = DEVELOPER;
 
 $g_attachment_print_uploader = ON;
 $g_filter_use_last = OFF;
