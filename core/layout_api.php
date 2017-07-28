@@ -506,7 +506,7 @@ function layout_navbar_user_menu( $p_show_avatar = true ) {
 	echo '<li class="divider"></li>';
 
 	# Logout
-	layout_navbar_menu_item( helper_mantis_url( 'logout_page.php' ), lang_get( 'logout_link' ), 'fa-sign-out' );
+	layout_navbar_menu_item( helper_mantis_url( auth_logout_page() ), lang_get( 'logout_link' ), 'fa-sign-out' );
 	echo '</ul>';
 	echo '</li>';
 }
@@ -1009,6 +1009,9 @@ function layout_page_content_begin() {
  * @return null
  */
 function layout_page_content_end() {
+	# Print table of log events
+	log_print_to_page();
+
 	echo '</div>' , "\n";
 }
 
@@ -1024,7 +1027,7 @@ function layout_breadcrumbs() {
 	echo '<ul class="breadcrumb">' , "\n";
 	if( current_user_is_anonymous() ) {
 		$t_return_page = $_SERVER['SCRIPT_NAME'];
-		if( isset( $_SERVER['QUERY_STRING'] ) ) {
+		if( isset( $_SERVER['QUERY_STRING'] ) && !is_blank( $_SERVER['QUERY_STRING'] )) {
 			$t_return_page .= '?' . $_SERVER['QUERY_STRING'];
 		}
 
@@ -1033,9 +1036,9 @@ function layout_breadcrumbs() {
 		echo ' <li><i class="fa fa-user home-icon active"></i> ' . lang_get( 'anonymous' ) . ' </li>' . "\n";
 
 		echo '<div class="btn-group btn-corner">' . "\n";
-		echo '	<a href="' . helper_mantis_url( 'login_page.php?return=' . $t_return_page ) .
+		echo '	<a href="' . helper_mantis_url( auth_login_page( 'return=' . $t_return_page ) ) .
 			'" class="btn btn-primary btn-xs">' . lang_get( 'login_link' ) . '</a>' . "\n";
-		if( config_get_global( 'allow_signup' ) == ON ) {
+		if( auth_signup_enabled() ) {
 			echo '	<a href="' . helper_mantis_url( 'signup_page.php' ) . '" class="btn btn-primary btn-xs">' .
 				lang_get( 'signup_link' ) . '</a>' . "\n";
 		}
@@ -1208,9 +1211,6 @@ function layout_footer() {
 		echo '</address>' . "\n";
 		echo '</div>' . "\n";
 	}
-
-	# Print table of log events
-	log_print_to_page();
 
 	layout_footer_end();
 }
