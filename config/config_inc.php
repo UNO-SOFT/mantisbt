@@ -140,6 +140,7 @@ $g_roadmap_update_threshold = REPORTER;
 
 $g_delete_attachments_threshold = UPDATER;
 $g_delete_bug_threshold = MANAGER;
+$g_bugnote_user_delete_threshold = DEVELOPER;
 
 $g_show_version = ON;
 
