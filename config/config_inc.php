@@ -36,7 +36,7 @@ if ( substr(dirname(__FILE__), 0, 5) === '/home' ) {
 } else if ( substr(dirname(__FILE__), 0, 8) === '/var/www' ) {
 	$t_chunks = array_slice(explode('/', dirname(__FILE__)), 3);
 ///var/www/www.unosoft.hu/mantis/kobe/config/config_inc.php -> "www.unosoft.hu", "mantis", "kobe", "config"
-	if ( substr_compare( $t_chunks[2], "_dev", -4 ) ) {
+	if ( substr( $t_chunks[2], -4 ) === '_dev' ) {
 		define('SYS_COMPANY', substr($t_chunks[2], 0, -4) );
 		define('SYS_FLAVOR', 'dev');
 	} else {
