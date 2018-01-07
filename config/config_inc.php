@@ -1,64 +1,77 @@
 <?php
-    # $Id$
-    # Debian default configuration file for mantis.
+// vim: set filetype=php noet:
+	# $Id$
+	# Debian default configuration file for mantis.
 
-    # Attention: You should NOT remove the following line, if using
-    # dbconfig-common/debconf to configure mantis database, nor should you
-    # change the database configuration by hand.
-    include("config_db.php");
+	# Attention: You should NOT remove the following line, if using
+	# dbconfig-common/debconf to configure mantis database, nor should you
+	# change the database configuration by hand.
+	include("config_db.php");
 
-    $g_hostname			= "$dbserver";
-    $g_db_username		= "$dbuser";
-    $g_db_password		= "$dbpass";
-    $g_database_name	= "$dbname";
-    $g_db_type			= "$dbtype";
+	$g_hostname			= "$dbserver";
+	$g_db_username		= "$dbuser";
+	$g_db_password		= "$dbpass";
+	$g_database_name	= "$dbname";
+	$g_db_type			= "$dbtype";
 
 # Hook to notify after aa issue has been created.
 # In case of errors, this function should call trigger_error()
 # p_issue_id is the issue number that can be used to get the existing state
 //function custom_function_override_issue_create_notify( $p_issue_id ) {
-//    require_once('core.php');
-//    require_once('event_api.php');
-//    event_hook( EVENT_REPORT_BUG, 'bug_reported', 'UnoCustomization' );
+//	require_once('core.php');
+//	require_once('event_api.php');
+//	event_hook( EVENT_REPORT_BUG, 'bug_reported', 'UnoCustomization' );
 //}
-    # E-Mail addresses
+	# E-Mail addresses
 if ( substr(dirname(__FILE__), 0, 5) === '/home' ) {
-    $t_chunks = explode('/', dirname(__FILE__));
-    // /home/kobe/prd/mantis -> "", "home", "kobe", "prd", "mantis"
-    if ( $t_chunks[2] === 'tgulacsi' ) {
-        define('SYS_COMPANY', 'unosoft');
-        define('SYS_FLAVOR', 'dev');
-    } else {
-        define('SYS_COMPANY', $t_chunks[2]);
-        define('SYS_FLAVOR', $t_chunks[3]);
-    }
-    $g_file_upload_method = DISK;
-    $g_log_destination = 'file:/'.$t_chunks[1].'/'.$t_chunks[2].'/'.$t_chunks[3].'/var/log/mantis/'.SYS_COMPANY.'-'.SYS_FLAVOR.'.log';
-    #$g_absolute_path_default_upload_folder = '/'.$t_chunks[1].'/'.$t_chunks[2].'/'.$t_chunks[3].'/attachments/';
-    $g_absolute_path_default_upload_folder = '/var/local/mantis/' . SYS_COMPANY . '/' . SYS_FLAVOR . '/';
-} else {
-    $t_tomb = explode(':',
-      strtolower( preg_replace('!^.*/([^/]+)/([^/]+)$!', '\\1:\\2',
-                  dirname(__FILE__) ) ));
-    # print_r($t_tomb);
-    if ( $t_tomb[0] == 'mantis' and $t_tomb[1] == 'tgulacsi' ) {
-      define('SYS_FLAVOR', 'dev');
-      define('SYS_COMPANY', 'unosoft');
-    } elseif ( $t_tomb[0] == 'dev' or $t_tomb[0] == 'prd' ) {
-      define('SYS_FLAVOR', $t_tomb[0]);
-      define('SYS_COMPANY', $t_tomb[1]);
-    } else {
-      define('SYS_FLAVOR', $t_tomb[1]);
-      define('SYS_COMPANY', $t_tomb[0]);
-    }
-    $g_file_upload_method = DATABASE;
-    $g_log_destination = 'file:/var/log/mantis/'.SYS_COMPANY.'-'.SYS_FLAVOR.'.log';
-    $g_absolute_path_default_upload_folder = '/var/local/mantis/' . SYS_FLAVOR . '/' . basename(dirname(__FILE__)) . '/';
+	$t_chunks = explode('/', dirname(__FILE__));
+	// /home/kobe/prd/mantis -> "", "home", "kobe", "prd", "mantis"
+	if ( $t_chunks[2] === 'tgulacsi' ) {
+		define('SYS_COMPANY', 'unosoft');
+		define('SYS_FLAVOR', 'dev');
+	} else {
+		define('SYS_COMPANY', $t_chunks[2]);
+		define('SYS_FLAVOR', $t_chunks[3]);
+	}
+} else if ( substr(dirname(__FILE__), 0, 8) === '/var/www' ) {
+	$t_chunks = array_slice(explode('/', dirname(__FILE__)), 3);
+///var/www/www.unosoft.hu/mantis/kobe/config/config_inc.php -> "www.unosoft.hu", "mantis", "kobe", "config"
+	if ( substr_compare( $t_chunks[2], "_dev", -4 ) ) {
+		define('SYS_COMPANY', substr($t_chunks[2], 0, -4) );
+		define('SYS_FLAVOR', 'dev');
+	} else {
+		define('SYS_COMPANY', $t_chunks[2]);
+		define('SYS_FLAVOR', 'prd');
+	}
 }
+$g_file_upload_method = DISK;
+$g_log_destination = 'file:/'.$t_chunks[1].'/'.$t_chunks[2].'/'.$t_chunks[3].'/var/log/mantis/'.SYS_COMPANY.'-'.SYS_FLAVOR.'.log';
+#$g_absolute_path_default_upload_folder = '/'.$t_chunks[1].'/'.$t_chunks[2].'/'.$t_chunks[3].'/attachments/';
+$g_absolute_path_default_upload_folder = '/var/local/mantis/' . SYS_COMPANY . '/' . SYS_FLAVOR . '/';
+
+//} else {
+//	$t_tomb = explode(':',
+//	  strtolower( preg_replace('!^.*/([^/]+)/([^/]+)$!', '\\1:\\2',
+//				  dirname(__FILE__) ) ));
+//	# print_r($t_tomb);
+//	if ( $t_tomb[0] == 'mantis' and $t_tomb[1] == 'tgulacsi' ) {
+//	  define('SYS_FLAVOR', 'dev');
+//	  define('SYS_COMPANY', 'unosoft');
+//	} elseif ( $t_tomb[0] == 'dev' or $t_tomb[0] == 'prd' ) {
+//	  define('SYS_FLAVOR', $t_tomb[0]);
+//	  define('SYS_COMPANY', $t_tomb[1]);
+//	} else {
+//	  define('SYS_FLAVOR', $t_tomb[1]);
+//	  define('SYS_COMPANY', $t_tomb[0]);
+//	}
+//	$g_file_upload_method = DATABASE;
+//	$g_log_destination = 'file:/var/log/mantis/'.SYS_COMPANY.'-'.SYS_FLAVOR.'.log';
+//	$g_absolute_path_default_upload_folder = '/var/local/mantis/' . SYS_FLAVOR . '/' . basename(dirname(__FILE__)) . '/';
+//}
 define('SYS_COMPANY_NAME',
-    SYS_COMPANY == 'kobe' ? 'KÖBE'
-    : (SYS_COMPANY == 'waberer' ? 'Wáberer'
-    : strtoupper(SYS_COMPANY)));
+	SYS_COMPANY == 'kobe' ? 'KÖBE'
+	: (SYS_COMPANY == 'waberer' ? 'Wáberer'
+	: strtoupper(SYS_COMPANY)));
 //echo SYS_FLAVOR.'%'.SYS_COMPANY;
 
 //** EMAIL **//
@@ -83,18 +96,18 @@ $g_bug_reminder_threshold = 20;
 
 $g_max_file_size = 20000000;
 $g_disallowed_files = trim($g_disallowed_files . ','
-                           . 'php,php3,phtml,html,class,java,exe,pl', ',');
+						   . 'php,php3,phtml,html,class,java,exe,pl', ',');
 $g_preview_attachments_inline_max_size = 10240;
 
 
 $g_default_language = 'hungarian';
 
 $g_window_title = SYS_COMPANY_NAME
-    . (strcmp(SYS_FLAVOR, 'dev') == 0 ? ' DEV' : '')
-    . ' UNO-SOFT hibakövető';
+	. (strcmp(SYS_FLAVOR, 'dev') == 0 ? ' DEV' : '')
+	. ' UNO-SOFT hibakövető';
 $g_page_title = 'UNO-SOFT ' . SYS_COMPANY_NAME
-    . (strcmp(SYS_FLAVOR, 'dev') == 0 ? ' DEV' : '')
-    . ' hibakövető';
+	. (strcmp(SYS_FLAVOR, 'dev') == 0 ? ' DEV' : '')
+	. ' hibakövető';
 
 // Top/bottom //
 // $g_bottom_include_page = '%absolute_path%';
@@ -116,14 +129,14 @@ define( 'MAX_EVENTS', 5 );
 $g_my_view_bug_count = 30;
 
 $g_my_view_boxes = array (
-	'assigned'      => '1',
-	'unassigned'    => '2',
-	'reported'      => '3',
-	'monitored'     => '4',
-	'recent_mod'    => '5',
-	'resolved'      => '6',
-	'feedback'      => '0',
-	'verify'        => '0',
+	'assigned'	  => '1',
+	'unassigned'	=> '2',
+	'reported'	  => '3',
+	'monitored'	 => '4',
+	'recent_mod'	=> '5',
+	'resolved'	  => '6',
+	'feedback'	  => '0',
+	'verify'		=> '0',
 	'my_comments'   => '0'
 );
 
@@ -193,9 +206,9 @@ $g_forward_year_count = 1;
 if( SYS_FLAVOR.'/'.SYS_COMPANY != 'dev/unosoft' )
   $g_path = preg_replace('/^http:/', 'https:', $g_path);
 
-$g_min_refresh_delay    = 1;
-$g_default_refresh_delay                = 10;
-$g_default_redirect_delay               = 1;
+$g_min_refresh_delay	= 1;
+$g_default_refresh_delay				= 10;
+$g_default_redirect_delay			   = 1;
 
 $g_logo_image = 'config/mantis_logo.png';
 
@@ -220,7 +233,6 @@ $g_css_include_file = "unosoft.css";
 $g_cdn_enabled = ON;
 
 //if(file_exists('config_statuses_inc.php'))
-    require_once(dirname(__FILE__) . '/config_statuses_inc.php');
+	require_once(dirname(__FILE__) . '/config_statuses_inc.php');
 if(file_exists('config_local.php'))
-    include("config_local.php");
-
+	include("config_local.php");
