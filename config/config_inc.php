@@ -223,6 +223,8 @@ $g_cdn_enabled = ON;
 
 $g_timeline_view_threshold = 1000;
 
+$g_disallowed_files = 'msg';
+
 //if(file_exists('config_statuses_inc.php'))
     require_once(dirname(__FILE__) . '/config_statuses_inc.php');
 if(file_exists('config_local.php'))
