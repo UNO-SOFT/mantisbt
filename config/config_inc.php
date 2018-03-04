@@ -159,6 +159,7 @@ $g_plugin_FileDistribution_path = '/var/local/mantis/'.SYS_FLAVOR
 $g_allow_no_category = ON;
 
 $g_accel_redirect = ON;
+$g_show_detailed_errors = OFF;
 
 $g_relationship_graph_enable = ON;
 
