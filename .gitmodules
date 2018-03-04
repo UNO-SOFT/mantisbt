@@ -18,6 +18,17 @@
 	path = library/parsedown
 	url = https://github.com/mantisbt/parsedown.git
 	branch = mantisbt
+[submodule "api/rest/swagger"]
+	path = api/rest/swagger
+	url = https://github.com/mantisbt/swagger-ui.git
+[submodule "library/ezc/Base"]
+	path = library/ezc/Base
+	url = https://github.com/mantisbt/ZetaBase.git
+	branch = mantis
+[submodule "library/ezc/Graph"]
+	path = library/ezc/Graph
+	url = https://github.com/mantisbt/ZetaGraph.git
+	branch = mantis
 [submodule "plugins/ForceMonitor"]
 	path = plugins/ForceMonitor
 	url = https://github.com/tgulacsi/mantisbt-plugins-ForceMonitor.git

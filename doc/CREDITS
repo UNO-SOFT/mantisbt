@@ -59,12 +59,16 @@ Glenn Henshaw
 Julian Fitzell
 David Hicks
 John Reese
-Rafik Robeal
 Carlos Proensa
+Rafik Robeal
+<<<<<<< HEAD
+Carlos Proensa
+=======
+>>>>>>> 2.5
 Jeroen Latour
 Siebrand Mazeland
-Robert Munteanu
 Roland Becker
+Robert Munteanu
 Gianluca Sforna
 André Eisenbach
 Daryn Warriner
@@ -73,10 +77,11 @@ Lincoln Maskey
 Marcello Scata
 Alexey Chumakov
 beerfrick
+translatewiki.net
 Bastian Pfenningschmidt
 Kornel Lesinski
-Adrian Spinei
 Joel C. Llano
+Adrian Spinei
 Martin Fuchs
 zakman
 jbrugger
@@ -86,49 +91,62 @@ Kirill Krasnov
 Bob Le Bricodeur
 ryandesign
 rufinus
-David Newcomb
 Rasmus Lerdorf
 jhuggins
-translatewiki.net
+David Newcomb
 yarick123
 jotel
 robertjf
 Frank Rodgers
 Luke Lee
-Chris Fitch
-Johan Guilbaud
 Tamás Gulácsi
-davidu
+Johan Guilbaud
+Chris Fitch
 planser
-Franck Villaume
-Matej Habrnal
+davidu
+smhanson
 Véronique Maginot
 myplacedk
-smhanson
 vwegert
+Franck Villaume
+Matej Habrnal
 Daniel Tschinder
 Stefan Pettersson
 Vincent Sels
-Dominik Blunk
-Giovanni Giacobbi
-Jim Hanley
+Martin Schleußer
 Stéphane Veyret
-Val Kulkov
 cyclespersecond
+Jim Hanley
+Dominik Blunk
 scoates
 torija
-Alexander Ishmuradov
-Alexander Menk
+Val Kulkov
+Giovanni Giacobbi
+Tarik Sedlarevic
+Sebastian Limbach
 Christian Weiske
 Dan Moore
+<<<<<<< HEAD
 Markus Schneider
 Martin Schleußer
 Matt McCutchen
 Sebastian Limbach
 Tarik Sedlarevic
 jeckyhl
+=======
+Alexander Menk
+>>>>>>> 2.5
 mfoXen
+Alexander Ishmuradov
+libregeek
+Manilal
+jeckyhl
+Romain CABASSOT
+Markus Schneider
+atrol
 puklos
+Matt McCutchen
+naveenbali
 Alexander Maringer
 Andreas Schopper
 Andreas Stieger
@@ -150,10 +168,13 @@ Jacky Alcine
 Jacob Hoover
 Jeremy Vriens
 Jonas Nockert
+José D. Grieco
+Justin Theberge
 Karl Wiggisser
 Larry Lewis
 Laszlo Kovacs
 LeoZandvliet
+MS-Astra
 Marcin Kłeczek
 Marco Dings
 MatthieuR
@@ -177,10 +198,10 @@ cheesecracker
 cybd
 davethegr8
 dwethell
+epenet
 gcompagnon
 greenius
 mbaranski
-naveenbali
 petertc
 spidgorny
 tfromm

@@ -330,7 +330,11 @@ for( $i = 0; $i < $t_count; $i++ ) {
 	$t_last_reporter = '';
 	$t_last_reporter_id = bug_get_last_bugnote_reporter( $t_bug->id );
 	$t_last_reporter = $t_last_reporter_id ? user_get_name( $t_last_reporter_id ) : '';
+<<<<<<< HEAD
 
+=======
+-
+>>>>>>> 2.5
 	# choose color based on status
 	$t_status_label = html_get_status_css_class( $t_bug->status, auth_get_current_user_id(), $t_bug->project_id );
 

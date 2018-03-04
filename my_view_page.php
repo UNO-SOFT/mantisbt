@@ -152,7 +152,13 @@ if ($t_two_columns_applied && $t_counter != 0) {
 
 <?php if( $t_timeline_view_threshold_access ) { ?>
 <div class="col-md-5 col-xs-12">
-	<?php include( $g_core_path . 'timeline_inc.php' ); ?>
+	<?php
+		# Build a simple filter that gets all bugs for current project
+		$g_timeline_filter = array();
+		$g_timeline_filter[FILTER_PROPERTY_HIDE_STATUS] = array( META_FILTER_NONE );
+		$g_timeline_filter = filter_ensure_valid_filter( $g_timeline_filter );
+		include( $g_core_path . 'timeline_inc.php' );
+	?>
 	<div class="space-10"></div>
 </div>
 <?php }

@@ -45,6 +45,10 @@ web.config
 library/FirePHPCore
 library/ezc
 
+# Composer
+/vendor/
+composer.phar
+
 # Settings below are for convenience when switching branches on Dev machines
 
 # v1.2.x config files
@@ -54,7 +58,3 @@ custom_functions_inc.php
 custom_relationships_inc.php
 custom_strings_inc.php
 api/soap/mc_config_inc.php
-
-# REST API and Composer introduced in 2.3
-api/rest/
-vendor/

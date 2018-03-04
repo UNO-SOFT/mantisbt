@@ -159,7 +159,7 @@ $t_block_icon = $t_collapse_block ? 'fa-chevron-down' : 'fa-chevron-up';
 ?>
 <tr class="bugnote" id="c<?php echo $t_activity['id'] ?>">
 		<td class="<?php echo $t_category_class?>">
-		<div class="pull-left padding-2"><?php print_avatar( $t_activity['user_id'] ); ?>
+		<div class="pull-left padding-2"><?php print_avatar( $t_activity['user_id'], 'bugnote', 80 ); ?>
 		</div>
 		<div class="pull-left padding-2">
 		<p class="no-margin">

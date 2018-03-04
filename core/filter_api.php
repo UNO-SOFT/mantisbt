@@ -2451,8 +2451,11 @@ function filter_draw_selection_area2( $p_page_number, $p_for_screen = true, $p_e
 							filter_print_view_type_toggle( $t_url, $t_filter['_view_type'] );
 
 							if( access_has_project_level( config_get( 'create_permalink_threshold' ) ) ) {
+								# Add CSRF protection, see #22702
+								$t_permalink_url = urlencode( filter_get_url( $t_filter ) )
+									. form_security_param( 'permalink' );
 								echo '<li>';
-								echo '<a href="permalink_page.php?url=' . urlencode( filter_get_url( $t_filter ) ) . '">';
+								echo '<a href="permalink_page.php?url=' . $t_permalink_url . '">';
 								echo '<i class="ace-icon fa fa-link"></i>&#160;&#160;' . lang_get( 'create_filter_link' );
 								echo '</a>';
 								echo '</li>';
@@ -3170,13 +3173,13 @@ function filter_gpc_get( array $p_filter = null ) {
 		$f_sort = implode( ',', $t_new_sort_array );
 		$f_dir = implode( ',', $t_new_dir_array );
 	} elseif( null !== $f_sort_add ) {
-		# this parameter has to be pushed in fron t of current sort set
+		# this parameter has to be pushed in front of current sort set
 		$f_dir_add = gpc_get_string( FILTER_PROPERTY_SORT_DIRECTION . '_add', '' );
 		# Plain concatenation. Empty fields, or extra commas will be cleaned by ensure_valid_filter
 		$f_sort = $f_sort_add . ',' . $t_filter[FILTER_PROPERTY_SORT_FIELD_NAME];
 		$f_dir = $f_dir_add . ',' . $t_filter[FILTER_PROPERTY_SORT_DIRECTION];
 	} else {
-		# use the defaluts
+		# use the defaults
 		$f_sort = $t_filter[FILTER_PROPERTY_SORT_FIELD_NAME];
 		$f_dir = $t_filter[FILTER_PROPERTY_SORT_DIRECTION];
 	}
