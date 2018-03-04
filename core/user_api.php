@@ -58,6 +58,8 @@ require_api( 'string_api.php' );
 require_api( 'user_pref_api.php' );
 require_api( 'utility_api.php' );
 
+use Mantis\Exceptions\ClientException;
+
 # Cache of user rows from {user} table, indexed by user_id
 # If id does not exists, a value of 'false' is stored
 $g_cache_user = array();
@@ -87,8 +89,11 @@ function user_cache_row( $p_user_id, $p_trigger_errors = true ) {
 
 	if( !$t_user_row ) {
 		if( $p_trigger_errors ) {
-			error_parameters( (integer)$p_user_id );
-			trigger_error( ERROR_USER_BY_ID_NOT_FOUND, ERROR );
+			throw new ClientException(
+				sprintf( "User id '%d' not found.", (integer)$p_user_id ),
+				ERROR_USER_BY_ID_NOT_FOUND,
+				array( (integer)$p_user_id )
+			);
 		}
 
 		return false;
@@ -230,32 +235,41 @@ function user_ensure_exists( $p_user_id ) {
 	$c_user_id = (integer)$p_user_id;
 
 	if( !user_exists( $c_user_id ) ) {
-		error_parameters( $c_user_id );
-		trigger_error( ERROR_USER_BY_ID_NOT_FOUND, ERROR );
+		throw new ClientException( "User $c_user_id not found", ERROR_USER_BY_ID_NOT_FOUND, array( $c_user_id ) );
 	}
 }
 
 /**
  * return true if the username is unique, false if there is already a user with that username
  * @param string $p_username The username to check.
+ * @param integer|null The user id allowed to conflict, otherwise null.
  * @return boolean
  */
-function user_is_name_unique( $p_username ) {
-	db_param_push();
-	$t_query = 'SELECT username FROM {user} WHERE username=' . db_param();
-	$t_result = db_query( $t_query, array( $p_username ), 1 );
+function user_is_name_unique( $p_username, $p_user_id = null ) {
+	$t_existing_user_id = user_get_id_by_name( $p_username );
+	if( $t_existing_user_id !== false && ( $p_user_id === null || (int)$t_existing_user_id !== $p_user_id ) ) {
+		return false;
+	}
 
-	return !db_result( $t_result );
+	$t_existing_user_id = user_get_id_by_realname( $p_username );
+	if( $t_existing_user_id !== false && ( $p_user_id === null || (int)$t_existing_user_id !== $p_user_id ) ) {
+		return false;
+	}
+
+	return true;
 }
 
 /**
  * Check if the username is unique and trigger an ERROR if it isn't
  * @param string $p_username The username to check.
+ * @param integer|null $p_user_id The user id allowed to conflict, otherwise null.
  * @return void
  */
-function user_ensure_name_unique( $p_username ) {
-	if( !user_is_name_unique( $p_username ) ) {
-		trigger_error( ERROR_USER_NAME_NOT_UNIQUE, ERROR );
+function user_ensure_name_unique( $p_username, $p_user_id = null ) {
+	if( !user_is_name_unique( $p_username, $p_user_id ) ) {
+		throw new ClientException(
+			sprintf( "Username '%s' already used.", $p_username ),
+			ERROR_USER_NAME_NOT_UNIQUE );
 	}
 }
 
@@ -303,73 +317,9 @@ function user_ensure_email_unique( $p_email, $p_user_id = null ) {
 	}
 
 	if( !user_is_email_unique( $p_email, $p_user_id ) ) {
-		trigger_error( ERROR_USER_EMAIL_NOT_UNIQUE, ERROR );
-	}
-}
-
-/**
- * Check if the realname is a valid username (does not account for uniqueness)
- * Return 0 if it is invalid, The number of matches + 1
- *
- * @param string $p_username The username to check.
- * @param string $p_realname The realname to check.
- * @return integer
- */
-function user_is_realname_unique( $p_username, $p_realname ) {
-	if( is_blank( $p_realname ) ) {
-		# don't bother checking if realname is blank
-		return 1;
-	}
-
-	$p_username = trim( $p_username );
-	$p_realname = trim( $p_realname );
-
-	# allow realname to match username
-	$t_duplicate_count = 0;
-	if( $p_realname !== $p_username ) {
-		# check realname does not match an existing username
-		#  but allow it to match the current user
-		$t_target_user = user_get_id_by_name( $p_username );
-		$t_other_user = user_get_id_by_name( $p_realname );
-		if( ( false !== $t_other_user ) && ( $t_target_user !== $t_other_user ) ) {
-			return 0;
-		}
-
-		# check to see if the realname is unique
-		db_param_push();
-		$t_query = 'SELECT id FROM {user} WHERE realname=' . db_param();
-		$t_result = db_query( $t_query, array( $p_realname ) );
-
-		$t_users = array();
-		while( $t_row = db_fetch_array( $t_result ) ) {
-			$t_users[] = $t_row;
-		}
-		$t_duplicate_count = count( $t_users );
-
-		if( $t_duplicate_count > 0 ) {
-			# set flags for non-unique realnames
-			if( config_get( 'differentiate_duplicates' ) ) {
-				for( $i = 0;$i < $t_duplicate_count;$i++ ) {
-					$t_user_id = $t_users[$i]['id'];
-					user_set_field( $t_user_id, 'duplicate_realname', ON );
-				}
-			}
-		}
-	}
-	return $t_duplicate_count + 1;
-}
-
-/**
- * Check if the realname is a unique
- * Trigger an error if the username is not valid
- *
- * @param string $p_username The username to check.
- * @param string $p_realname The realname to check.
- * @return void
- */
-function user_ensure_realname_unique( $p_username, $p_realname ) {
-	if( 1 > user_is_realname_unique( $p_username, $p_realname ) ) {
-		trigger_error( ERROR_USER_REAL_MATCH_USER, ERROR );
+		throw new ClientException(
+			sprintf( "Email '%s' already used.", $p_email ),
+			ERROR_USER_EMAIL_NOT_UNIQUE );
 	}
 }
 
@@ -406,7 +356,9 @@ function user_is_name_valid( $p_username ) {
  */
 function user_ensure_name_valid( $p_username ) {
 	if( !user_is_name_valid( $p_username ) ) {
-		trigger_error( ERROR_USER_NAME_INVALID, ERROR );
+		throw new ClientException(
+			sprintf( "Invalid username '%s'", $p_username ),
+			ERROR_USER_NAME_INVALID );
 	}
 }
 
@@ -468,7 +420,7 @@ function user_is_protected( $p_user_id ) {
  * @access public
  */
 function user_is_anonymous( $p_user_id ) {
-	return auth_anonymous_enabled() && strcasecmp( user_get_field( $p_user_id, 'username' ), auth_anonymous_account() ) == 0;
+	return auth_anonymous_enabled() && strcasecmp( user_get_username( $p_user_id ), auth_anonymous_account() ) == 0;
 }
 
 /**
@@ -479,7 +431,9 @@ function user_is_anonymous( $p_user_id ) {
  */
 function user_ensure_unprotected( $p_user_id ) {
 	if( user_is_protected( $p_user_id ) ) {
-		trigger_error( ERROR_PROTECTED_ACCOUNT, ERROR );
+		throw new ClientException(
+			'User protected.',
+			ERROR_PROTECTED_ACCOUNT );
 	}
 }
 
@@ -582,8 +536,8 @@ function user_create( $p_username, $p_password, $p_email = '',
 	user_ensure_name_valid( $p_username );
 	user_ensure_name_unique( $p_username );
 	user_ensure_email_unique( $p_email );
-	user_ensure_realname_unique( $p_username, $p_realname );
 	email_ensure_valid( $p_email );
+	email_ensure_not_disposable( $p_email );
 
 	$t_cookie_string = auth_generate_unique_cookie_string();
 
@@ -620,7 +574,7 @@ function user_create( $p_username, $p_password, $p_email = '',
 /**
  * Signup a user.
  * If the use_ldap_email config option is on then tries to find email using
- * ldap. $p_email may be empty, but the user wont get any emails.
+ * ldap. $p_email may be empty, but the user won't get any emails.
  * returns false if error, the generated cookie string if ok
  * @param string $p_username The username to sign up.
  * @param string $p_email    The email address of the user signing up.
@@ -722,30 +676,6 @@ function user_delete( $p_user_id ) {
 
 	# Remove project specific access levels
 	user_delete_project_specific_access_levels( $p_user_id );
-
-	# unset non-unique realname flags if necessary
-	if( config_get( 'differentiate_duplicates' ) ) {
-		$c_realname = user_get_field( $p_user_id, 'realname' );
-		db_param_push();
-		$t_query = 'SELECT id FROM {user} WHERE realname=' . db_param();
-		$t_result = db_query( $t_query, array( $c_realname ) );
-
-		$t_users = array();
-		while( $t_row = db_fetch_array( $t_result ) ) {
-			$t_users[] = $t_row;
-		}
-
-		$t_user_count = count( $t_users );
-
-		if( $t_user_count == 2 ) {
-			# unset flags if there are now only 2 unique names
-			for( $i = 0;$i < $t_user_count;$i++ ) {
-				$t_user_id = $t_users[$i]['id'];
-				user_set_field( $t_user_id, 'duplicate_realname', OFF );
-			}
-		}
-	}
-
 	user_clear_cache( $p_user_id );
 
 	# Remove account
@@ -761,9 +691,10 @@ function user_delete( $p_user_id ) {
  * return false if the username does not exist
  *
  * @param string $p_username The username to retrieve data for.
+ * @param boolean $p_throw true to throw if not found, false otherwise.
  * @return integer|boolean
  */
-function user_get_id_by_name( $p_username ) {
+function user_get_id_by_name( $p_username, $p_throw = false ) {
 	if( $t_user = user_search_cache( 'username', $p_username ) ) {
 		return $t_user['id'];
 	}
@@ -777,6 +708,14 @@ function user_get_id_by_name( $p_username ) {
 		user_cache_database_result( $t_row );
 		return $t_row['id'];
 	}
+
+	if( $p_throw ) {
+		throw new ClientException(
+			"Username '$p_username' not found",
+			ERROR_USER_BY_NAME_NOT_FOUND,
+			array( $p_username ) );
+	}
+
 	return false;
 }
 
@@ -784,9 +723,10 @@ function user_get_id_by_name( $p_username ) {
  * Get a user id from their email address
  *
  * @param string $p_email The email address to retrieve data for.
+ * @param boolean $p_throw true to throw exception when not found, false otherwise.
  * @return array
  */
-function user_get_id_by_email( $p_email ) {
+function user_get_id_by_email( $p_email, $p_throw = false ) {
 	if( $t_user = user_search_cache( 'email', $p_email ) ) {
 		return $t_user['id'];
 	}
@@ -800,6 +740,14 @@ function user_get_id_by_email( $p_email ) {
 		user_cache_database_result( $t_row );
 		return $t_row['id'];
 	}
+
+	if( $p_throw ) {
+		throw new ClientException(
+			"User with email '$p_email' not found",
+			ERROR_USER_BY_EMAIL_NOT_FOUND,
+			array( $p_email ) );
+	}
+
 	return false;
 }
 
@@ -833,9 +781,10 @@ function user_get_enabled_ids_by_email( $p_email ) {
  * Get a user id from their real name
  *
  * @param string $p_realname The realname to retrieve data for.
+ * @param boolean $p_throw true to throw if not found, false otherwise.
  * @return array
  */
-function user_get_id_by_realname( $p_realname ) {
+function user_get_id_by_realname( $p_realname, $p_throw = false ) {
 	if( $t_user = user_search_cache( 'realname', $p_realname ) ) {
 		return $t_user['id'];
 	}
@@ -847,11 +796,62 @@ function user_get_id_by_realname( $p_realname ) {
 	$t_row = db_fetch_array( $t_result );
 
 	if( !$t_row ) {
+		if( $p_throw ) {
+			throw new ClientException( "User realname '$p_realname' not found", ERROR_USER_BY_NAME_NOT_FOUND, array( $p_realname ) );
+		}
+
 		return false;
-	} else {
-		user_cache_database_result( $t_row );
-		return $t_row['id'];
 	}
+
+	user_cache_database_result( $t_row );
+	return $t_row['id'];
+}
+
+/**
+ * Get a user id given an array that may have id, name, real_name, email, or name_or_realname.
+ *
+ * @param array $p_user The user info.
+ * @param boolean $p_throw_if_id_not_found If id specified and doesn't exist, then throw.
+ * @return integer user id
+ * @throws ClientException
+ */
+function user_get_id_by_user_info( array $p_user, $p_throw_if_id_not_found = false ) {
+	if( isset( $p_user['id'] ) && (int)$p_user['id'] != 0 ) {
+		$t_user_id = $p_user['id'];
+		if( $p_throw_if_id_not_found && !user_exists( $t_user_id ) ) {
+			throw new ClientException(
+				sprintf( "User with id '%d' doesn't exist", $t_user_id ),
+				ERROR_USER_BY_ID_NOT_FOUND,
+				array( $t_user_id ) );
+		}
+	} else if( isset( $p_user['name'] ) && !is_blank( $p_user['name'] ) ) {
+		$t_user_id = user_get_id_by_name( $p_user['name'], /* throw */ true );
+	} else if( isset( $p_user['email'] ) && !is_blank( $p_user['email'] ) ) {
+		$t_user_id = user_get_id_by_email( $p_user['email'], /* throw */ true );
+	} else if( isset( $p_user['real_name'] ) && !is_blank( $p_user['real_name'] ) ) {
+		$t_user_id = user_get_id_by_realname( $p_user['real_name'], /* throw */ true );
+	} else if( isset( $p_user['name_or_realname' ] ) && !is_blank( $p_user['name_or_realname' ] ) ) {
+		$t_identifier = $p_user['name_or_realname'];
+		$t_user_id = user_get_id_by_name( $t_identifier );
+
+		if( !$t_user_id ) {
+			$t_user_id = user_get_id_by_realname( $t_identifier );
+		}
+
+		if( !$t_user_id ) {
+			throw new ClientException(
+				"User '$t_identifier' not found",
+				ERROR_USER_BY_NAME_NOT_FOUND,
+				array( $t_identifier ) );
+		}
+	} else {
+		throw new ClientException(
+			"User id missing",
+			ERROR_GPC_VAR_NOT_FOUND,
+			array( 'user id' ) );
+	}
+
+	return $t_user_id;
 }
 
 /**
@@ -921,13 +921,28 @@ function user_get_field( $p_user_id, $p_field_name ) {
  */
 function user_get_email( $p_user_id ) {
 	$t_email = '';
-	if( LDAP == config_get( 'login_method' ) && ON == config_get( 'use_ldap_email' ) ) {
+	if( LDAP == config_get_global( 'login_method' ) && ON == config_get( 'use_ldap_email' ) ) {
 		$t_email = ldap_email( $p_user_id );
 	}
 	if( is_blank( $t_email ) ) {
 		$t_email = user_get_field( $p_user_id, 'email' );
 	}
 	return $t_email;
+}
+
+/**
+ * Lookup the user's login name (username)
+ *
+ * @param integer $p_user_id A valid user identifier.
+ * @return string
+ */
+function user_get_username( $p_user_id ) {
+	$t_row = user_cache_row( $p_user_id, false );
+	if( false == $t_row ) {
+		return lang_get( 'prefix_for_deleted_users' ) . (int)$p_user_id;
+	}
+
+	return $t_row['username'];
 }
 
 /**
@@ -939,7 +954,7 @@ function user_get_email( $p_user_id ) {
 function user_get_realname( $p_user_id ) {
 	$t_realname = '';
 
-	if( LDAP == config_get( 'login_method' ) && ON == config_get( 'use_ldap_realname' ) ) {
+	if( LDAP == config_get_global( 'login_method' ) && ON == config_get( 'use_ldap_realname' ) ) {
 		$t_realname = ldap_realname( $p_user_id );
 	}
 
@@ -951,10 +966,19 @@ function user_get_realname( $p_user_id ) {
 }
 
 /**
- * return the username or a string "user<id>" if the user does not exist
- * if show_user_realname_threshold is set and real name is not empty, return it instead
+ * Return the user's name for display.
+ *
+ * The name is determined based on the following sequence:
+ * - if the user does not exist, returns the user ID prefixed by a localized
+ *   string (prefix_for_deleted_users, "user" by default);
+ * - if user_show_realname() is true and realname is not empty, return the user's Real Name;
+ * - Otherwise, return the username
+ *
+ * NOTE: do not use this function to retrieve the user's username
+ * @see user_get_username()
  *
  * @param integer $p_user_id A valid user identifier.
+ *
  * @return string
  */
 function user_get_name( $p_user_id ) {
@@ -962,21 +986,72 @@ function user_get_name( $p_user_id ) {
 
 	if( false == $t_row ) {
 		return lang_get( 'prefix_for_deleted_users' ) . (int)$p_user_id;
-	} else {
-		if( ON == config_get( 'show_realname' ) ) {
-			if( is_blank( $t_row['realname'] ) ) {
-				return $t_row['username'];
-			} else {
-				if( isset( $t_row['duplicate_realname'] ) && ( ON == $t_row['duplicate_realname'] ) ) {
-					return $t_row['realname'] . ' (' . $t_row['username'] . ')';
-				} else {
-					return $t_row['realname'];
-				}
-			}
-		} else {
-			return $t_row['username'];
+	}
+
+	return user_get_name_from_row( $t_row );
+}
+
+/**
+ * Show realnames be shown to logged in user?
+ *
+ * @return bool true to show, false otherwise.
+ */
+function user_show_realname() {
+	return config_get( 'show_realname' ) == ON &&
+		access_has_project_level( config_get( 'show_user_realname_threshold' ) );
+}
+
+/**
+ * Return the user's name for display.  If user_show_realname() is true and realname is not empty
+ * return realname otherwise return username.
+ *
+ * @param array $p_user_row The user row with 'realname' and 'username' fields
+ * @return string display name
+ */
+function user_get_name_from_row( array $p_user_row ) {
+	if( user_show_realname() ) {
+		if( !is_blank( $p_user_row['realname'] ) ) {
+			return $p_user_row['realname'];
 		}
 	}
+
+	return $p_user_row['username'];
+}
+
+/**
+ * Get display name in format "username (realname)"
+ *
+ * @param array $p_user_row The user row with 'realname' and 'username' fields
+ * @return string display name
+ */
+function user_get_expanded_name_from_row( array $p_user_row ) {
+	$t_name = user_get_name_from_row( $p_user_row );
+	if( $t_name != $p_user_row['username'] ) {
+		return $t_name . ' (' . $p_user_row['username'] . ')';
+	}
+
+	return $p_user_row['username'];
+}
+
+/**
+ * Get name used for sorting.
+ * 
+ * @param array $p_user_row The user row with 'realname' and 'username' fields
+ * @return string name for sorting
+ */
+function user_get_name_for_sorting_from_row( array $p_user_row ) {
+	if( !is_blank( $p_user_row['realname'] ) ) {
+		if( user_show_realname() ) {
+			if( config_get( 'sort_by_last_name' ) == ON ) {
+				$t_sort_name_bits = explode( ' ', utf8_strtolower( trim( $p_user_row['realname'] ) ), 2 );
+				return ( isset( $t_sort_name_bits[1] ) ? $t_sort_name_bits[1] . ', ' : '' ) . $t_sort_name_bits[0];
+			}
+
+			return utf8_strtolower( trim( $p_user_row['realname'] ) );
+		}
+	}
+
+	return utf8_strtolower( $p_user_row['username'] );
 }
 
 /**
@@ -994,7 +1069,7 @@ function user_get_access_level( $p_user_id, $p_project_id = ALL_PROJECTS ) {
 		return $t_access_level;
 	}
 
-	$t_project_access_level = project_get_local_user_access_level( $p_project_id, $p_user_id );
+	$t_project_access_level = access_get_local_level( $p_user_id, $p_project_id );
 
 	if( false === $t_project_access_level ) {
 		return $t_access_level;
@@ -1198,7 +1273,7 @@ function user_get_all_accessible_projects( $p_user_id = null, $p_project_id = AL
 			}
 		}
 	} else {
-		access_ensure_project_level( VIEWER, $p_project_id );
+		access_ensure_project_level( config_get( 'view_bug_threshold' ), $p_project_id );
 		$t_project_ids = user_get_all_accessible_subprojects( $p_user_id, $p_project_id );
 		array_unshift( $t_project_ids, $p_project_id );
 	}
@@ -1256,26 +1331,15 @@ function user_get_unassigned_by_project_id( $p_project_id = null ) {
 	$t_display = array();
 	$t_sort = array();
 	$t_users = array();
-	$t_show_realname = ( ON == config_get( 'show_realname' ) );
-	$t_sort_by_last_name = ( ON == config_get( 'sort_by_last_name' ) );
 
 	while( $t_row = db_fetch_array( $t_result ) ) {
 		$t_users[] = $t_row['id'];
-		$t_user_name = string_attribute( $t_row['username'] );
-		$t_sort_name = $t_user_name;
-		if( ( isset( $t_row['realname'] ) ) && ( $t_row['realname'] <> '' ) && $t_show_realname ) {
-			$t_user_name = string_attribute( $t_row['realname'] );
-			if( $t_sort_by_last_name ) {
-				$t_sort_name_bits = explode( ' ', utf8_strtolower( $t_user_name ), 2 );
-				$t_sort_name = ( isset( $t_sort_name_bits[1] ) ? $t_sort_name_bits[1] . ', ' : '' ) . $t_sort_name_bits[0];
-			} else {
-				$t_sort_name = utf8_strtolower( $t_user_name );
-			}
-		}
-		$t_display[] = $t_user_name;
-		$t_sort[] = $t_sort_name;
+		$t_display[] = user_get_expanded_name_from_row( $t_row );
+		$t_sort[] = user_get_name_for_sorting_from_row( $t_row );
 	}
+
 	array_multisort( $t_sort, SORT_ASC, SORT_STRING, $t_users, $t_display );
+
 	$t_count = count( $t_sort );
 	$t_user_list = array();
 	for( $i = 0;$i < $t_count; $i++ ) {
@@ -1655,7 +1719,7 @@ function user_set_realname( $p_user_id, $p_realname ) {
  */
 function user_set_name( $p_user_id, $p_username ) {
 	user_ensure_name_valid( $p_username );
-	user_ensure_name_unique( $p_username );
+	user_ensure_name_unique( $p_username, $p_user_id );
 
 	return user_set_field( $p_user_id, 'username', $p_username );
 }

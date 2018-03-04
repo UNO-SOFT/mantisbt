@@ -67,6 +67,9 @@ $g_request_time = microtime( true );
 
 ob_start();
 
+# Load Composer autoloader
+require_once( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'vendor/autoload.php' );
+
 # Load supplied constants
 require_once( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'constant_inc.php' );
 
@@ -113,19 +116,23 @@ function require_api( $p_api_name ) {
  */
 function require_lib( $p_library_name ) {
 	static $s_libraries_included;
-	global $g_library_path;
+
 	if( !isset( $s_libraries_included[$p_library_name] ) ) {
+		global $g_library_path;
 		$t_library_file_path = $g_library_path . $p_library_name;
-		if( !file_exists( $t_library_file_path ) ) {
+
+		if( file_exists( $t_library_file_path ) ) {
+			require_once( $t_library_file_path );
+		} else {
 			echo 'External library \'' . $t_library_file_path . '\' not found.';
 			exit;
 		}
 
-		require_once( $t_library_file_path );
 		$t_new_globals = array_diff_key( get_defined_vars(), $GLOBALS, array( 't_new_globals' => 0 ) );
 		foreach ( $t_new_globals as $t_global_name => $t_global_value ) {
 			$GLOBALS[$t_global_name] = $t_global_value;
 		}
+
 		$s_libraries_included[$p_library_name] = 1;
 	}
 }
@@ -152,7 +159,33 @@ function http_is_protocol_https() {
  * @param string $p_class Class name being autoloaded.
  * @return void
  */
-function __autoload( $p_class ) {
+function autoload_mantis( $p_class ) {
+	global $g_core_path;
+
+	# Remove namespace from class name
+	$t_end_of_namespace = strrpos( $p_class, '\\' );
+	if( $t_end_of_namespace !== false ) {
+		$p_class = substr( $p_class, $t_end_of_namespace + 1 );
+	}
+
+	# Commands
+	if( substr( $p_class, -7 ) === 'Command' ) {
+		$t_require_path = $g_core_path . 'commands/' . $p_class . '.php';
+		if( file_exists( $t_require_path ) ) {
+			require_once( $t_require_path );
+			return;
+		}	
+	}
+
+	# Exceptions
+	if( substr( $p_class, -9 ) === 'Exception' ) {
+		$t_require_path = $g_core_path . 'exceptions/' . $p_class . '.php';
+		if( file_exists( $t_require_path ) ) {
+			require_once( $t_require_path );
+			return;
+		}	
+	}
+
 	global $g_class_path;
 	global $g_library_path;
 
@@ -172,7 +205,7 @@ function __autoload( $p_class ) {
 }
 
 # Register the autoload function to make it effective immediately
-spl_autoload_register( '__autoload' );
+spl_autoload_register( 'autoload_mantis' );
 
 # Load UTF8-capable string functions
 define( 'UTF8', $g_library_path . 'utf8' );
@@ -183,9 +216,11 @@ require_lib( 'utf8/str_pad.php' );
 require_api( 'php_api.php' );
 
 # Enforce our minimum PHP requirements
-if( !php_version_at_least( PHP_MIN_VERSION ) ) {
+if( version_compare( PHP_VERSION, PHP_MIN_VERSION, '<' ) ) {
 	@ob_end_clean();
-	echo '<strong>FATAL ERROR: Your version of PHP is too old. MantisBT requires PHP version ' . PHP_MIN_VERSION . ' or newer</strong><br />Your version of PHP is version ' . phpversion();
+	echo '<strong>FATAL ERROR: Your version of PHP is too old. '
+		. 'MantisBT requires ' . PHP_MIN_VERSION . ' or newer</strong><br />'
+		. 'Your are running PHP version <em>' . PHP_VERSION . '</em>';
 	die();
 }
 

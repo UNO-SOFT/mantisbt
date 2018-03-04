@@ -21,7 +21,7 @@
 /**
  * Mantis Version
  */
-define( 'MANTIS_VERSION', '2.5.2' );
+define( 'MANTIS_VERSION', '2.12.0' );
 define( 'FILTER_VERSION', 'v9' );
 
 # --- constants -------------------
@@ -35,6 +35,7 @@ define( 'GOOD', 1 );
 define( 'WARN', 2 );
 
 # PHP-related constants
+define( 'PHP_MIN_VERSION', '5.5.0' );
 define( 'PHP_CLI', 0 );
 define( 'PHP_CGI', 1 );
 
@@ -233,6 +234,7 @@ define( 'CONFIRMATION_TYPE_WARNING', 1 );
 define( 'CONFIRMATION_TYPE_FAILURE', 2 );
 
 # error messages
+define( 'ERROR_PHP', -1 );
 define( 'ERROR_GENERIC', 0 );
 define( 'ERROR_SQL', 1 );
 define( 'ERROR_REPORT', 3 );
@@ -256,6 +258,7 @@ define( 'ERROR_DISPLAY_USER_ERROR_INLINE', 25 );
 define( 'ERROR_TYPE_MISMATCH', 26 );
 define( 'ERROR_SPAM_SUSPECTED', 27 );
 define( 'ERROR_FIELD_TOO_LONG', 28 );
+define( 'ERROR_INVALID_FIELD_VALUE', 29 );
 
 # ERROR_CONFIG_*
 define( 'ERROR_CONFIG_OPT_NOT_FOUND', 100 );
@@ -299,7 +302,6 @@ define( 'ERROR_PROJECT_RECURSIVE_HIERARCHY', 703 );
 
 # ERROR_USER_*
 define( 'ERROR_USER_NAME_NOT_UNIQUE', 800 );
-define( 'ERROR_USER_NOT_FOUND', 801 );
 define( 'ERROR_USER_PREFS_NOT_FOUND', 802 );
 define( 'ERROR_USER_CREATE_PASSWORD_MISMATCH', 803 );
 define( 'ERROR_USER_PROFILE_NOT_FOUND', 804 );
@@ -312,6 +314,8 @@ define( 'ERROR_USER_BY_NAME_NOT_FOUND', 810 );
 define( 'ERROR_USER_BY_ID_NOT_FOUND', 811 );
 define( 'ERROR_USER_CURRENT_PASSWORD_MISMATCH', 812 );
 define( 'ERROR_USER_EMAIL_NOT_UNIQUE', 813 );
+define( 'ERROR_USER_BY_EMAIL_NOT_FOUND', 814 );
+define( 'ERROR_USER_BY_REALNAME_NOT_FOUND', 815 );
 
 # ERROR_AUTH_*
 define( 'ERROR_AUTH_INVALID_COOKIE', 900 );
@@ -418,6 +422,9 @@ define( 'ERROR_COLUMNS_INVALID', 2601 );
 
 # ERROR_SESSION_*
 define( 'ERROR_SESSION_HANDLER_INVALID', 2700 );
+# ERROR_SESSION_HANDLER_INVALID is no longer used in code
+# but can't be removed as long as it's used in one of the language files
+# for $MANTIS_ERROR[ERROR_SESSION_HANDLER_INVALID]
 define( 'ERROR_SESSION_VAR_NOT_FOUND', 2701 );
 define( 'ERROR_SESSION_NOT_VALID', 2702 );
 
@@ -476,6 +483,12 @@ define( 'FILTER_TYPE_MULTI_INT', 4 );
 # Filter match types
 define( 'FILTER_MATCH_ALL', 0 );
 define( 'FILTER_MATCH_ANY', 1 );
+
+# Standard Filters
+define( 'FILTER_STANDARD_ASSIGNED', 'assigned' );
+define( 'FILTER_STANDARD_UNASSIGNED', 'unassigned' );
+define( 'FILTER_STANDARD_REPORTED', 'reported' );
+define( 'FILTER_STANDARD_MONITORED', 'monitored' );
 
 # Versions
 define( 'VERSION_ALL', null );
@@ -550,6 +563,7 @@ define( 'LOG_LDAP', 16 );           # logging for LDAP
 define( 'LOG_DATABASE', 32 );       # logging for Database
 define( 'LOG_WEBSERVICE', 64 );     # logging for Web Service Requests
 define( 'LOG_EMAIL_VERBOSE', 128 ); # logging for verbose email internals
+define( 'LOG_PLUGIN', 256 );        # logging for plugins
 
 # COLUMNS_TARGET_*
 define( 'COLUMNS_TARGET_VIEW_PAGE', 1 );
@@ -601,7 +615,6 @@ define( 'LINKS_SAME_WINDOW', 1 );
 define( 'LINKS_NEW_WINDOW', 2 );
 
 # Auth Related Constants
-define( 'AUTH_COOKIE_LENGTH', 64 );
 define( 'API_TOKEN_LENGTH', 32 );
 
 # Obsolete / deprecated constants
@@ -612,6 +625,7 @@ define( 'ERROR_BUG_RESOLVED_ACTION_DENIED', 1102 ); # N/A
 define( 'LOG_SOAP', 64 );                           # LOG_WEBSERVICE
 define( 'FTP', 1 );                                 # DISK
 define( 'ERROR_FTP_CONNECT_ERROR', 16 );            # N/A
+define( 'ERROR_USER_NOT_FOUND', 801 );
 
 # JQuery
 # hashes acquired with command 'cat file.js | openssl dgst -sha256 -binary | openssl enc -base64 -A'
@@ -626,8 +640,8 @@ define( 'FONT_AWESOME_VERSION', '4.6.3' );
 # Moment & DateTimePicker
 define( 'MOMENT_VERSION', '2.15.2' );
 define( 'MOMENT_HASH', 'sha256-K+AZsAFjiBd4piqBmFzaxDsiQiHfREubm1ExNGW1JIA=' );
-define( 'DATETIME_PICKER_VERSION', '4.17.43' );
-define( 'DATETIME_PICKER_HASH', 'sha256-I8vGZkA2jL0PptxyJBvewDVqNXcgIhcgeqi+GD/aw34=' );
+define( 'DATETIME_PICKER_VERSION', '4.17.47' );
+define( 'DATETIME_PICKER_HASH', 'sha256-5YmaxAwMjIpMrVlK84Y/+NjCpKnFYa8bWWBbUHSBGfU=' );
 
 # Chart JS
 define( 'CHARTJS_VERSION', '2.1.6' );
@@ -655,7 +669,7 @@ define( 'EXPORT_BLOCK_SIZE', 500 );
 
 # Maximum "safe" value to be used for integer fields in database.
 # Note: mantis ids are defined in schema as "I UNSIGNED", which Adodb maps to
-# the closest integer (4 bytes) type available. As some DBs dont support unsigned
+# the closest integer (4 bytes) type available. As some DBs don't support unsigned
 # types, 2^31 is a safe limit to be used for all.
 define( 'DB_MAX_INT', 2147483647 );
 
@@ -663,11 +677,14 @@ define( 'DB_MAX_INT', 2147483647 );
 define( 'HTTP_STATUS_SUCCESS', 200 );
 define( 'HTTP_STATUS_CREATED', 201 );
 define( 'HTTP_STATUS_NO_CONTENT', 204 );
+define( 'HTTP_STATUS_NOT_MODIFIED', 304 );
 define( 'HTTP_STATUS_BAD_REQUEST', 400 );
 define( 'HTTP_STATUS_UNAUTHORIZED', 401 );
 define( 'HTTP_STATUS_FORBIDDEN', 403 );
 define( 'HTTP_STATUS_NOT_FOUND', 404 );
 define( 'HTTP_STATUS_CONFLICT', 409 );
+define( 'HTTP_STATUS_PRECONDITION_FAILED', 412 );
+define( 'HTTP_STATUS_TOO_MANY_REQUESTS', 429 );
 define( 'HTTP_STATUS_INTERNAL_SERVER_ERROR', 500 );
 define( 'HTTP_STATUS_UNAVAILABLE', 503 );
 
@@ -676,6 +693,9 @@ define( 'HEADER_AUTHORIZATION', 'Authorization' );
 define( 'HEADER_LOGIN_METHOD', 'X-Mantis-LoginMethod' );
 define( 'HEADER_USERNAME', 'X-Mantis-Username' );
 define( 'HEADER_VERSION', 'X-Mantis-Version' );
+define( 'HEADER_IF_MATCH', 'If-Match' );
+define( 'HEADER_IF_NONE_MATCH', 'If-None-Match' );
+define( 'HEADER_ETAG', 'ETag' );
 
 # LOGIN METHODS
 define( 'LOGIN_METHOD_COOKIE', 'cookie' );
@@ -688,6 +708,9 @@ define( 'AUTH_PAGE_CREDENTIAL', 'login_password_page.php' );
 
 # SLIM FRAMEWORK ATTRIBUTES
 define( 'ATTRIBUTE_FORCE_API_ENABLED', 'force_enable_api' );
+
+# Default parent pages for sub-menu items
+define( 'PAGE_CONFIG_DEFAULT', 'adm_permissions_report.php' );
 
 # Configuration management actions (adm_config_report.php)
 define( 'MANAGE_CONFIG_ACTION_CREATE', 'create' );

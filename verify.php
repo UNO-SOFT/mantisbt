@@ -77,7 +77,7 @@ user_reset_failed_login_count_to_zero( $f_user_id );
 user_reset_lost_password_in_progress_count_to_zero( $f_user_id );
 
 # fake login so the user can set their password
-auth_attempt_script_login( user_get_field( $f_user_id, 'username' ) );
+auth_attempt_script_login( user_get_username( $f_user_id ) );
 
 user_increment_login_count( $f_user_id );
 
@@ -97,11 +97,7 @@ layout_login_page_begin();
 <div class="col-md-offset-4 col-md-4 col-sm-8 col-sm-offset-1">
 	<div class="login-container">
 		<div class="space-12 hidden-480"></div>
-		<a href="<?php echo config_get( 'logo_url' ) ?>">
-			<h1 class="center white">
-				<img src="<?php echo helper_mantis_url( config_get( 'logo_image' ) ); ?>">
-			</h1>
-		</a>
+		<?php layout_login_page_logo() ?>
 		<div class="space-24 hidden-480"></div>
 
 		<?php

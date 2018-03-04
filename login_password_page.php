@@ -121,7 +121,7 @@ if( auth_is_user_authenticated() && !current_user_is_anonymous() && !$f_reauthen
 	if( !is_blank( $f_return ) ) {
 		print_header_redirect( $f_return, false, false, true );
 	} else {
-		print_header_redirect( config_get( 'default_home_page' ) );
+		print_header_redirect( config_get_global( 'default_home_page' ) );
 	}
 }
 
@@ -147,11 +147,7 @@ layout_login_page_begin();
 <div class="col-md-offset-3 col-md-6 col-sm-10 col-sm-offset-1">
 	<div class="login-container">
 		<div class="space-12 hidden-480"></div>
-		<a href="<?php echo config_get( 'logo_url' ) ?>">
-			<h1 class="center white">
-				<img src="<?php echo helper_mantis_url( config_get( 'logo_image' ) ); ?>">
-			</h1>
-		</a>
+		<?php layout_login_page_logo() ?>
 		<div class="space-24 hidden-480"></div>
 <?php
 if( $f_error || $f_cookie_error || $f_reauthenticate ) {
@@ -237,7 +233,7 @@ if( config_get_global( 'admin_checks' ) == ON && file_exists( dirname( __FILE__ 
 				<div class="clearfix">
 					<label for="remember-login" class="inline">
 						<input id="remember-login" type="checkbox" name="perm_login" class="ace" <?php echo ( $f_perm_login ? 'checked="checked" ' : '' ) ?> />
-						<span class="lbl"> <?php echo lang_get( 'save_login' ) ?></span>
+						<span class="lbl padding-6"><?php echo lang_get( 'save_login' ) ?></span>
 					</label>
 				</div>
 			<?php } ?>
@@ -245,7 +241,7 @@ if( config_get_global( 'admin_checks' ) == ON && file_exists( dirname( __FILE__ 
 				<div class="clearfix">
 					<label for="secure-session" class="inline">
 						<input id="secure-session" type="checkbox" name="secure_session" class="ace" <?php echo ( $t_default_secure_session ? 'checked="checked" ' : '' ) ?> />
-						<span class="lbl"> <?php echo lang_get( 'secure_session_long' ) ?></span>
+						<span class="lbl padding-6"><?php echo lang_get( 'secure_session_long' ) ?></span>
 					</label>
 				</div>
 			<?php } ?>

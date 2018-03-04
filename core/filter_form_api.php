@@ -84,7 +84,7 @@ require_api( 'user_api.php' );
  * if the option is disabled, returns the current value and a hidden input for that value.
  * @param array $p_filter Filter array
  * @param string $p_filter_target Filter field name
- * @param boolean $p_show_inputs Whether to return a visible form input or a text value.
+ * @param boolean $p_show_inputs True to return a visible form input or false for a text value.
  * @return string The html content for the field requested
  */
 function filter_form_get_input( array $p_filter, $p_filter_target, $p_show_inputs = true ) {
@@ -196,12 +196,8 @@ function print_filter_reporter_id( array $p_filter = null ) {
 	#
 	if( ( ON === config_get( 'limit_reporters' ) ) && ( !access_has_project_level( access_threshold_min_level( config_get( 'report_bug_threshold' ) ) + 1 ) ) ) {
 		$t_id = auth_get_current_user_id();
-		$t_username = user_get_field( $t_id, 'username' );
-		$t_realname = user_get_field( $t_id, 'realname' );
+		$t_username = user_get_name( $t_id );
 		$t_display_name = string_attribute( $t_username );
-		if( ( isset( $t_realname ) ) && ( $t_realname > '' ) && ( ON == config_get( 'show_realname' ) ) ) {
-			$t_display_name = string_attribute( $t_realname );
-		}
 		echo '<option value="' . $t_id . '" selected="selected">' . $t_display_name . '</option>';
 	} else {
 		?>
@@ -282,10 +278,9 @@ function print_filter_user_monitor( array $p_filter = null ) {
 		echo '>[' . lang_get( 'myself' ) . ']</option>';
 	}
 	$t_threshold = config_get( 'show_monitor_list_threshold' );
-	$t_has_project_level = access_has_project_level( $t_threshold );
 
-	if( $t_has_project_level ) {
-		print_reporter_option_list( $p_filter[FILTER_PROPERTY_MONITOR_USER_ID] );
+	if( access_has_project_level( $t_threshold ) ) {
+		print_user_option_list( $p_filter[FILTER_PROPERTY_MONITOR_USER_ID], null, config_get( 'monitor_bug_threshold' ) );
 	}
 	?>
 		</select>
@@ -1300,7 +1295,7 @@ function print_filter_do_filter_by_date( $p_hide_checkbox = false, array $p_filt
 					<input class="input-xs ace js_switch_date_inputs_trigger" type="checkbox" id="use_date_filters" class="input-xs"
 						name="<?php echo FILTER_PROPERTY_FILTER_BY_DATE_SUBMITTED ?>"
 						<?php check_checked( gpc_string_to_bool( $p_filter[FILTER_PROPERTY_FILTER_BY_DATE_SUBMITTED] ), true ) ?> />
-                    <span class="lbl small"> <?php echo lang_get( 'use_date_filters' )?></span>
+					<span class="lbl padding-6 small"><?php echo lang_get( 'use_date_filters' )?></span>
 				</label>
 			</td>
 		</tr>
@@ -1452,7 +1447,7 @@ function print_filter_do_filter_by_last_updated_date( $p_hide_checkbox = false, 
 					<input class="input-xs ace js_switch_date_inputs_trigger" type="checkbox" id="use_last_updated_date_filters" class="input-xs"
 						name="<?php echo FILTER_PROPERTY_FILTER_BY_LAST_UPDATED_DATE ?>"
 						<?php check_checked( gpc_string_to_bool( $p_filter[FILTER_PROPERTY_FILTER_BY_LAST_UPDATED_DATE] ), true ) ?> />
-                    <span class="lbl small"> <?php echo lang_get( 'use_last_updated_date_filters' )?></span>
+					<span class="lbl padding-6 small"><?php echo lang_get( 'use_last_updated_date_filters' )?></span>
 				</label>
 			</td>
 		</tr>
@@ -1585,7 +1580,7 @@ function print_filter_values_tag_string( array $p_filter ) {
  */
 function print_filter_tag_string( array $p_filter = null ) {
 	global $g_filter;
-	if( !access_has_global_level( config_get( 'tag_view_threshold' ) ) ) {
+	if( !access_has_project_level( config_get( 'tag_view_threshold' ) ) ) {
 		return;
 	}
 	if( null === $p_filter ) {
@@ -1929,7 +1924,8 @@ function print_filter_custom_field( $p_field_id, array $p_filter = null ) {
 				echo '>[' . lang_get( 'none' ) . ']</option>';
 			}
 			# Print possible values
-			$t_values = custom_field_distinct_values( $t_cfdef );
+			$t_included_projects = filter_get_included_projects( $p_filter );
+			$t_values = custom_field_distinct_values( $t_cfdef, $t_included_projects );
 			if( is_array( $t_values ) ){
 				$t_max_length = config_get( 'max_dropdown_length' );
 				foreach( $t_values as $t_val ) {
@@ -2073,7 +2069,8 @@ function print_filter_custom_field_date( $p_field_id, array $p_filter = null ) {
 		$p_filter = $g_filter;
 	}
 	$t_cfdef = custom_field_get_definition( $p_field_id );
-	$t_values = custom_field_distinct_values( $t_cfdef );
+	$t_included_projects = filter_get_included_projects( $p_filter );
+	$t_values = custom_field_distinct_values( $t_cfdef, $t_included_projects );
 
 	# Resort the values so there ordered numerically, they are sorted as strings otherwise which
 	# may be wrong for dates before early 2001.
@@ -2374,7 +2371,7 @@ function filter_form_draw_inputs( $p_filter, $p_for_screen = true, $p_static = f
 	$t_show_build = $t_show_product_version && ( config_get( 'enable_product_build' ) == ON );
 
 	# overload handler_id setting if user isn't supposed to see them (ref #6189)
-	if( !access_has_any_project( config_get( 'view_handler_threshold' ) ) ) {
+	if( !access_has_any_project_level( 'view_handler_threshold' ) ) {
 		$t_filter[FILTER_PROPERTY_HANDLER_ID] = array(
 			META_FILTER_ANY,
 		);
@@ -2594,7 +2591,7 @@ function filter_form_draw_inputs( $p_filter, $p_for_screen = true, $p_static = f
 			null /* class */,
 			'relationship_type_filter_target' /* content id */
 			));
-	if( access_has_global_level( config_get( 'tag_view_threshold' ) ) ) {
+	if( access_has_project_level( config_get( 'tag_view_threshold' ) ) ) {
 		$t_row3->add_item( new TableFieldsItem(
 				$get_field_header( 'tag_string_filter', lang_get( 'tags' ) ),
 				filter_form_get_input( $t_filter, 'tag_string', $t_show_inputs ),
@@ -2630,11 +2627,14 @@ function filter_form_draw_inputs( $p_filter, $p_for_screen = true, $p_static = f
 	}
 
 	if( ON == config_get( 'filter_by_custom_fields' ) ) {
-		$t_custom_fields = custom_field_get_linked_ids( $t_project_id );
+		$t_filter_included_projects = filter_get_included_projects( $t_filter );
+		$t_custom_fields = custom_field_get_linked_ids( $t_filter_included_projects );
 		$t_accessible_custom_fields = array();
 		foreach( $t_custom_fields as $t_cfid ) {
 			$t_cfdef = custom_field_get_definition( $t_cfid );
-			if( $t_cfdef['access_level_r'] <= current_user_get_access_level() && $t_cfdef['filter_by'] ) {
+			$t_projects_to_check = array_intersect( $t_filter_included_projects, custom_field_get_project_ids( $t_cfid ) );
+			if( $t_cfdef['filter_by']
+				&& access_has_any_project_level( (int)$t_cfdef['access_level_r'], $t_projects_to_check ) ) {
 				$t_accessible_custom_fields[] = $t_cfdef;
 			}
 		}

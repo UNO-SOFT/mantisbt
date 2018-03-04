@@ -69,7 +69,6 @@ $g_database_name		= 'bugtracker';
  * RDBMS           db_type       PHP ext   Comments
  * -----           -------       -------   --------
  * MySQL           mysqli        mysqli    default
- *                 mysql         mysql     PHP < 5.5.0 only
  * PostgreSQL      pgsql         pgsql
  * MS SQL Server   mssqlnative   sqlsrv    experimental
  * Oracle          oci8          oci8      experimental
@@ -117,7 +116,7 @@ $g_db_table_suffix = '_table';
  * e.g. 'Example' plugin's table 'foo' => 'mantis_plugin_Example_foo_table'.
  * To avoid the 30-char limit on identifiers in Oracle (< 12cR2), the prefix
  * should be kept as short as possible (e.g. 'plg'); it is however strongly
- * recomended not to use an empty string here.
+ * recommended not to use an empty string here.
  * @see $g_db_table_prefix
  * @global string $g_db_table_prefix
  */
@@ -151,6 +150,12 @@ $g_class_path = $g_core_path . 'classes' . DIRECTORY_SEPARATOR;
  * @global string $g_library_path
  */
 $g_library_path = $g_absolute_path . 'library' . DIRECTORY_SEPARATOR;
+
+/**
+ * Path to vendor folder for 3rd party libraries. Requires trailing / or \
+ * @global string $g_library_path
+ */
+$g_vendor_path = $g_absolute_path . 'vendor' . DIRECTORY_SEPARATOR;
 
 /**
  * Path to lang folder for language files. Requires trailing / or \
@@ -265,15 +270,6 @@ $g_manual_url = 'doc/en-US/Admin_Guide/html-desktop/';
 ##############
 
 /**
- * Session handler.  Possible values:
- *  'php' -> Default PHP filesystem sessions
- *  'adodb' -> Database storage sessions
- *  'memcached' -> Memcached storage sessions
- * @global string $g_session_handler
- */
-$g_session_handler = 'php';
-
-/**
  * Session save path.  If false, uses default value as set by session handler.
  * @global bool $g_session_save_path
  */
@@ -292,6 +288,8 @@ $g_session_validation = ON;
  * not correctly work with this option enabled because they cache pages
  * incorrectly.
  * WARNING: Disabling this is a security risk!!
+ *
+ * @global integer $g_form_security_validation
  */
 $g_form_security_validation = ON;
 
@@ -375,7 +373,7 @@ $g_signup_use_captcha	= ON;
 /**
  * absolute path (with trailing slash!) to folder which contains your
  * TrueType-Font files used for the Relationship Graphs,
- * the Workflow Graphs and the MantisGraph plugin
+ * and the Workflow Graphs
  * @global string $g_system_font_folder
  */
 $g_system_font_folder	= '';
@@ -617,6 +615,7 @@ $g_show_user_email_threshold = NOBODY;
 /**
  * This specifies the access level that is needed to see realnames on user view
  * page
+ * @see $g_show_realname
  * @global integer $g_show_user_realname_threshold
  */
 $g_show_user_realname_threshold = NOBODY;
@@ -673,6 +672,82 @@ $g_smtp_connection_mode = '';
  * @global integer $g_smtp_port
  */
 $g_smtp_port = 25;
+
+/**
+ * Enable DomainKeys Identified Mail (DKIM) Signatures (rfc6376)
+ * To successfully sign mails you need to enable DKIM and provide at least:
+ * - DKIM domain
+ * - DKIM private key or key file path
+ * - DKIM selector
+ * - DKIM identity
+ * @see $g_email_dkim_domain
+ * @see $g_email_dkim_private_key_file_path
+ * @see $g_email_dkim_private_key_string
+ * @see $g_email_dkim_selector
+ * @see $g_email_dkim_identity
+ * @global integer $g_email_dkim_enable
+ */
+$g_email_dkim_enable = OFF;
+
+/**
+ * DomainKeys Identified Mail (DKIM) Signatures domain
+ * This is usually the same as the domain of your from email
+ * @see $g_from_email
+ * @see $g_email_dkim_enable
+ * @global string $g_email_dkim_domain
+ */
+$g_email_dkim_domain = 'example.com';
+
+/**
+ * DomainKeys Identified Mail (DKIM) Signatures private key path
+ * Path to the private key. If $g_email_dkim_private_key_string is specified
+ * this setting will not be used.
+ * @see $g_email_dkim_private_key_string
+ * @see $g_email_dkim_enable
+ * @global string $g_email_dkim_private_key_file_path
+ */
+$g_email_dkim_private_key_file_path = '';
+
+
+/**
+ * DomainKeys Identified Mail (DKIM) Signatures private key value
+ * This string should contain private key for signing. Leave empty
+ * string if you wish to load the key from the file defined with
+ * $g_email_dkim_private_key_file_path.
+ * @see $g_email_dkim_enable
+ * @see $g_email_dkim_private_key_file_path
+ * @global string $g_email_dkim_private_key_string
+ */
+$g_email_dkim_private_key_string = '';
+
+/**
+ * DomainKeys Identified Mail (DKIM) Signatures selector
+ * DNS selector for the signature (rfc6376)
+ * DNS TXT field should have for instance:
+ *   host mail.example._domainkey
+ *   value v=DKIM1; t=s; n=core; k=rsa; p=[public key]
+ * @see $g_email_dkim_enable
+ * @global string $g_email_dkim_selector
+ */
+$g_email_dkim_selector = 'mail.example';
+
+/**
+ * DomainKeys Identified Mail (DKIM) Signatures private key password
+ * Leave empty string if your private key does not have password
+ * @see $g_email_dkim_enable
+ * @global string $g_email_dkim_passphrase
+ */
+$g_email_dkim_passphrase = '';
+
+/**
+ * DomainKeys Identified Mail (DKIM) Signatures identity
+ * Identity you are signing the mails with (rfc6376)
+ * This is usually the same as your from email
+ * @see $g_from_email
+ * @see $g_email_dkim_enable
+ * @global string $g_email_dkim_identity
+ */
+$g_email_dkim_identity = 'noreply@example.com';
 
 /**
  * It is recommended to use a cronjob or a scheduler task to send emails. The
@@ -745,6 +820,7 @@ $g_language_choices_arr = array(
 	'arabic',
 	'arabicegyptianspoken',
 	'asturian',
+	'basque',
 	'belarusian_tarask',
 	'breton',
 	'bulgarian',
@@ -760,6 +836,7 @@ $g_language_choices_arr = array(
 	'finnish',
 	'french',
 	'galician',
+	'georgian',
 	'german',
 	'greek',
 	'hebrew',
@@ -771,10 +848,12 @@ $g_language_choices_arr = array(
 	'korean',
 	'latvian',
 	'lithuanian',
+	'luxembourgish',
 	'macedonian',
 	'norwegian_bokmal',
 	'norwegian_nynorsk',
 	'occitan',
+	'persian',
 	'polish',
 	'portuguese_brazil',
 	'portuguese_standard',
@@ -782,17 +861,19 @@ $g_language_choices_arr = array(
 	'romanian',
 	'russian',
 	'serbian',
+	'serbian_latin',
 	'slovak',
 	'slovene',
 	'spanish',
-	'swissgerman',
 	'swedish',
+	'swissgerman',
 	'tagalog',
 	'turkish',
 	'ukrainian',
 	'urdu',
 	'vietnamese',
 	'volapuk',
+	'zazaki',
 );
 
 /**
@@ -805,12 +886,14 @@ $g_language_auto_map = array(
 	'ar' => 'arabic',
 	'arz' => 'arabicegyptianspoken',
 	'ast' => 'asturian',
+	'eu' => 'basque',
 	'be-tarask' => 'belarusian_tarask',
 	'bg' => 'bulgarian',
 	'br' => 'breton',
 	'ca' => 'catalan',
 	'zh-cn, zh-sg, zh' => 'chinese_simplified',
 	'zh-hk, zh-tw' => 'chinese_traditional',
+	'hr' => 'croatian',
 	'cs' => 'czech',
 	'da' => 'danish',
 	'nl-be, nl' => 'dutch',
@@ -819,38 +902,42 @@ $g_language_auto_map = array(
 	'fi' => 'finnish',
 	'fr-ca, fr-be, fr-ch, fr' => 'french',
 	'gl' => 'galician',
-	'gsw' => 'swissgerman',
 	'de-de, de-at, de-ch, de' => 'german',
 	'he' => 'hebrew',
 	'hu' => 'hungarian',
-	'hr' => 'croatian',
 	'is' => 'icelandic',
 	'ia' => 'interlingua',
 	'it-ch, it' => 'italian',
 	'ja' => 'japanese',
+	'ka' => 'georgian',
 	'ko' => 'korean',
-	'ksh' => 'ripoarisch',
-	'lt' => 'lithuanian',
 	'lv' => 'latvian',
+	'lt' => 'lithuanian',
+	'lb' => 'luxembourgish',
 	'mk' => 'macedonian',
 	'no' => 'norwegian_bokmal',
 	'nn' => 'norwegian_nynorsk',
 	'oc' => 'occitan',
+	'fa' => 'persian',
 	'pl' => 'polish',
 	'pt-br' => 'portuguese_brazil',
 	'pt' => 'portuguese_standard',
+	'ksh' => 'ripoarisch',
 	'ro-mo, ro' => 'romanian',
 	'ru-mo, ru-ru, ru-ua, ru' => 'russian',
 	'sr' => 'serbian',
+	'sr-latn' => 'serbian_latin',
 	'sk' => 'slovak',
 	'sl' => 'slovene',
 	'es-mx, es-co, es-ar, es-cl, es-pr, es' => 'spanish',
 	'sv-fi, sv' => 'swedish',
+	'gsw' => 'swissgerman',
 	'tl' => 'tagalog',
 	'tr' => 'turkish',
 	'uk' => 'ukrainian',
 	'vi' => 'vietnamese',
 	'vo' => 'volapuk',
+	'diq' => 'zazaki',
 );
 
 /**
@@ -858,6 +945,69 @@ $g_language_auto_map = array(
  * @global string $g_fallback_language
  */
 $g_fallback_language = 'english';
+
+##########################
+# MantisBT Font Settings #
+##########################
+
+/**
+ * Name of one of google fonts available at https://fonts.google.com/
+ * Chosen family must be part of in $g_font_family_choices_local such that it works
+ * even if CDN option is disabled
+ * @see $g_font_family_choices_local
+ * @see $g_cdn_enabled
+ * @global string $g_font_family
+ */
+$g_font_family = 'Open Sans';
+
+/**
+ * List the google fonts that the users are allowed to choose from.
+ * Google offers over 800 fonts. The list below is limited to the ones tested on MantisBT UI
+ * @global array $g_font_family_choices
+ */
+$g_font_family_choices = array(
+	'Amiko',
+	'Architects Daughter',
+	'Archivo Narrow',
+	'Arvo',
+	'Bitter',
+	'Cabin',
+	'Cinzel',
+	'Comfortaa',
+	'Courgette',
+	'Droid Sans',
+	'Gloria Hallelujah',
+	'Inconsolata',
+	'Josefin Sans',
+	'Kadwa',
+	'Karla',
+	'Kaushan Script',
+	'Lato',
+	'Montserrat',
+	'Open Sans',
+	'Orbitron',
+	'Oregano',
+	'Palanquin',
+	'Poppins',
+	'Raleway',
+	'Rhodium Libre',
+	'Sarala',
+	'Scope One',
+	'Secular One',
+	'Ubuntu',
+	'Vollkorn'
+);
+
+/**
+ * List of fonts that are installed as part of MantisBT
+ * This list is used when using CDN option is disabled
+ * @global array $g_font_family_choices_local
+ */
+$g_font_family_choices_local = array(
+	'Montserrat',
+	'Open Sans',
+	'Poppins'
+);
 
 #############################
 # MantisBT Display Settings #
@@ -956,7 +1106,7 @@ $g_severity_significant_threshold = MAJOR;
 
 /**
  * The default columns to be included in the View Issues Page.
- * This can be overriden using Manage -> Manage Configuration -> Manage Columns
+ * This can be overridden using Manage -> Manage Configuration -> Manage Columns
  * Also each user can configure their own columns using My Account -> Manage
  * Columns. Some of the columns specified here can be removed automatically if
  * they conflict with other configuration. Or if the current user doesn't have
@@ -1058,19 +1208,16 @@ $g_show_version_dates_threshold = NOBODY;
 
 /**
  * show users with their real name or not
+ * @see $g_sort_by_last_name
+ * @see $g_show_user_realname_threshold
  * @global integer $g_show_realname
  */
 $g_show_realname = OFF;
 
 /**
- * leave off for now
- * @global integer $g_differentiate_duplicates
- */
-$g_differentiate_duplicates = OFF;
-
-/**
  * sorting for names in dropdown lists. If turned on, "Jane Doe" will be sorted
  * with the "D"s
+ * @see $g_show_realname
  * @global integer $g_sort_by_last_name
  */
 $g_sort_by_last_name = OFF;
@@ -1160,6 +1307,7 @@ $g_complete_date_format = 'Y-m-d H:i T';
 
 /**
  * Datetime picker widget format string.
+ * This format needs needs to match the one defined in {@see $g_normal_date_format}
  * For detailed instructions on date formatting
  * @see http://momentjs.com/docs/#/displaying/format/
  * @global string $g_datetime_picker_format
@@ -1197,6 +1345,8 @@ $g_default_timezone = '';
  * Indicates whether the news feature should be enabled or disabled.
  * This feature is deprecated and is expected to be moved to a plugin
  * in the future.
+ *
+ * @global integer $g_news_enabled
  */
 $g_news_enabled = OFF;
 
@@ -1311,6 +1461,12 @@ $g_default_bug_eta = ETA_NONE;
 $g_default_bug_relationship_clone = BUG_REL_NONE;
 
 /**
+ * Allow parent bug to close regardless of child status.
+ * @global integer $g_allow_parent_of_unresolved_to_close
+ */
+$g_allow_parent_of_unresolved_to_close = OFF;
+
+/**
  * Default for new bug relationships
  * @global integer $g_default_bug_relationship
  */
@@ -1343,7 +1499,7 @@ $g_hide_status_default = CLOSED;
 
 /**
  *
- * @global string $g_show_sticky_issues
+ * @global integer $g_show_sticky_issues
  */
 $g_show_sticky_issues = ON;
 
@@ -1543,7 +1699,7 @@ $g_severity_multipliers = array(
  * @global array $g_resolution_multipliers
  */
 $g_resolution_multipliers = array(
-	UNABLE_TO_DUPLICATE => 2,
+	UNABLE_TO_REPRODUCE => 2,
 	NOT_FIXABLE         => 1,
 	DUPLICATE           => 3,
 	NOT_A_BUG           => 5,
@@ -2062,7 +2218,7 @@ $g_bug_resolution_fixed_threshold = FIXED;
  * threshold are considered to be resolved in an unsuccessful way.
  * @global integer $g_bug_resolution_not_fixed_threshold
  */
-$g_bug_resolution_not_fixed_threshold = UNABLE_TO_DUPLICATE;
+$g_bug_resolution_not_fixed_threshold = UNABLE_TO_REPRODUCE;
 
 /**
  * Bug is closed.  In some custom installations a bug may be considered as
@@ -2153,14 +2309,6 @@ $g_preview_max_height = 250;
  * @global integer $g_view_attachments_threshold
  */
 $g_view_attachments_threshold = VIEWER;
-
-/**
- * list of filetypes to view inline. This is a string of extensions separated
- * by commas. This is used when downloading an attachment. Rather than
- * downloading, the attachment is viewed in the browser.
- * @global string $g_inline_file_exts
- */
-$g_inline_file_exts = 'gif,png,jpg,jpeg,bmp';
 
 /**
  * access level needed to download bug attachments
@@ -2571,15 +2719,13 @@ $g_update_bug_assign_threshold = '%handle_bug_threshold%';
 $g_private_bugnote_threshold = DEVELOPER;
 
 /**
- * access level needed to view handler in bug reports and notification email
- * @todo yarick123: now it is implemented for notification email only
+ * access level needed to view handler
  * @global integer $g_view_handler_threshold
  */
 $g_view_handler_threshold = VIEWER;
 
 /**
- * access level needed to view history in bug reports and notification email
- * @todo yarick123: now it is implemented for notification email only
+ * access level needed to view history
  * @global integer $g_view_history_threshold
  */
 $g_view_history_threshold = VIEWER;
@@ -3326,12 +3472,6 @@ $g_css_include_file = 'default.css';
 $g_css_rtl_include_file = 'rtl.css';
 
 /**
- * meta tags
- * @global string $g_meta_include_file
- */
-$g_meta_include_file = '';
-
-/**
  * A flag that indicates whether to use CDN (content delivery networks) for loading
  * javascript libraries and their associated CSS.  This improves performance for
  * loading MantisBT pages.  This can be disabled if it is desired that MantisBT
@@ -3541,7 +3681,7 @@ $g_file_type_icons = array(
 
 /**
  *
- * Content types which will be overriden when downloading files
+ * Content types which will be overridden when downloading files
  *
  * @global array $g_file_download_content_type_overrides
  */
@@ -3893,6 +4033,12 @@ $g_time_tracking_reporting_threshold = MANAGER;
  */
 $g_time_tracking_without_note = ON;
 
+/**
+ * default billing rate per hour
+ * @global integer $g_time_tracking_billing_rate
+ */
+$g_time_tracking_billing_rate = 0;
+
 ############################
 # Profile Related Settings #
 ############################
@@ -4009,6 +4155,8 @@ $g_due_date_default = '';
  * Whether sub-projects feature should be enabled.  Before turning this flag OFF,
  * make sure all sub-projects are moved to top level projects, otherwise
  * they won't be accessible.
+ *
+ * @global integer $g_subprojects_enabled
  */
 $g_subprojects_enabled = ON;
 
@@ -4019,6 +4167,8 @@ $g_subprojects_inherit_categories = ON;
 
 /**
  * Sub-projects should inherit versions from parent projects.
+ *
+ * @global integer $g_subprojects_inherit_versions
  */
 $g_subprojects_inherit_versions = ON;
 
@@ -4074,30 +4224,26 @@ $g_show_queries_count = OFF;
  * Recommended config_inc.php settings for developers (these are automatically
  * set if the server is localhost):
  * $g_display_errors = array(
- *     E_USER_ERROR        => DISPLAY_ERROR_HALT,
  *     E_RECOVERABLE_ERROR => DISPLAY_ERROR_HALT,
  *     E_WARNING           => DISPLAY_ERROR_HALT,
  *     E_ALL               => DISPLAY_ERROR_INLINE,
  * );
  *
- * WARNING: E_USER_ERROR should always be set to DISPLAY_ERROR_HALT. Using
- * another value will cause program execution to continue, which may lead to
- * data integrity issues and/or cause MantisBT to function incorrectly.
+ * NOTICE: E_USER_ERROR, E_RECOVERABLE_ERROR and E_ERROR will always be internally
+ * set DISPLAY_ERROR_HALT independent of value configured.
  *
  * @global array $g_display_errors
  */
-$g_display_errors = array(
-	E_USER_ERROR        => DISPLAY_ERROR_HALT,
-	E_RECOVERABLE_ERROR => DISPLAY_ERROR_HALT,
-);
+$g_display_errors = array();
 
 # Add developers defaults when server is localhost
 # Note: intentionally not using SERVER_ADDR as it's not guaranteed to exist
-if( isset( $_SERVER['SERVER_NAME'] ) && ( strcasecmp( $_SERVER['SERVER_NAME'], 'localhost' ) == 0
- || $_SERVER['SERVER_NAME'] == '127.0.0.1'
-) ) {
+if( isset( $_SERVER['SERVER_NAME'] ) &&
+	( strcasecmp( $_SERVER['SERVER_NAME'], 'localhost' ) == 0 ||
+	  $_SERVER['SERVER_NAME'] == '127.0.0.1' ) ) {
+	$g_display_errors[E_USER_WARNING] = DISPLAY_ERROR_HALT;
 	$g_display_errors[E_WARNING] = DISPLAY_ERROR_HALT;
-	$g_display_errors[E_ALL]     = DISPLAY_ERROR_INLINE;
+	$g_display_errors[E_ALL] = DISPLAY_ERROR_INLINE;
 }
 
 /**
@@ -4131,7 +4277,7 @@ $g_stop_on_errors = OFF;
  * The available log channels are:
  *
  * LOG_NONE, LOG_EMAIL, LOG_EMAIL_RECIPIENT, LOG_EMAIL_VERBOSE, LOG_FILTERING,
- * LOG_AJAX, LOG_LDAP, LOG_DATABASE, LOG_WEBSERVICE, LOG_ALL
+ * LOG_AJAX, LOG_LDAP, LOG_DATABASE, LOG_WEBSERVICE, LOG_PLUGIN, LOG_ALL
  *
  * and can be combined using
  * {@link http://php.net/language.operators.bitwise PHP bitwise operators}
@@ -4186,20 +4332,21 @@ $g_global_settings = array(
 	'anonymous_account', 'compress_html', 'allow_permanent_cookie',
 	'cookie_time_length', 'cookie_path', 'cookie_domain',
 	'cookie_prefix', 'string_cookie', 'project_cookie', 'view_all_cookie',
-	'manage_config_cookie', 'manage_user_cookie', 'logout_cookie',
+	'manage_config_cookie', 'logout_cookie',
 	'bug_list_cookie', 'crypto_master_salt', 'custom_headers',
 	'database_name', 'db_username', 'db_password', 'db_type',
 	'db_table_prefix','db_table_suffix', 'display_errors', 'form_security_validation',
 	'hostname','html_valid_tags', 'html_valid_tags_single_line', 'default_language',
-	'language_auto_map', 'fallback_language', 'login_method', 'plugins_enabled', 'session_handler',
+	'language_auto_map', 'fallback_language', 'login_method', 'plugins_enabled',
 	'session_save_path', 'session_validation', 'show_detailed_errors', 'show_queries_count',
 	'stop_on_errors', 'version_suffix', 'debug_email',
-	'fileinfo_magic_db_file', 'css_include_file', 'css_rtl_include_file', 'meta_include_file',
+	'fileinfo_magic_db_file', 'css_include_file', 'css_rtl_include_file',
 	'file_type_icons', 'path', 'short_path', 'absolute_path', 'core_path',
 	'class_path','library_path', 'language_path', 'absolute_path_default_upload_folder',
 	'ldap_simulation_file_path', 'plugin_path', 'bottom_include_page', 'top_include_page',
 	'default_home_page', 'logout_redirect_page', 'manual_url', 'logo_url', 'wiki_engine_url',
-	'cdn_enabled', 'public_config_names', 'email_login_enabled', 'email_ensure_unique'
+	'cdn_enabled', 'public_config_names', 'email_login_enabled', 'email_ensure_unique',
+	'impersonate_user_threshold'
 );
 
 /**
@@ -4222,6 +4369,7 @@ $g_public_config_names = array(
 	'allow_file_upload',
 	'allow_freetext_in_profile_fields',
 	'allow_no_category',
+	'allow_parent_of_unresolved_to_close',
 	'allow_permanent_cookie',
 	'allow_reporter_close',
 	'allow_reporter_reopen',
@@ -4332,7 +4480,6 @@ $g_public_config_names = array(
 	'delete_bugnote_threshold',
 	'delete_project_threshold',
 	'development_team_threshold',
-	'differentiate_duplicates',
 	'disallowed_files',
 	'display_bug_padding',
 	'display_bugnote_padding',
@@ -4343,6 +4490,10 @@ $g_public_config_names = array(
 	'due_date_update_threshold',
 	'due_date_view_threshold',
 	'email_ensure_unique',
+	'email_dkim_domain',
+	'email_dkim_enable',
+	'email_dkim_identity',
+	'email_dkim_selector',
 	'email_login_enabled',
 	'email_notifications_verbose',
 	'email_padding_length',
@@ -4366,6 +4517,9 @@ $g_public_config_names = array(
 	'filter_by_custom_fields',
 	'filter_custom_fields_per_row',
 	'filter_position',
+	'font_family',
+	'font_family_choices',
+	'font_family_choices_local',
 	'forward_year_count',
 	'from_email',
 	'from_name',
@@ -4378,7 +4532,6 @@ $g_public_config_names = array(
 	'html_valid_tags_single_line',
 	'html_valid_tags',
 	'impersonate_user_threshold',
-	'inline_file_exts',
 	'issue_activity_note_attachments_seconds_threshold',
 	'language_auto_map',
 	'language_choices_arr',
@@ -4407,7 +4560,6 @@ $g_public_config_names = array(
 	'max_lost_password_in_progress_count',
 	'mentions_enabled',
 	'mentions_tag',
-	'meta_include_file',
 	'min_refresh_delay',
 	'minimum_sponsorship_amount',
 	'monitor_add_others_bug_threshold',
@@ -4507,7 +4659,6 @@ $g_public_config_names = array(
 	'status_enum_string',
 	'status_enum_workflow',
 	'status_icon_arr',
-	'status_legend_position',
 	'stop_on_errors',
 	'store_reminders',
 	'stored_query_create_shared_threshold',
@@ -4526,6 +4677,7 @@ $g_public_config_names = array(
 	'tag_edit_threshold',
 	'tag_separator',
 	'tag_view_threshold',
+	'time_tracking_billing_rate',
 	'time_tracking_edit_threshold',
 	'time_tracking_enabled',
 	'time_tracking_reporting_threshold',
@@ -4693,13 +4845,13 @@ $g_webservice_error_when_version_not_found = ON;
 $g_webservice_version_when_not_found = '';
 
 /**
- * Whether the REST API (experimental) is enabled or not.  Note that this flag only
+ * Whether the REST API is enabled or not.  Note that this flag only
  * impacts API Token based auth.  Hence, even if the API is disabled, it can still be
  * used from the Web UI using cookie based authentication.
  *
  * @global integer $g_webservice_rest_enabled
  */
-$g_webservice_rest_enabled = OFF;
+$g_webservice_rest_enabled = ON;
 
 ####################
 # Issue Activities #

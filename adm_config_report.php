@@ -59,7 +59,7 @@ $t_read_write_access = access_has_global_level( config_get( 'set_configuration_t
 layout_page_header( lang_get( 'configuration_report' ) );
 layout_page_begin( 'manage_overview_page.php' );
 
-print_manage_menu( 'adm_permissions_report.php' );
+print_manage_menu( PAGE_CONFIG_DEFAULT );
 print_manage_config_menu( 'adm_config_report.php' );
 
 $t_config_types = array(
@@ -131,7 +131,7 @@ function print_config_value_as_string( $p_type, $p_value, $p_for_display = true 
 	if( $p_for_display ) {
 		echo '<pre id="adm-config-value">' . string_attribute( $t_output ) . '</pre>';
 	} else {
-		echo $t_output;
+		echo string_attribute( $t_output );
 	}
 }
 
@@ -183,7 +183,7 @@ if( $t_filter_default ) {
 }
 
 # Manage filter's persistency through cookie
-$t_cookie_name = config_get( 'manage_config_cookie' );
+$t_cookie_name = config_get_global( 'manage_config_cookie' );
 if( $t_filter_save ) {
 	# Save user's filter to the cookie
 	$t_cookie_string = implode(
@@ -426,7 +426,7 @@ while( $t_row = db_fetch_array( $t_result ) ) {
 
 ?>
 <!-- Repeated Info Rows -->
-			<tr>
+			<tr class="visible-on-hover-toggle">
 				<td>
 					<?php echo ($v_user_id == 0) ? lang_get( 'all_users' ) : string_display_line( user_get_name( $v_user_id ) ) ?>
 				</td>
@@ -439,7 +439,7 @@ while( $t_row = db_fetch_array( $t_result ) ) {
 	if( $t_read_write_access ) {
 ?>
 <td class="center">
-	<div class="btn-group inline">
+	<div class="btn-group inline visible-on-hover">
 <?php
 		if( config_can_delete( $v_config_id ) ) {
 			# Update button (will populate edit form at page bottom)

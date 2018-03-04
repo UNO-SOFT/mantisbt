@@ -95,7 +95,7 @@ $t_row = user_get_row( auth_get_current_user_id() );
 
 extract( $t_row, EXTR_PREFIX_ALL, 'u' );
 
-$t_ldap = ( LDAP == config_get( 'login_method' ) );
+$t_ldap = ( LDAP == config_get_global( 'login_method' ) );
 
 # In case we're using LDAP to get the email address... this will pull out
 #  that version instead of the one in the DB
@@ -181,13 +181,16 @@ print_account_menu( 'account_page.php' );
 			if( $t_account_verification ) {
 				token_set( TOKEN_ACCOUNT_VERIFY, true, TOKEN_EXPIRY_AUTHENTICATED, $u_id );
 			} else {
+				# If the current password is blank, do not require the field
+				# so the user can reset the password (#23507)
+				$t_required = auth_does_password_match( $u_id, '' ) ? '' : 'required';
 			?>
 			<tr>
 				<td class="category">
-					<span class="required"><?php if( $t_force_pw_reset ) { ?> * <?php } ?></span> <?php echo lang_get( 'current_password' ) ?>
+					<span class="<?php echo $t_required ?>"><?php if( $t_force_pw_reset ) { ?> * <?php } ?></span> <?php echo lang_get( 'current_password' ) ?>
 				</td>
 				<td>
-					<input class="input-sm" id="password-current" type="password" name="password_current" size="32" maxlength="<?php echo auth_get_password_max_size(); ?>" />
+					<input class="input-sm" id="password-current" type="password" name="password_current" size="32" maxlength="<?php echo auth_get_password_max_size(); ?>" <?php echo $t_required ?> />
 				</td>
 			</tr>
 			<?php
@@ -197,7 +200,7 @@ print_account_menu( 'account_page.php' );
 					<span class="required"><?php if( $t_force_pw_reset ) { ?> * <?php } ?></span> <?php echo lang_get( 'new_password' ) ?>
 				</td>
 				<td>
-					<input class="input-sm" id="password" type="password" name="password" size="32" maxlength="<?php echo auth_get_password_max_size(); ?>" />
+					<input class="input-sm" id="password" type="password" name="password" size="32" maxlength="<?php echo auth_get_password_max_size(); ?>" required />
 				</td>
 			</tr>
 			<tr>
@@ -205,7 +208,7 @@ print_account_menu( 'account_page.php' );
 					<span class="required"><?php if( $t_force_pw_reset ) { ?> * <?php } ?></span> <?php echo lang_get( 'confirm_password' ) ?>
 				</td>
 				<td>
-					<input class="input-sm" id="password-confirm" type="password" name="password_confirm" size="32" maxlength="<?php echo auth_get_password_max_size(); ?>" />
+					<input class="input-sm" id="password-confirm" type="password" name="password_confirm" size="32" maxlength="<?php echo auth_get_password_max_size(); ?>" required />
 				</td>
 			</tr>
 			<?php

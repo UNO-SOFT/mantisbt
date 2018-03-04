@@ -23,9 +23,6 @@
  * @link http://www.mantisbt.org
  */
 
-# set up error_handler() as the new default error handling function
-set_error_handler( 'mc_error_handler' );
-
 /**
  * Webservice APIs
  *
@@ -33,6 +30,8 @@ set_error_handler( 'mc_error_handler' );
  */
 
 require_api( 'api_token_api.php' );
+
+use Mantis\Exceptions\LegacyApiFaultException;
 
 /**
  * A class to capture a RestFault
@@ -124,6 +123,16 @@ class ApiObjectFactory {
 	}
 
 	/**
+	 * Fault generated when a client hits rate limits.
+	 *
+	 * @param string $p_fault_string The fault details.
+	 * @return RestFault|SoapFault The fault object.
+	 */
+	static function faultTooManyRequests( $p_fault_string ) {
+		return ApiObjectFactory::fault( 'Client', $p_fault_string, HTTP_STATUS_TOO_MANY_REQUESTS );
+	}
+
+	/**
 	 * Fault generated when the request is failed due to conflict with current state of the data.
 	 * This can happen either due to a race condition or lack of checking on client side before
 	 * issuing the request.
@@ -143,6 +152,134 @@ class ApiObjectFactory {
 	 */
 	static function faultServerError( $p_fault_string ) {
 		return ApiObjectFactory::fault( 'Server', $p_fault_string, HTTP_STATUS_INTERNAL_SERVER_ERROR );
+	}
+
+	/**
+	 * Generate fault based on provided exception.
+	 *
+	 * @param Exception $p_exception The exception to process.
+	 * @return RestFault|SoapFault The fault object.
+	 */
+	static function faultFromException( Exception $p_exception ) {
+		$t_code = $p_exception->getCode();
+
+		switch( $t_code ) {
+			case ERROR_NO_FILE_SPECIFIED:
+			case ERROR_FILE_DISALLOWED:
+			case ERROR_DUPLICATE_PROJECT:
+			case ERROR_EMPTY_FIELD:
+			case ERROR_INVALID_REQUEST_METHOD:
+			case ERROR_INVALID_SORT_FIELD:
+			case ERROR_INVALID_DATE_FORMAT:
+			case ERROR_INVALID_RESOLUTION:
+			case ERROR_FIELD_TOO_LONG:
+			case ERROR_CONFIG_OPT_NOT_FOUND:
+			case ERROR_CONFIG_OPT_CANT_BE_SET_IN_DB:
+			case ERROR_CONFIG_OPT_BAD_SYNTAX:
+			case ERROR_GPC_VAR_NOT_FOUND:
+			case ERROR_GPC_ARRAY_EXPECTED:
+			case ERROR_GPC_ARRAY_UNEXPECTED:
+			case ERROR_GPC_NOT_NUMBER:
+			case ERROR_FILE_TOO_BIG:
+			case ERROR_FILE_NOT_ALLOWED:
+			case ERROR_FILE_DUPLICATE:
+			case ERROR_FILE_NO_UPLOAD_FAILURE:
+			case ERROR_PROJECT_NAME_NOT_UNIQUE:
+			case ERROR_PROJECT_NAME_INVALID:
+			case ERROR_PROJECT_RECURSIVE_HIERARCHY:
+			case ERROR_USER_NAME_NOT_UNIQUE:
+			case ERROR_USER_CREATE_PASSWORD_MISMATCH:
+			case ERROR_USER_NAME_INVALID:
+			case ERROR_USER_DOES_NOT_HAVE_REQ_ACCESS:
+			case ERROR_USER_REAL_MATCH_USER:
+			case ERROR_USER_CHANGE_LAST_ADMIN:
+			case ERROR_USER_REAL_NAME_INVALID:
+			case ERROR_USER_EMAIL_NOT_UNIQUE:
+			case ERROR_BUG_DUPLICATE_SELF:
+			case ERROR_BUG_RESOLVE_DEPENDANTS_BLOCKING:
+			case ERROR_BUG_CONFLICTING_EDIT:
+			case ERROR_EMAIL_INVALID:
+			case ERROR_EMAIL_DISPOSABLE:
+			case ERROR_CUSTOM_FIELD_NAME_NOT_UNIQUE:
+			case ERROR_CUSTOM_FIELD_IN_USE:
+			case ERROR_CUSTOM_FIELD_INVALID_VALUE:
+			case ERROR_CUSTOM_FIELD_INVALID_DEFINITION:
+			case ERROR_CUSTOM_FIELD_NOT_LINKED_TO_PROJECT:
+			case ERROR_CUSTOM_FIELD_INVALID_PROPERTY:
+			case ERROR_CATEGORY_DUPLICATE:
+			case ERROR_CATEGORY_NO_ACTION:
+			case ERROR_CATEGORY_NOT_FOUND_FOR_PROJECT:
+			case ERROR_VERSION_DUPLICATE:
+			case ERROR_SPONSORSHIP_NOT_ENABLED:
+			case ERROR_SPONSORSHIP_AMOUNT_TOO_LOW:
+			case ERROR_SPONSORSHIP_SPONSOR_NO_EMAIL:
+			case ERROR_RELATIONSHIP_ALREADY_EXISTS:
+			case ERROR_RELATIONSHIP_SAME_BUG:
+			case ERROR_LOST_PASSWORD_CONFIRM_HASH_INVALID:
+			case ERROR_LOST_PASSWORD_NO_EMAIL_SPECIFIED:
+			case ERROR_LOST_PASSWORD_NOT_MATCHING_DATA:
+			case ERROR_SIGNUP_NOT_MATCHING_CAPTCHA:
+			case ERROR_TAG_DUPLICATE:
+			case ERROR_TAG_NAME_INVALID:
+			case ERROR_TAG_NOT_ATTACHED:
+			case ERROR_TAG_ALREADY_ATTACHED:
+			case ERROR_COLUMNS_DUPLICATE:
+			case ERROR_COLUMNS_INVALID:
+			case ERROR_API_TOKEN_NAME_NOT_UNIQUE:
+			case ERROR_INVALID_FIELD_VALUE:
+				return ApiObjectFactory::faultBadRequest( $p_exception->getMessage() );
+
+			case ERROR_BUG_NOT_FOUND:
+			case ERROR_FILE_NOT_FOUND:
+			case ERROR_BUGNOTE_NOT_FOUND:
+			case ERROR_PROJECT_NOT_FOUND:
+			case ERROR_USER_PREFS_NOT_FOUND:
+			case ERROR_USER_PROFILE_NOT_FOUND:
+			case ERROR_USER_BY_NAME_NOT_FOUND:
+			case ERROR_USER_BY_ID_NOT_FOUND:
+			case ERROR_USER_BY_EMAIL_NOT_FOUND:
+			case ERROR_USER_BY_REALNAME_NOT_FOUND:
+			case ERROR_NEWS_NOT_FOUND:
+			case ERROR_BUG_REVISION_NOT_FOUND:
+			case ERROR_CUSTOM_FIELD_NOT_FOUND:
+			case ERROR_CATEGORY_NOT_FOUND:
+			case ERROR_VERSION_NOT_FOUND:
+			case ERROR_SPONSORSHIP_NOT_FOUND:
+			case ERROR_RELATIONSHIP_NOT_FOUND:
+			case ERROR_FILTER_NOT_FOUND:
+			case ERROR_TAG_NOT_FOUND:
+			case ERROR_TOKEN_NOT_FOUND:
+				return ApiObjectFactory::faultNotFound( $p_exception->getMessage() );
+				
+			case ERROR_ACCESS_DENIED:
+			case ERROR_PROTECTED_ACCOUNT:
+			case ERROR_HANDLER_ACCESS_TOO_LOW:
+			case ERROR_USER_CURRENT_PASSWORD_MISMATCH:
+			case ERROR_AUTH_INVALID_COOKIE:
+			case ERROR_BUG_READ_ONLY_ACTION_DENIED:
+			case ERROR_LDAP_AUTH_FAILED:
+			case ERROR_LDAP_USER_NOT_FOUND:
+			case ERROR_CATEGORY_CANNOT_DELETE_DEFAULT:
+			case ERROR_CATEGORY_CANNOT_DELETE_HAS_ISSUES:
+			case ERROR_SPONSORSHIP_HANDLER_ACCESS_LEVEL_TOO_LOW:
+			case ERROR_SPONSORSHIP_ASSIGNER_ACCESS_LEVEL_TOO_LOW:
+			case ERROR_RELATIONSHIP_ACCESS_LEVEL_TO_DEST_BUG_TOO_LOW:
+			case ERROR_LOST_PASSWORD_NOT_ENABLED:
+			case ERROR_LOST_PASSWORD_MAX_IN_PROGRESS_ATTEMPTS_REACHED:
+			case ERROR_FORM_TOKEN_INVALID:
+				return ApiObjectFactory::faultForbidden( $p_exception->getMessage() );
+
+			case ERROR_SPAM_SUSPECTED:
+				return ApiObjectFactory::faultTooManyRequests( $p_exception->getMessage() );
+
+			case ERROR_CONFIG_OPT_INVALID:
+			case ERROR_FILE_INVALID_UPLOAD_PATH:
+				# TODO: These are configuration or db state errors.
+				return ApiObjectFactory::faultServerError( $p_exception->getMessage() );
+
+			default:
+				return ApiObjectFactory::faultServerError( $p_exception->getMessage() );
+		}
 	}
 
 	/**
@@ -188,7 +325,7 @@ class ApiObjectFactory {
 
 	/**
 	 * Checks if an object is a SoapFault
-	 * @param mixed $p_maybe_fault Object to check whether a SOAP fault.
+	 * @param mixed $p_maybe_fault Object to check whether it is a SOAP/REST fault.
 	 * @return boolean
 	 */
 	static function isFault( $p_maybe_fault ) {
@@ -205,6 +342,19 @@ class ApiObjectFactory {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Throw if the provided parameter is a SoapFault or RestFault/
+	 *
+	 * @param mixed $p_maybe_fault Object to check whether it is a SOAP/REST fault.
+	 * @return void
+	 * @throws LogacyApiFaultException
+	 */
+	static function throwIfFault( $p_maybe_fault ) {
+		if( ApiObjectFactory::isFault( $p_maybe_fault ) ) {
+			throw new LegacyApiFaultException( $p_maybe_fault->fault_string, $p_maybe_fault->status_code );
+		}
 	}
 }
 
@@ -459,24 +609,18 @@ function mci_get_project_view_state_id( $p_view_state ) {
 /**
  * Return user id
  * @param stdClass|array $p_user User.
- * @return integer user id
+ * @return integer user id or 0 if not found.
  */
 function mci_get_user_id( $p_user ) {
 	if( is_object( $p_user ) ) {
 		$p_user = ApiObjectFactory::objectToArray( $p_user );
 	}
 
-	$t_user_id = 0;
-
-	if( isset( $p_user['id'] ) && (int)$p_user['id'] != 0 ) {
-		$t_user_id = (int)$p_user['id'];
-	} elseif( isset( $p_user['name'] ) ) {
-		$t_user_id = user_get_id_by_name( $p_user['name'] );
-	} elseif( isset( $p_user['email'] ) ) {
-		$t_user_id = user_get_id_by_email( $p_user['email'] );
+	try {
+		return user_get_id_by_user_info( $p_user );
+	} catch( Exception $e ) {
+		return 0;
 	}
-
-	return $t_user_id;
 }
 
 /**
@@ -551,7 +695,7 @@ function mci_related_issue_as_array_by_id( $p_issue_id ) {
 function mci_get_user_lang( $p_user_id ) {
 	$t_lang = user_pref_get_pref( $p_user_id, 'language' );
 	if( $t_lang == 'auto' ) {
-		$t_lang = config_get( 'fallback_language' );
+		$t_lang = config_get_global( 'fallback_language' );
 	}
 	return $t_lang;
 }
@@ -662,7 +806,7 @@ function mci_sanitize_xml_string ( $p_input ) {
  * @return string MantisBT URL terminated by a /.
  */
 function mci_get_mantis_path() {
-	return config_get( 'path' );
+	return config_get_global( 'path' );
 }
 
 /**
@@ -797,95 +941,60 @@ function mci_get_category( $p_category_id ) {
 }
 
 /**
- * Convert a category name to a category id for a given project
+ * Convert a category name, or category object reference (array w/ id, name,
+ * or id + name) to a category id for a given project.
+ *
  * @param string|array $p_category Category name or array with id and/or name.
  * @param integer $p_project_id    Project id.
- * @return integer category id or 0 if not found
+ * @return integer|SoapFault|RestFault category id or error.
  */
 function mci_get_category_id( $p_category, $p_project_id ) {
-	if( !isset( $p_category ) ) {
-		return 0;
-	}
-
-	if( is_array( $p_category ) ) {
-		if( isset( $p_category['id'] ) ) {
-			if( category_exists( $p_category['id'] ) ) {
-				return $p_category['id'];
-			}
-		} else if( isset( $p_category['name'] ) ) {
-			$t_category_name = $p_category['name'];
-		} else {
+	$fn_get_category_id_internal = function( $p_category, $p_project_id ) {
+		if( !isset( $p_category ) ) {
 			return 0;
 		}
-	} else {
-		$t_category_name = $p_category;
-	}
 
-	$t_cat_array = category_get_all_rows( $p_project_id );
-	foreach( $t_cat_array as $t_category_row ) {
-		if( $t_category_row['name'] == $t_category_name ) {
-			return $t_category_row['id'];
+		$t_category_name = '';
+
+		if( is_array( $p_category ) ) {
+			if( isset( $p_category['id'] ) ) {
+				if( category_exists( $p_category['id'] ) ) {
+					return $p_category['id'];
+				}
+			} else if( isset( $p_category['name'] ) ) {
+				$t_category_name = $p_category['name'];
+			} else {
+				return 0;
+			}
+		} else {
+			$t_category_name = $p_category;
 		}
-	}
 
-	return 0;
-}
-
-/**
- * Basically this is a copy of core/filter_api.php#filter_db_get_available_queries().
- * The only difference is that the result of this function is not an array of filter
- * names but an array of filter structures.
- * @param integer $p_project_id Project id.
- * @param integer $p_user_id    User id.
- * @return array
- */
-function mci_filter_db_get_available_queries( $p_project_id = null, $p_user_id = null ) {
-	$t_overall_query_arr = array();
-
-	if( null === $p_project_id ) {
-		$t_project_id = helper_get_current_project();
-	} else {
-		$t_project_id = (int)$p_project_id;
-	}
-
-	if( null === $p_user_id ) {
-		$t_user_id = auth_get_current_user_id();
-	} else {
-		$t_user_id = (int)$p_user_id;
-	}
-
-	# If the user doesn't have access rights to stored queries, just return
-	if( !access_has_project_level( config_get( 'stored_query_use_threshold' ) ) ) {
-		return $t_overall_query_arr;
-	}
-
-	# Get the list of available queries. By sorting such that public queries are
-	# first, we can override any query that has the same name as a private query
-	# with that private one
-	$t_query = 'SELECT * FROM {filters}
-					WHERE (project_id=' . db_param() . '
-						OR project_id=0)
-					AND name!=\'\'
-					AND (is_public = ' . db_param() . '
-						OR user_id = ' . db_param() . ')
-					ORDER BY is_public DESC, name ASC';
-	$t_result = db_query( $t_query, array( $t_project_id, true, $t_user_id ) );
-	$t_query_count = db_num_rows( $t_result );
-
-	for( $i = 0;$i < $t_query_count;$i++ ) {
-		$t_row = db_fetch_array( $t_result );
-
-		$t_filter_detail = explode( '#', $t_row['filter_string'], 2 );
-		if( !isset($t_filter_detail[1]) ) {
-			continue;
+		$t_cat_array = category_get_all_rows( $p_project_id );
+		foreach( $t_cat_array as $t_category_row ) {
+			if( strcasecmp( $t_category_row['name'], $t_category_name ) == 0 ) {
+				return $t_category_row['id'];
+			}
 		}
-		$t_filter = json_decode( $t_filter_detail[1], true );
-		$t_filter = filter_ensure_valid_filter( $t_filter );
-		$t_row['url'] = filter_get_url( $t_filter );
-		$t_overall_query_arr[$t_row['name']] = $t_row;
+
+		return 0;
+	};
+
+	$t_category_id = $fn_get_category_id_internal( $p_category, $p_project_id );
+	if( $t_category_id == 0 && !config_get( 'allow_no_category' ) ) {
+		if( !isset( $p_category ) ) {
+			return ApiObjectFactory::faultBadRequest( 'Category field must be supplied.' );
+		}
+
+		# category may be a string, array with id, array with name, or array
+		# with id + name. Serialize to json to include in error message.
+		$t_cat_desc = json_encode( $p_category );
+
+		return ApiObjectFactory::faultBadRequest(
+			"Category '{$t_cat_desc}' not found." );
 	}
 
-	return array_values( $t_overall_query_arr );
+	return $t_category_id;
 }
 
 /**
@@ -937,6 +1046,47 @@ function mci_get_time_tracking_from_note( $p_issue_id, array $p_note ) {
 	}
 
 	return db_minutes_to_hhmm( $p_note['time_tracking'] );
+}
+
+/**
+ * Unhandled exception handler
+ *
+ * @param Exception|Error $p_exception The exception to handle
+ * @return void
+ */
+function mc_error_exception_handler( $p_exception ) {
+	if( is_a( $p_exception, 'Mantis\Exceptions\ClientException' ) ) {
+		$t_cause = 'Client';
+		$t_message = $p_exception->getMessage();
+		$t_log = false;
+	} else if( is_a( $p_exception, 'Mantis\Exceptions\MantisException' ) ) {
+		$t_cause = 'Server';
+		$t_message = $p_exception->getMessage();
+		$t_log = true;
+	} else {
+		$t_cause = 'Server';
+		$t_message = 'Internal Service Error';		
+		$t_log = true;
+	}
+
+	if( $t_log ) {
+		$t_stack_as_string = error_stack_trace_as_string( $p_exception );
+		$t_error_to_log =  $p_exception->getMessage() . "\n" . $t_stack_as_string;
+		error_log( $t_error_to_log );
+	}
+
+	$t_fault = htmlentities( $t_message );
+
+	echo <<<EOL
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+<SOAP-ENV:Body>
+	<SOAP-ENV:Fault>
+		<faultcode>SOAP-ENV:$t_cause</faultcode>
+		<faultstring>$t_fault</faultstring>
+	</SOAP-ENV:Fault>
+</SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+EOL;
 }
 
 /**
@@ -1136,4 +1286,14 @@ function mci_remove_empty_arrays( &$p_array ) {
 	foreach( $t_keys_to_remove as $t_key ) {
 		unset( $p_array[$t_key] );
 	}
+}
+
+/**
+ * Hash a string for etag.
+ *
+ * @param string $p_string The string to hash
+ * @return string The hash.
+ */
+function mci_etag_hash( $p_string ) {
+	return hash( 'sha256', $p_string );
 }

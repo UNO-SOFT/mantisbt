@@ -23,7 +23,7 @@
  *    the child bug has to be resolved before resolving the parent bug (the child bug "blocks" the parent bug)
  *    example: bug A is child bug of bug B. It means: A blocks B and B is blocked by A
  * * General relationship:
- *    two bugs related each other without any hierarchy dependance
+ *    two bugs related each other without any hierarchy dependence
  *    bugs A and B are related
  * * Duplicates:
  *    it's used to mark a bug as duplicate of an other bug already stored in the database
@@ -99,6 +99,8 @@ require_api( 'utility_api.php' );
 
 require_css( 'status_config.php' );
 
+use Mantis\Exceptions\ClientException;
+
 /**
  * RelationshipData Structure Definition
  */
@@ -138,6 +140,7 @@ $g_relationships = array();
 $g_relationships[BUG_DEPENDANT] = array(
 	'#forward' => true,
 	'#complementary' => BUG_BLOCKS,
+	'#name' => 'parent-of',
 	'#description' => 'dependant_on',
 	'#notify_added' => 'email_notification_title_for_action_dependant_on_relationship_added',
 	'#notify_deleted' => 'email_notification_title_for_action_dependant_on_relationship_deleted',
@@ -149,6 +152,7 @@ $g_relationships[BUG_DEPENDANT] = array(
 $g_relationships[BUG_BLOCKS] = array(
 	'#forward' => false,
 	'#complementary' => BUG_DEPENDANT,
+	'#name' => 'child-of',
 	'#description' => 'blocks',
 	'#notify_added' => 'email_notification_title_for_action_blocks_relationship_added',
 	'#notify_deleted' => 'email_notification_title_for_action_blocks_relationship_deleted',
@@ -160,6 +164,7 @@ $g_relationships[BUG_BLOCKS] = array(
 $g_relationships[BUG_DUPLICATE] = array(
 	'#forward' => true,
 	'#complementary' => BUG_HAS_DUPLICATE,
+	'#name' => 'duplicate-of',
 	'#description' => 'duplicate_of',
 	'#notify_added' => 'email_notification_title_for_action_duplicate_of_relationship_added',
 	'#notify_deleted' => 'email_notification_title_for_action_duplicate_of_relationship_deleted',
@@ -171,12 +176,14 @@ $g_relationships[BUG_DUPLICATE] = array(
 $g_relationships[BUG_HAS_DUPLICATE] = array(
 	'#forward' => false,
 	'#complementary' => BUG_DUPLICATE,
+	'#name' => 'has-duplicate',
 	'#description' => 'has_duplicate',
 	'#notify_added' => 'email_notification_title_for_action_has_duplicate_relationship_added',
 	'#notify_deleted' => 'email_notification_title_for_action_has_duplicate_relationship_deleted',
 );
 $g_relationships[BUG_RELATED] = array(
 	'#forward' => true,
+	'#name' => 'related-to',
 	'#complementary' => BUG_RELATED,
 	'#description' => 'related_to',
 	'#notify_added' => 'email_notification_title_for_action_related_to_relationship_added',
@@ -185,6 +192,23 @@ $g_relationships[BUG_RELATED] = array(
 
 if( file_exists( config_get_global( 'config_path' ) . 'custom_relationships_inc.php' ) ) {
 	include_once( config_get_global( 'config_path' ) . 'custom_relationships_inc.php' );
+}
+
+/**
+ * Ensure that specified relationship type is valid.
+ *
+ * @param integer $p_retlationship_type The relationship type id.
+ * @return void
+ */
+function relationship_type_ensure_valid( $p_relationship_type ) {
+	global $g_relationships;
+
+	if( !is_numeric( $p_relationship_type ) || !isset( $g_relationships[$p_relationship_type] ) ) {
+		throw new ClientException(
+			sprintf( "Relation type '%s' not found.", $p_relationship_type ),
+			ERROR_RELATIONSHIP_NOT_FOUND
+		);
+	}
 }
 
 /**
@@ -591,9 +615,7 @@ function relationship_get_linked_bug_id( $p_relationship_id, $p_bug_id ) {
  */
 function relationship_get_description_src_side( $p_relationship_type ) {
 	global $g_relationships;
-	if( !isset( $g_relationships[$p_relationship_type] ) ) {
-		trigger_error( ERROR_RELATIONSHIP_NOT_FOUND, ERROR );
-	}
+	relationship_type_ensure_valid( $p_relationship_type );
 	return lang_get( $g_relationships[$p_relationship_type]['#description'] );
 }
 
@@ -604,9 +626,10 @@ function relationship_get_description_src_side( $p_relationship_type ) {
  */
 function relationship_get_description_dest_side( $p_relationship_type ) {
 	global $g_relationships;
-	if( !isset( $g_relationships[$p_relationship_type] ) || !isset( $g_relationships[$g_relationships[$p_relationship_type]['#complementary']] ) ) {
-		trigger_error( ERROR_RELATIONSHIP_NOT_FOUND, ERROR );
-	}
+
+	relationship_type_ensure_valid( $p_relationship_type );
+	relationship_type_ensure_valid( $g_relationships[$p_relationship_type]['#complementary'] );
+
 	return lang_get( $g_relationships[$g_relationships[$p_relationship_type]['#complementary']]['#description'] );
 }
 
@@ -617,6 +640,53 @@ function relationship_get_description_dest_side( $p_relationship_type ) {
  */
 function relationship_get_description_for_history( $p_relationship_code ) {
 	return relationship_get_description_src_side( $p_relationship_code );
+}
+
+/**
+ * Get class API name of a relationship as it's stored in the history.
+ * @param integer $p_relationship_type Relationship Type.
+ * @return string Relationship API name
+ */
+function relationship_get_name_for_api( $p_relationship_type ) {
+	global $g_relationships;
+
+	if( !isset( $g_relationships[$p_relationship_type] ) ) {
+		switch( $p_relationship_type ) {
+			case BUG_REL_NONE:
+				return 'none';
+			case BUG_REL_ANY:
+				return 'any';
+			default:
+				# This will trigger the invalid relationship type exception.
+				relationship_type_ensure_valid( $p_relationship_type );
+		}
+	}
+
+	return $g_relationships[$p_relationship_type]['#name'];
+}
+
+/**
+ * Get relationship type id given its API name.
+ *
+ * @param string $p_relationship_type_name relationship type name.
+ * @return integer relationship type id
+ * @throws ClientException unknown relationship type name.
+ */
+function relationship_get_id_from_api_name( $p_relationship_type_name ) {
+	global $g_relationships;
+
+	$t_relationship_type_name = strtolower( $p_relationship_type_name );
+	foreach( $g_relationships as $t_id => $t_relationship ) {
+		if( $t_relationship['#name'] == $t_relationship_type_name ) {
+			return $t_id;
+		}
+	}
+
+	throw new ClientException(
+		sprintf( "Unknown relationship type '%s'", $p_relationship_type_name ),
+		ERROR_INVALID_FIELD_VALUE,
+		array( 'relationship_type' )
+	);
 }
 
 /**

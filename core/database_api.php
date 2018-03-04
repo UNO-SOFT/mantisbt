@@ -37,15 +37,12 @@ require_api( 'error_api.php' );
 require_api( 'logging_api.php' );
 require_api( 'utility_api.php' );
 
-define( 'ADODB_DIR', config_get( 'library_path' ) . 'adodb' );
-require_lib( 'adodb' . DIRECTORY_SEPARATOR . 'adodb.inc.php' );
-
 # An array in which all executed queries are stored.  This is used for profiling
 # @global array $g_queries_array
 $g_queries_array = array();
 
 
-# Stores whether a database connection was succesfully opened.
+# Stores whether a database connection was successfully opened.
 # @global bool $g_db_connected
 $g_db_connected = false;
 
@@ -133,6 +130,11 @@ function db_connect( $p_dsn, $p_hostname = null, $p_username = null, $p_password
 	$t_db_type = config_get_global( 'db_type' );
 	$g_db_functional_type = db_get_type( $t_db_type );
 
+	if( $g_db_functional_type == DB_TYPE_UNDEFINED ) {
+		error_parameters( 0, 'Database type is not supported by MantisBT, check $g_db_type in config_inc.php' );
+		trigger_error( ERROR_DB_CONNECT_FAILED, ERROR );
+	}
+
 	if( !db_check_database_support( $t_db_type ) ) {
 		error_parameters( 0, 'PHP Support for database is not enabled' );
 		trigger_error( ERROR_DB_CONNECT_FAILED, ERROR );
@@ -187,17 +189,11 @@ function db_is_connected() {
  */
 function db_check_database_support( $p_db_type ) {
 	switch( $p_db_type ) {
-		case 'mysql':
-			$t_support = function_exists( 'mysql_connect' );
-			break;
 		case 'mysqli':
 			$t_support = function_exists( 'mysqli_connect' );
 			break;
 		case 'pgsql':
 			$t_support = function_exists( 'pg_connect' );
-			break;
-		case 'mssql':
-			$t_support = function_exists( 'mssql_connect' );
 			break;
 		case 'mssqlnative':
 			$t_support = function_exists( 'sqlsrv_connect' );
@@ -221,14 +217,10 @@ function db_check_database_support( $p_db_type ) {
  */
 function db_get_type( $p_driver_type ) {
 	switch( $p_driver_type ) {
-		case 'mysql':
 		case 'mysqli':
 			return DB_TYPE_MYSQL;
-		case 'postgres':
-		case 'postgres7':
 		case 'pgsql':
 			return DB_TYPE_PGSQL;
-		case 'mssql':
 		case 'mssqlnative':
 		case 'odbc_mssql':
 			return DB_TYPE_MSSQL;
@@ -683,7 +675,7 @@ function db_error_msg() {
 }
 
 /**
- * send both the error number and error message and query (optional) as paramaters for a triggered error
+ * send both the error number and error message and query (optional) as parameters for a triggered error
  * @param string $p_query Query that generated the error.
  * @return void
  * @todo Use/Behaviour of this function should be reviewed before 1.2.0 final
@@ -704,7 +696,7 @@ function db_error( $p_query = null ) {
 function db_close() {
 	global $g_db;
 
-	$t_result = $g_db->Close();
+	$g_db->Close();
 }
 
 /**
@@ -718,18 +710,12 @@ function db_prepare_string( $p_string ) {
 	$t_db_type = config_get_global( 'db_type' );
 
 	switch( $t_db_type ) {
-		case 'mssql':
 		case 'mssqlnative':
 		case 'odbc_mssql':
-		case 'ado_mssql':
 			return addslashes( $p_string );
-		case 'mysql':
 		case 'mysqli':
 			$t_escaped = $g_db->qstr( $p_string, false );
 			return utf8_substr( $t_escaped, 1, utf8_strlen( $t_escaped ) - 2 );
-		case 'postgres':
-		case 'postgres64':
-		case 'postgres7':
 		case 'pgsql':
 			return pg_escape_string( $p_string );
 		case 'oci8':
@@ -752,15 +738,10 @@ function db_prepare_binary_string( $p_string ) {
 	$t_db_type = config_get_global( 'db_type' );
 
 	switch( $t_db_type ) {
-		case 'mssql':
 		case 'odbc_mssql':
-		case 'ado_mssql':
 			$t_content = unpack( 'H*hex', $p_string );
 			return '0x' . $t_content['hex'];
 			break;
-		case 'postgres':
-		case 'postgres64':
-		case 'postgres7':
 		case 'pgsql':
 			return $g_db->BlobEncode( $p_string );
 			break;
@@ -1082,19 +1063,48 @@ function db_oracle_order_binds_sequentially( $p_query ) {
  */
 function db_oracle_adapt_query_syntax( $p_query, array &$p_arr_parms = null ) {
 	# Remove "AS" keyword, because not supported with table aliasing
-	$t_is_odd = true;
+	# - Do not remove text literal within "'" quotes
+	# - Will remove all "AS", except when it's part of a "CAST(x AS y)" expression
+	#   To do so, we will assume that the "AS" following a "CAST", is safe to be kept.
+	#   Using a counter for "CAST" appearances to allow nesting: CAST(CAST(x AS y) AS z)
+
+	# split the string by the relevant delimiters. The delimiters will be part of the splitted array
+	$t_parts = preg_split("/(')|( AS )|(CAST\s*\()/mi", $p_query, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+	$t_is_literal = false;
+	$t_cast = 0;
 	$t_query = '';
-	# Divide statement to skip processing string literals
-	$t_p_query_arr = explode( '\'', $p_query );
-	foreach( $t_p_query_arr as $t_p_query_part ) {
-		if( $t_query != '' ) {
-			$t_query .= '\'';
+	foreach( $t_parts as $t_part ) {
+		# if quotes, switch literal flag
+		if( $t_part == '\'' ) {
+			$t_is_literal = !$t_is_literal;
+			$t_query .= $t_part;
+			continue;
 		}
-		if( $t_is_odd ) {
-			$t_query .= preg_replace( '/ AS /im', ' ', $t_p_query_part );
+		# if this part is litereal, do not change
+		if( $t_is_literal ) {
+			$t_query .= $t_part;
+			continue;
 		} else {
-			$t_query .= $t_p_query_part;
-			$t_is_odd = true;
+			# if there is "CAST" delimiter, flag the counter
+			if( preg_match( '/^CAST\s*\($/i', $t_part ) ) {
+				$t_cast++;
+				$t_query .= $t_part;
+				continue;
+			}
+			# if there is "AS"
+			if( strcasecmp( $t_part, ' AS ' ) == 0 ) {
+				# if there's a previous CAST, keep the AS
+				if( $t_cast > 0 ) {
+					$t_cast--;
+					$t_query .= $t_part;
+				} else {
+					# otherwise, remove the " AS ", replace by a space
+					$t_query .= ' ';
+				}
+				continue;
+			}
+			$t_query .= $t_part;
+			continue;
 		}
 	}
 	$p_query = $t_query;

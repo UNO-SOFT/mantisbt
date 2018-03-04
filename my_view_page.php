@@ -69,8 +69,9 @@ html_robots_noindex();
 
 layout_page_header_begin( lang_get( 'my_view_link' ) );
 
-if( current_user_get_pref( 'refresh_delay' ) > 0 ) {
-	html_meta_redirect( 'my_view_page.php?refresh=true', current_user_get_pref( 'refresh_delay' ) * 60 );
+$t_refresh_delay = current_user_get_pref( 'refresh_delay' );
+if( $t_refresh_delay > 0 ) {
+	html_meta_redirect( 'my_view_page.php?refresh=true', $t_refresh_delay * 60 );
 }
 
 layout_page_header_end();
@@ -98,10 +99,9 @@ $t_two_columns_applied = false;
 
 define( 'MY_VIEW_INC_ALLOW', true );
 
-# First, filter out the non-visible boxes
-$t_box_titles = array();
 foreach( $t_boxes as $t_box_title => $t_box_display ) {
-	# don't display bugs that are set as 0
+# while (list ($t_box_title, $t_box_display) = each ($t_boxes)) {
+		# don't display bugs that are set as 0
 	if ($t_box_display == 0) {
 		continue;
 	}

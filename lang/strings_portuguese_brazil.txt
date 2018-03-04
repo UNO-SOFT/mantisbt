@@ -38,6 +38,7 @@
  * @ingroup Language
  * @file
  *
+ * @author Athena in Wonderland
  * @author Caçador de Palavras
  * @author Dianakc
  * @author Eduardo Addad de Oliveira
@@ -99,6 +100,8 @@ $s_excel_export = 'Exportação para Excel';
 $s_login_anonymously = 'Acesso anônimo';
 $s_anonymous = 'Anônimo';
 $s_jump_to_bugnotes = 'Ir para as Anotações';
+$s_jump_to_history = 'Ir para o Histórico';
+$s_display_history = 'Exibir histórico';
 $s_public_project_msg = 'Este projeto é PÚBLICO.  Todos os usuários tem acesso.';
 $s_private_project_msg = 'Este projeto é PRIVADO.  Somente administradores e usuários adicionados manualmente tem acesso.';
 $s_access_level_project = 'Nível de Acesso ao Projeto';
@@ -526,7 +529,7 @@ $s_warning_change_setting = '<strong>Aviso:</strong> "%1$s" não está definido 
 $s_warning_security_hazard = 'Este é um risco de segurança em potencial, pois ele pode expor informações confidenciais.';
 $s_warning_integrity_hazard = 'Isto fará com que MantisBT para continuar quando ocorre erros e pode levar a problemas de integridade de sistema/dados.';
 $s_warning_debug_email = '<strong>Aviso:</strong> "<code>debug_email</code>" não está definido para <code>OFF</code>, todos os e-mails de notificação será enviada para "%1$s".';
-$s_error_database_no_schema_version = '<strong>Error:</strong> A estrutura do banco de dados parece estar desatualizado (config(databaseversion) is 0) ou corrompido. Por favor verifique se o seu banco de dados está sendo executado - não podemos recuperar a versão do esquema do banco de dados. Tabela de configuração não retornou uma versão do esquema do banco de dados válida - por favor, pedir apoio na lista de discussão mantis-ajuda, se necessário.';
+$s_error_database_no_schema_version = '<strong>Ero:</strong> Sua versão do esquema do banco de dados é 0. Isso pode acontecer porque o banco de dados está corrompido ou o valor de "database_version" não pode ser recuperado da tabela de configuração ou a estrutura do banco de dados é de uma versão desatualizada do MantisBT (pré 1.0.0).';
 $s_error_database_version_out_of_date_2 = '<strong>AVISO:</strong> A estrutura da base de dados pode estar desatualizada. Por favor atualize <a href="admin/install.php">aqui</a> antes de entrar.';
 $s_error_code_version_out_of_date = '<strong>AVISO:</strong> A estrutura da base de dados está mais atualizada que o código instalado. Por favor atualize o código.';
 $s_login_page_info = 'Bem-vindo ao Gerenciador de Tarefas.';
@@ -757,7 +760,7 @@ $s_version_updated_msg = 'A versão foi atualizada com sucesso...';
 $s_account_delete_protected_msg = 'Conta protegida. Não se pode apagar esta conta.';
 $s_account_deleted_msg = 'Conta apagada...';
 $s_delete_account_sure_msg = 'Você tem certeza que deseja apagar esta conta?';
-$s_notify_user = 'Notificar Usuário';
+$s_notify_user = 'Notificar o usuário dessa mudança';
 $s_accounts_pruned_msg = 'Todas as contas que nunca foram acessadas e foram criadas há mais do que uma semana foram removidas';
 $s_prune_accounts_button = 'Apagar contas velhas';
 $s_confirm_account_pruning = 'Você tem certeza que deseja apagar as contas velhas que nunca foram acessadas?';
@@ -913,6 +916,7 @@ $s_total_time = 'Tempo total';
 $s_developer_stats = 'Estatísticas de Desenvolvedores';
 $s_reporter_stats = 'Estatísticas de Relatores';
 $s_orct = '(aberto/resolvido/fechado/total)';
+$s_summary_header = 'aberta/resolvida/fechada/total/proporção resolvida/proporção';
 $s_any = 'qualquer';
 $s_all = 'todos';
 $s_show = 'Exibir';
@@ -1044,6 +1048,7 @@ $s_kb = 'kB';
 $s_attachment_missing = 'Anexo em falta';
 $s_attachment_count = 'Contagem de anexos';
 $s_view_attachments_for_issue = 'Ver %1$d anexo(s) do problema #%2$d';
+$s_warning_update_custom_field_type = '<strong>Aviso:</strong> O campo personalizado "%1$s" já possui valores armazenados. Alterar o tipo de campo pode causar erros e comportamento inesperado se os valores existentes não forem consistentes com o novo tipo do campo. Para prosseguir, clique no botão abaixo';
 $s_phpmailer_language = 'br';
 $s_sponsors = '%1$d patrocinador(es)';
 $s_sponsorship_added = 'Patrocínio Adicionado';
@@ -1224,11 +1229,13 @@ $s_overdue_since = 'Atrasado desde %1$s';
 $s_view_account_title = 'Informação do Usuário';
 $s_manage_user = 'Gerenciar Usuário';
 $s_install_information = 'Informação de Instalação do MantisBT';
-$s_database_information = 'Informação de Base de Dados do MantisBT';
+$s_database_information = 'Informação do banco de dados MantisBT';
 $s_path_information = 'Informação de Caminho do MantisBT';
 $s_mantisbt_database_statistics = 'Estatísticas do banco de dados MantisBT';
 $s_php_version = 'Versão PHP';
 $s_adodb_version = 'Versão ADOdb';
+$s_database_driver = 'Controlador de base de dados';
+$s_database_version_description = 'Versão do banco de dados, descrição';
 $s_month_january = 'Janeiro';
 $s_month_february = 'Fevereiro';
 $s_month_march = 'Março';
@@ -1284,6 +1291,8 @@ $MANTIS_ERROR[ERROR_PROJECT_NAME_NOT_UNIQUE] = 'Um projeto com este nome já exi
 $MANTIS_ERROR[ERROR_PROJECT_NAME_INVALID] = 'Nome inválido de projeto especificado.  Nomes de projeto não pode ser em branco.';
 $MANTIS_ERROR[ERROR_USER_BY_NAME_NOT_FOUND] = 'Usuário de nome "%1$s" não foi encontrado.';
 $MANTIS_ERROR[ERROR_USER_BY_ID_NOT_FOUND] = 'Usuário com id "%1$d" não foi encontrado.';
+$MANTIS_ERROR[ERROR_USER_BY_EMAIL_NOT_FOUND] = 'O usuário com o correio eletrônico "%1$s" não foi encontrado.';
+$MANTIS_ERROR[ERROR_USER_BY_REALNAME_NOT_FOUND] = 'O usuário com o nome real "%1$s" não foi encontrado.';
 $MANTIS_ERROR[ERROR_AUTH_INVALID_COOKIE] = 'A informação de login armazenada pelo seu navegador é inválida.  Talvez sua conta tenha sido apagada?';
 $MANTIS_ERROR[ERROR_USER_PREFS_NOT_FOUND] = 'As preferências deste usuário não foram encontradas.';
 $MANTIS_ERROR[ERROR_NEWS_NOT_FOUND] = 'Notícia não encontrada.';
@@ -1376,7 +1385,6 @@ $MANTIS_ERROR[ERROR_PLUGIN_INVALID_FILE] = 'O formato do arquivo de plugin espec
 $MANTIS_ERROR[ERROR_PLUGIN_GENERIC] = 'Ocorreu um erro desconhecido "%1$s" durante a execução do plugin "%2$s".';
 $MANTIS_ERROR[ERROR_COLUMNS_DUPLICATE] = 'Campo "%1$s" contém uma duplicação da coluna "%2$s".';
 $MANTIS_ERROR[ERROR_COLUMNS_INVALID] = 'Campo "%1$s" contém o campo "%2$s" inválido.';
-$MANTIS_ERROR[ERROR_SESSION_HANDLER_INVALID] = 'Manipulador de sessão inválido.';
 $MANTIS_ERROR[ERROR_SESSION_VAR_NOT_FOUND] = 'A variável de sessão "%1$s" não foi encontrada.';
 $MANTIS_ERROR[ERROR_SESSION_NOT_VALID] = 'Sua sessão foi invalidada.';
 $MANTIS_ERROR[ERROR_FORM_TOKEN_INVALID] = 'Token de segurança do formulário inválido. Isso pode ter sido provocado por esgotamento do tempo da seção, ou acidentamente, por enviar o formulário duas vezes.';

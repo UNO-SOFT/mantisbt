@@ -86,7 +86,7 @@ if( auth_is_user_authenticated() && !current_user_is_anonymous() ) {
 	if( !is_blank( $f_return ) ) {
 		print_header_redirect( $f_return, false, false, true );
 	} else {
-		print_header_redirect( config_get( 'default_home_page' ) );
+		print_header_redirect( config_get_global( 'default_home_page' ) );
 	}
 }
 
@@ -115,11 +115,7 @@ layout_login_page_begin();
 <div class="col-md-offset-3 col-md-6 col-sm-10 col-sm-offset-1">
 	<div class="login-container">
 		<div class="space-12 hidden-480"></div>
-		<a href="<?php echo config_get( 'logo_url' ) ?>">
-			<h1 class="center white">
-				<img src="<?php echo helper_mantis_url( config_get( 'logo_image' ) ); ?>">
-			</h1>
-		</a>
+		<?php layout_login_page_logo() ?>
 		<div class="space-24 hidden-480"></div>
 <?php
 if( $f_error || $f_cookie_error ) {
@@ -170,20 +166,8 @@ if( config_get_global( 'admin_checks' ) == ON ) {
 	}
 
 	$t_config = 'show_detailed_errors';
-	if( config_get( $t_config ) != OFF ) {
+	if( config_get_global( $t_config ) != OFF ) {
 		$t_warnings[] = debug_setting_message( 'security', $t_config, 'OFF' );
-	}
-	$t_config = 'display_errors';
-	$t_errors = config_get_global( $t_config );
-	if( !(
-			isset( $t_errors[E_ALL] ) && $t_errors[E_ALL] == DISPLAY_ERROR_HALT
-		 ||	isset( $t_errors[E_USER_ERROR] ) && $t_errors[E_USER_ERROR] == DISPLAY_ERROR_HALT
-		 )
-	) {
-		$t_warnings[] = debug_setting_message(
-			'integrity',
-			$t_config . '[E_USER_ERROR]',
-			DISPLAY_ERROR_HALT );
 	}
 
 	# since admin directory and db_upgrade lists are available check for missing db upgrades

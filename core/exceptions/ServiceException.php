@@ -1,4 +1,4 @@
-/*
+<?php
 # MantisBT - A PHP based bugtracking system
 
 # MantisBT is free software: you can redistribute it and/or modify
@@ -13,17 +13,23 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with MantisBT.  If not, see <http://www.gnu.org/licenses/>.
-*/
-/* included only when we don't want to use fonts from google server */
-@font-face {
-  font-family: 'Open Sans';
-  font-style: normal;
-  font-weight: 300;
-  src: local('Open Sans Light'), local('OpenSans-Light'), url(../fonts/DXI1ORHCpsQm3Vp6mXoaTXhCUOGz7vYGh680lGh-uXM.woff) format('woff');
-}
-@font-face {
-  font-family: 'Open Sans';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Open Sans'), local('OpenSans'), url(../fonts/cJZKeOuBrn4kERxqtaUH3T8E0i7KZn-EPnyo3HZu7kw.woff) format('woff');
+
+namespace Mantis\Exceptions;
+
+/**
+ * An exception that is triggered due to a Mantis error.
+ */
+class ServiceException extends MantisException {
+    /**
+     * Constructor
+     *
+     * @param string $p_message The internal non-localized error message.
+     * @param integer $p_code The Mantis error code.
+     * @param array $p_params Localized error message parameters.
+     * @param Throwable $p_previous The inner exception.
+     * @return void
+     */
+	function __construct( $p_message, $p_code, $p_params = array(), Throwable $p_previous = null ) {
+		parent::__construct( $p_message, $p_code, $p_params, $p_previous );
+	}
 }

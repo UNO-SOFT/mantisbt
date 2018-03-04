@@ -111,7 +111,7 @@ function print_header_redirect( $p_url, $p_die = true, $p_sanitize = false, $p_a
 		if( $p_sanitize ) {
 			$t_url = string_sanitize_url( $p_url, true );
 		} else {
-			$t_url = config_get( 'path' ) . $p_url;
+			$t_url = config_get_global( 'path' ) . $p_url;
 		}
 	}
 
@@ -215,13 +215,16 @@ function print_user_with_subject( $p_user_id, $p_bug_id ) {
 		return;
 	}
 
-	$t_username = user_get_name( $p_user_id );
+	$t_username = user_get_username( $p_user_id );
+	$t_name = user_get_name( $p_user_id );
+
 	if( user_exists( $p_user_id ) && user_get_field( $p_user_id, 'enabled' ) ) {
 		$t_email = user_get_email( $p_user_id );
-		print_email_link_with_subject( $t_email, $t_username, $p_bug_id );
+		print_email_link_with_subject( $t_email, $t_username, $t_name, $p_bug_id );
 	} else {
+		$t_name = string_attribute( $t_name );
 		echo '<span class="user" style="text-decoration: line-through">';
-		echo $t_username;
+		echo '<a title="' . $t_name . '">' . $t_username . '</a>';
 		echo '</span>';
 	}
 }
@@ -304,31 +307,21 @@ function print_user_option_list( $p_user_id, $p_project_id = null, $p_access = A
 
 	$t_display = array();
 	$t_sort = array();
-	$t_show_realname = ( ON == config_get( 'show_realname' ) );
-	$t_sort_by_last_name = ( ON == config_get( 'sort_by_last_name' ) );
+
 	foreach( $t_users as $t_key => $t_user ) {
-		$t_user_name = string_attribute( $t_user['username'] );
-		$t_sort_name = utf8_strtolower( $t_user_name );
-		if( $t_show_realname && ( $t_user['realname'] <> '' ) ) {
-			$t_user_name = string_attribute( $t_user['realname'] );
-			if( $t_sort_by_last_name ) {
-				$t_sort_name_bits = explode( ' ', utf8_strtolower( $t_user_name ), 2 );
-				$t_sort_name = ( isset( $t_sort_name_bits[1] ) ? $t_sort_name_bits[1] . ', ' : '' ) . $t_sort_name_bits[0];
-			} else {
-				$t_sort_name = utf8_strtolower( $t_user_name );
-			}
-		}
-		$t_display[] = $t_user_name;
-		$t_sort[] = $t_sort_name;
+		$t_display[] = user_get_expanded_name_from_row( $t_user );
+		$t_sort[] = user_get_name_for_sorting_from_row( $t_user );
 	}
+
 	array_multisort( $t_sort, SORT_ASC, SORT_STRING, $t_users, $t_display );
 	unset( $t_sort );
+
 	$t_count = count( $t_users );
 	for( $i = 0;$i < $t_count;$i++ ) {
 		$t_row = $t_users[$i];
 		echo '<option value="' . $t_row['id'] . '" ';
 		check_selected( $p_user_id, (int)$t_row['id'] );
-		echo '>' . $t_display[$i] . '</option>';
+		echo '>' . string_attribute( $t_display[$i] ) . '</option>';
 	}
 }
 
@@ -1108,6 +1101,26 @@ function print_language_option_list( $p_language ) {
 }
 
 /**
+ * Print option list of available font choices
+ * @param string $p_font The current font.
+ * @return void
+ */
+function print_font_option_list( $p_font ) {
+	if ( config_get_global( 'cdn_enabled' ) == ON ) {
+		$t_arr = config_get( 'font_family_choices' );
+	} else {
+		$t_arr = config_get( 'font_family_choices_local' );
+	}
+	$t_enum_count = count( $t_arr );
+	for( $i = 0;$i < $t_enum_count;$i++ ) {
+		$t_font = string_attribute( $t_arr[$i] );
+		echo '<option value="' . $t_font . '"';
+		check_selected( $t_font, $p_font );
+		echo '>' . $t_font . '</option>';
+	}
+}
+
+/**
  * Print a dropdown list of all bug actions available to a user for a specified
  * set of projects.
  * @param array $p_project_ids An array containing one or more project IDs.
@@ -1115,7 +1128,7 @@ function print_language_option_list( $p_language ) {
  */
 function print_all_bug_action_option_list( array $p_project_ids = null ) {
 	$t_commands = bug_group_action_get_commands( $p_project_ids );
-	while( list( $t_action_id, $t_action_label ) = each( $t_commands ) ) {
+	foreach ( $t_commands as $t_action_id => $t_action_label) {
 		echo '<option value="' . $t_action_id . '">' . $t_action_label . '</option>';
 	}
 }
@@ -1130,7 +1143,7 @@ function print_all_bug_action_option_list( array $p_project_ids = null ) {
 function print_project_user_list_option_list( $p_project_id = null ) {
 	$t_users = user_get_unassigned_by_project_id( $p_project_id );
 	foreach( $t_users as $t_id=>$t_name ) {
-		echo '<option value="' . $t_id . '">' . $t_name . '</option>';
+		echo '<option value="' . $t_id . '">' . string_attribute( $t_name ) . '</option>';
 	}
 }
 
@@ -1401,29 +1414,25 @@ function print_manage_project_sort_link( $p_page, $p_string, $p_field, $p_dir, $
  * @see form_security_token()
  * @return void
  */
-function print_form_button( $p_action_page, $p_label, $p_args_to_post = null, $p_security_token = null, $p_class = '' ) {
+function print_form_button( $p_action_page, $p_label, array $p_args_to_post = null, $p_security_token = null, $p_class = '' ) {
 	$t_form_name = explode( '.php', $p_action_page, 2 );
 	# TODO: ensure all uses of print_button supply arguments via $p_args_to_post (POST)
 	# instead of via $p_action_page (GET). Then only add the CSRF form token if
 	# arguments are being sent via the POST method.
-	echo '<form method="post" action="', htmlspecialchars( $p_action_page ), '" class="form-inline">';
+	echo '<form method="post" action="', htmlspecialchars( $p_action_page ), '" class="form-inline inline single-button-form">';
 	echo '<fieldset>';
 	if( $p_security_token !== OFF ) {
 		echo form_security_field( $t_form_name[0], $p_security_token );
 	}
 	if( $p_class !== '') {
-		echo '<input type="submit" class="' . $p_class . '" value="', $p_label, '" />';
+		$t_class = $p_class;
 	} else {
-		echo '<input type="submit" class="btn btn-primary btn-xs btn-white btn-round" value="', $p_label, '" />';
+		$t_class = 'btn btn-primary btn-xs btn-white btn-round';
 	}
-
-	if( $p_args_to_post !== null ) {
-		foreach( $p_args_to_post as $t_var => $t_value ) {
-			echo '<input type="hidden" name="' . $t_var .
-				'" value="' . htmlentities( $t_value ) . '" />';
-		}
+	echo '<button type="submit" class="' . $t_class . '">' . $p_label . '</button>';
+	if( $p_args_to_post ) {
+		print_hidden_inputs( $p_args_to_post );
 	}
-
 	echo '</fieldset>';
 	echo '</form>';
 }
@@ -1435,26 +1444,6 @@ function print_form_button( $p_action_page, $p_label, $p_args_to_post = null, $p
  */
 function print_bracket_link_prepared( $p_link ) {
 	echo '<span class="bracket-link">[&#160;' . $p_link . '&#160;]</span> ';
-}
-
-/**
- * print the bracketed links used near the top
- * if the $p_link is blank then the text is printed but no link is created
- * if $p_new_window is true, link will open in a new window, default false.
- * @param string  $p_link       The URL to link to.
- * @param string  $p_url_text   The text to display.
- * @param boolean $p_new_window Whether to open in a new window.
- * @param string  $p_class      CSS class to use with the link.
- * @return void
- */
-function print_bracket_link( $p_link, $p_url_text, $p_new_window = false, $p_class = '' ) {
-	echo '<span class="bracket-link';
-	if( $p_class !== '' ) {
-		echo ' bracket-link-',$p_class; # prefix on a container allows styling of whole link, including brackets
-	}
-	echo '">[&#160;';
-	print_link( $p_link, $p_url_text, $p_new_window, $p_class );
-	echo '&#160;]</span> ';
 }
 
 /**
@@ -1649,39 +1638,35 @@ function get_email_link( $p_email, $p_text ) {
  *
  * @param string $p_email  Email Address.
  * @param string $p_text   Link text to display to user.
+ * @param string $p_tooltip The tooltip to show.
  * @param string $p_bug_id The bug identifier.
  * @return void
  */
-function print_email_link_with_subject( $p_email, $p_text, $p_bug_id ) {
+function print_email_link_with_subject( $p_email, $p_text, $p_tooltip, $p_bug_id ) {
+	if( !is_blank( $p_tooltip ) && $p_tooltip != $p_text ) {
+		$t_tooltip = ' title="' . $p_tooltip . '"';
+	} else {
+		$t_tooltip = '';
+	}
+
 	$t_bug = bug_get( $p_bug_id, true );
 	if( !access_has_project_level( config_get( 'show_user_email_threshold', null, null, $t_bug->project_id ), $t_bug->project_id ) ) {
-		echo $p_text;
+		echo $t_tooltip != '' ? '<a' . $t_tooltip . '>' . $p_text . '</a>' : $p_text;
 		return;
 	}
-	$t_subject = email_build_subject( $p_bug_id );
-	echo get_email_link_with_subject( $p_email, $p_text, $t_subject );
-}
 
-/**
- * return the mailto: href string link instead of printing it
- * add subject line
- *
- * @param string $p_email   Email Address.
- * @param string $p_text    Link text to display to user.
- * @param string $p_subject Email subject line.
- * @return string
- */
-function get_email_link_with_subject( $p_email, $p_text, $p_subject ) {
+	$t_subject = email_build_subject( $p_bug_id );
+
 	# If we apply string_url() to the whole mailto: link then the @
 	# gets turned into a %40 and you can't right click in browsers to
 	# do Copy Email Address.  If we don't apply string_url() to the
 	# subject text then an ampersand (for example) will truncate the text
-	$t_subject = string_url( $p_subject );
+	$t_subject = string_url( $t_subject );
 	$t_email = string_url( $p_email );
 	$t_mailto = string_attribute( 'mailto:' . $t_email . '?subject=' . $t_subject );
 	$t_text = string_display( $p_text );
 
-	return '<a class="user" href="' . $t_mailto . '">' . $t_text . '</a>';
+	echo '<a class="user" href="' . $t_mailto . '"' . $t_tooltip . '>' . $t_text . '</a>';
 }
 
 /**
@@ -1791,7 +1776,6 @@ function print_file_icon( $p_filename ) {
  * @return void
  */
 function print_rss( $p_feed_url, $p_title = '' ) {
-	$t_path = config_get( 'path' );
 	echo '<a class="rss" rel="alternate" href="', htmlspecialchars( $p_feed_url ), '" title="', $p_title, '"><i class="fa fa-rss fa-lg orange" alt="', $p_title, '"></i></a>';
 }
 
@@ -1842,7 +1826,7 @@ function get_dropdown( array $p_control_array, $p_control_name, $p_match = '', $
 	if( $p_add_any ) {
 		array_unshift_assoc( $p_control_array, META_FILTER_ANY, lang_trans( '[any]' ) );
 	}
-	while( list( $t_name, $t_desc ) = each( $p_control_array ) ) {
+	foreach ( $p_control_array as $t_name => $t_desc ) {
 		$t_sel = '';
 		if( is_array( $p_match ) ) {
 			if( in_array( $t_name, array_values( $p_match ) ) || in_array( $t_desc, array_values( $p_match ) ) ) {
@@ -1990,7 +1974,7 @@ function print_bug_attachment_preview_text( array $p_attachment ) {
 		default:
 			trigger_error( ERROR_GENERIC, ERROR );
 	}
-	echo htmlspecialchars( $t_content );
+	echo htmlspecialchars( $t_content, ENT_SUBSTITUTE, 'UTF-8' );
 	echo '</pre>';
 }
 

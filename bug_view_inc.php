@@ -107,7 +107,7 @@ if( $t_show_page_header ) {
 
 $t_action_button_position = config_get( 'action_button_position' );
 
-$t_bugslist = gpc_get_cookie( config_get( 'bug_list_cookie' ), false );
+$t_bugslist = gpc_get_cookie( config_get_global( 'bug_list_cookie' ), false );
 
 $t_show_versions = version_should_show_product_version( $t_bug->project_id );
 $t_show_product_version = $t_show_versions && in_array( 'product_version', $t_fields );
@@ -147,7 +147,13 @@ $t_form_title = lang_get( 'bug_view_title' );
 $t_wiki_link = config_get_global( 'wiki_enable' ) == ON ? 'wiki.php?id=' . $f_bug_id : '';
 
 if( access_has_bug_level( config_get( 'view_history_threshold' ), $f_bug_id ) ) {
-	$t_history_link = 'view.php?id=' . $f_bug_id . '&history=1#history';
+	if( $f_history ) {
+		$t_history_link = '#history';
+		$t_history_label = lang_get( 'jump_to_history' );
+	} else {
+		$t_history_link = 'view.php?id=' . $f_bug_id . '&history=1#history';
+		$t_history_label = lang_get( 'display_history' );
+	}
 } else {
 	$t_history_link = '';
 }
@@ -170,7 +176,7 @@ $t_date_submitted = $t_show_date_submitted ? date( config_get( 'normal_date_form
 $t_show_last_updated = in_array( 'last_updated', $t_fields );
 $t_last_updated = $t_show_last_updated ? date( config_get( 'normal_date_format' ), $t_bug->last_updated ) : '';
 
-$t_show_tags = in_array( 'tags', $t_fields ) && access_has_global_level( config_get( 'tag_view_threshold' ) );
+$t_show_tags = in_array( 'tags', $t_fields ) && access_has_bug_level( config_get( 'tag_view_threshold' ), $t_bug_id );
 
 $t_bug_overdue = bug_is_overdue( $f_bug_id );
 
@@ -247,9 +253,6 @@ echo '<div class="widget-body">';
 echo '<div class="widget-toolbox padding-8 clearfix noprint">';
 echo '<div class="btn-group pull-left">';
 
-# Jump to Bugnotes
-print_small_button( '#bugnotes', lang_get( 'jump_to_bugnotes' ) );
-
 # Send Bug Reminder
 if( $t_show_reminder_link ) {
 	print_small_button( $t_bug_reminder_link, lang_get( 'bug_reminder' ) );
@@ -275,10 +278,12 @@ foreach ( $t_links as $t_plugin => $t_hooks ) {
 	}
 }
 
-# Links
+# Jump to Bugnotes
+print_small_button( '#bugnotes', lang_get( 'jump_to_bugnotes' ) );
+
+# Display or Jump to History
 if( !is_blank( $t_history_link ) ) {
-	# History
-	print_small_button( $t_history_link, lang_get( 'bug_history' ) );
+	print_small_button( $t_history_link, $t_history_label );
 }
 
 echo '</div>';

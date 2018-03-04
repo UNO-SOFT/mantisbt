@@ -105,6 +105,8 @@ $s_excel_export = 'Excel Export';
 $s_login_anonymously = 'Login Anonymously';
 $s_anonymous = 'Anonymous';
 $s_jump_to_bugnotes = 'Jump to Notes';
+$s_jump_to_history = 'Jump to History';
+$s_display_history = 'Display History';
 $s_public_project_msg = 'This project is public. All users have access.';
 $s_private_project_msg = 'This project is private. Only administrators and manually added users have access.';
 $s_access_level_project = 'Project Access Level';
@@ -405,6 +407,7 @@ $s_email_on_priority_change = 'E-mail on Priority Change';
 $s_email_bugnote_limit = 'E-mail Notes Limit';
 $s_email_full_issue_details = 'E-mail Full Issue Details';
 $s_language = 'Language';
+$s_font_family = 'Font Family';
 $s_update_prefs_button = 'Update Prefs';
 $s_reset_prefs_button = 'Reset Prefs';
 $s_timezone = 'Time Zone';
@@ -531,7 +534,7 @@ $s_bugnote_add_resolve_button = 'Add Note';
 $s_from = 'From';
 $s_to = 'To';
 $s_sent_you_this_reminder_about = 'sent you this reminder about';
-$s_bug_reminder = 'Send a reminder';
+$s_bug_reminder = 'Send a Reminder';
 $s_reminder_sent_to = 'Reminder sent to';
 $s_reminder_sent_none = 'No reminders could be sent';
 $s_reminder_list_truncated = 'recipients list truncated';
@@ -965,7 +968,7 @@ $s_account_deleted_msg = 'Account deleted...';
 $s_delete_account_sure_msg = 'Are you sure you wish to delete this account?';
 
 # manage_user_edit_page.php
-$s_notify_user = 'Notify User';
+$s_notify_user = 'Notify user of this change';
 
 # manage_user_prune.php
 $s_accounts_pruned_msg = 'All accounts that have never logged in and are older than 1 week have been removed';
@@ -1191,6 +1194,7 @@ $s_total_time = 'Total time';
 $s_developer_stats = 'Developer Stats';
 $s_reporter_stats = 'Reporter Stats';
 $s_orct = '(open/resolved/closed/total)';
+$s_summary_header = 'open/resolved/closed/total/resolved ratio/ratio';
 
 # view_all_bug_page.php
 $s_any = 'any';
@@ -1339,6 +1343,7 @@ $s_kb = 'KB';
 $s_attachment_missing = 'Attachment missing';
 $s_attachment_count = 'Attachment count';
 $s_view_attachments_for_issue = 'View %1$d attachment(s) for issue #%2$d';
+$s_warning_update_custom_field_type = '<strong>Warning:</strong> Custom field "%1$s" already has stored values. Changing field type may cause errors and unexpected behaviour if existing values are not consistent with the field\'s new type. To proceed, click the button below';
 
 # PHPMailer
 $s_phpmailer_language = 'en';
@@ -1575,6 +1580,8 @@ $s_path_information = 'MantisBT Path Information';
 $s_mantisbt_database_statistics = 'MantisBT Database Statistics';
 $s_php_version = 'PHP Version';
 $s_adodb_version = 'ADOdb Version';
+$s_database_driver = 'Database Driver';
+$s_database_version_description = 'Database Version, Description';
 
 # months
 $s_month_january = 'January';
@@ -1620,6 +1627,7 @@ $MANTIS_ERROR[ERROR_FILE_DISALLOWED] = 'The file type is disallowed.';
 $MANTIS_ERROR[ERROR_NO_DIRECTORY] = 'The directory does not exist. Please check the project settings.';
 $MANTIS_ERROR[ERROR_DUPLICATE_PROJECT] = 'A project with that name already exists.';
 $MANTIS_ERROR[ERROR_EMPTY_FIELD] = 'A necessary field "%1$s" was empty. Please recheck your inputs.';
+$MANTIS_ERROR[ERROR_INVALID_FIELD_VALUE] = 'Invalid value for \'%1$s\'';
 $MANTIS_ERROR[ERROR_PROTECTED_ACCOUNT] = 'This account is protected. You are not allowed to access this until the account protection is lifted.';
 $MANTIS_ERROR[ERROR_ACCESS_DENIED] = 'Access Denied.';
 $MANTIS_ERROR[ERROR_UPLOAD_FAILURE] = 'File upload failed. File is not readable by MantisBT. Please check the project settings.';
@@ -1639,6 +1647,8 @@ $MANTIS_ERROR[ERROR_PROJECT_NAME_NOT_UNIQUE] = 'A project with that name already
 $MANTIS_ERROR[ERROR_PROJECT_NAME_INVALID] = 'Invalid project name specified. Project names cannot be blank.';
 $MANTIS_ERROR[ERROR_USER_BY_NAME_NOT_FOUND] = 'User with name "%1$s" not found.';
 $MANTIS_ERROR[ERROR_USER_BY_ID_NOT_FOUND] = 'User with id "%1$d" not found.';
+$MANTIS_ERROR[ERROR_USER_BY_EMAIL_NOT_FOUND] = 'User with email "%1$s" not found.';
+$MANTIS_ERROR[ERROR_USER_BY_REALNAME_NOT_FOUND] = 'User with real name "%1$s" not found.';
 $MANTIS_ERROR[ERROR_AUTH_INVALID_COOKIE] = 'The login information stored by your browser is invalid. Perhaps your account was deleted?';
 $MANTIS_ERROR[ERROR_USER_PREFS_NOT_FOUND] = 'Preferences could not be found for this user.';
 $MANTIS_ERROR[ERROR_NEWS_NOT_FOUND] = 'News item not found.';
@@ -1731,7 +1741,6 @@ $MANTIS_ERROR[ERROR_PLUGIN_INVALID_FILE] = 'The format of the specified plugin f
 $MANTIS_ERROR[ERROR_PLUGIN_GENERIC] = 'There was an unknown error "%1$s" during execution of the "%2$s" plugin.';
 $MANTIS_ERROR[ERROR_COLUMNS_DUPLICATE] = 'Field "%1$s" contains duplicate column "%2$s".';
 $MANTIS_ERROR[ERROR_COLUMNS_INVALID] = 'Field "%1$s" contains invalid field "%2$s".';
-$MANTIS_ERROR[ERROR_SESSION_HANDLER_INVALID] = 'Invalid session handler.';
 $MANTIS_ERROR[ERROR_SESSION_VAR_NOT_FOUND] = 'Session variable "%1$s" not found.';
 $MANTIS_ERROR[ERROR_SESSION_NOT_VALID] = 'Your session has become invalidated.';
 $MANTIS_ERROR[ERROR_FORM_TOKEN_INVALID] = 'Invalid form security token. This could be caused by a session timeout, or accidentally submitting the form twice.';

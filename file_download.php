@@ -156,10 +156,6 @@ $t_upload_method = config_get( 'file_upload_method' );
 $t_filename = file_get_display_name( $v_filename );
 
 # Content headers
-
-# If finfo is available (always true for PHP >= 5.3.0) we can use it to determine the MIME type of files
-$t_finfo = finfo_get_if_available();
-
 $t_content_type = $v_file_type;
 
 $t_content_type_override = file_get_content_type_override( $t_filename );
@@ -168,14 +164,12 @@ $t_file_info_type = false;
 switch( $t_upload_method ) {
 	case DISK:
 		$t_local_disk_file = file_normalize_attachment_path( $v_diskfile, $t_project_id );
-		if( file_exists( $t_local_disk_file ) && $t_finfo ) {
-			$t_file_info_type = $t_finfo->file( $t_local_disk_file );
+		if( file_exists( $t_local_disk_file ) ) {
+			$t_file_info_type = file_get_mime_type( $t_local_disk_file );
 		}
 		break;
 	case DATABASE:
-		if ( $t_finfo ) {
-			$t_file_info_type = $t_finfo->buffer( $v_content );
-		}
+		$t_file_info_type = file_get_mime_type_for_content( $v_content );
 		break;
 	default:
 		trigger_error( ERROR_GENERIC, ERROR );
@@ -198,7 +192,9 @@ $t_mime_force_inline = array(
 	'application/pdf' );
 $t_mime_force_attachment = array( 'application/x-shockwave-flash', 'text/html' );
 
-$t_mime_type = substr( $t_content_type, 0, strpos( $t_content_type, ';' ) );
+# extract mime type from content type
+$t_mime_type = explode( ';', $t_content_type, 2 );
+$t_mime_type = $t_mime_type[0];
 
 if( in_array( $t_mime_type, $t_mime_force_inline ) ) {
 	$t_show_inline = true;

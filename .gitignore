@@ -31,6 +31,7 @@ plugins/*
 .project
 .settings
 .idea/
+.vscode/
 *.kdev4
 nbproject/
 
@@ -39,11 +40,16 @@ nbproject/
 
 # IIS7
 web.config
-!library/securimage/web.config
 
-# Libraries
+# Libraries (outdated or installed via Composer)
 library/FirePHPCore
 library/ezc
+library/adodb
+library/disposable
+library/parsedown
+library/phpmailer
+library/securimage
+api/rest/swagger
 
 # Composer
 /vendor/

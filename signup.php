@@ -74,8 +74,6 @@ if( !auth_signup_enabled() ) {
 if( ON == config_get( 'signup_use_captcha' ) && get_gd_version() > 0 &&
 	helper_call_custom_function( 'auth_can_change_password', array() ) ) {
 	# captcha image requires GD library and related option to ON
-	require_lib( 'securimage/securimage.php' );
-
 	$t_securimage = new Securimage();
 	if( $t_securimage->check( $f_captcha ) == false ) {
 		trigger_error( ERROR_SIGNUP_NOT_MATCHING_CAPTCHA, ERROR );
@@ -95,11 +93,7 @@ layout_login_page_begin();
 	<div class="col-md-offset-3 col-md-6 col-sm-10 col-sm-offset-1">
 		<div class="login-container">
 			<div class="space-12 hidden-480"></div>
-			<a href="<?php echo config_get( 'logo_url' ) ?>">
-				<h1 class="center white">
-					<img src="<?php echo helper_mantis_url( config_get( 'logo_image' ) ); ?>">
-				</h1>
-			</a>
+			<?php layout_login_page_logo() ?>
 			<div class="space-24 hidden-480"></div>
 
 			<div class="position-relative">

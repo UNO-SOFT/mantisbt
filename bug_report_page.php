@@ -540,7 +540,7 @@ if( $t_show_attachments ) {
 			<span class="required">*</span><label for="summary"><?php print_documentation_link( 'summary' ) ?></label>
 		</th>
 		<td>
-			<input <?php echo helper_get_tab_index() ?> type="text" id="summary" name="summary" size="105" maxlength="128" value="<?php echo string_attribute( $f_summary ) ?>" />
+			<input <?php echo helper_get_tab_index() ?> type="text" id="summary" name="summary" size="105" maxlength="128" value="<?php echo string_attribute( $f_summary ) ?>" required />
 		</td>
 	</tr>
 	<tr>
@@ -548,7 +548,7 @@ if( $t_show_attachments ) {
 			<span class="required">*</span><label for="description"><?php print_documentation_link( 'description' ) ?></label>
 		</th>
 		<td>
-			<textarea class="form-control" <?php echo helper_get_tab_index() ?> id="description" name="description" cols="80" rows="10"><?php echo string_textarea( $f_description ) ?></textarea>
+			<textarea class="form-control" <?php echo helper_get_tab_index() ?> id="description" name="description" cols="80" rows="10" required><?php echo string_textarea( $f_description ) ?></textarea>
 		</td>
 	</tr>
 
@@ -593,8 +593,6 @@ if( $t_show_attachments ) {
 		if( ( $t_def['display_report'] || $t_def['require_report']) && custom_field_has_write_access_to_project( $t_id, $t_project_id ) ) {
 			$t_custom_fields_found = true;
 
-			$t_required_class = $t_def['require_report'] ? 'class="required" ' : '';
-
 			if( $t_def['type'] != CUSTOM_FIELD_TYPE_RADIO && $t_def['type'] != CUSTOM_FIELD_TYPE_CHECKBOX ) {
 				$t_label_for = 'for="custom_field_' . string_attribute( $t_def['id'] ) . '" ';
 			} else {
@@ -611,7 +609,7 @@ if( $t_show_attachments ) {
 			<?php } else { echo string_display( lang_get_defaulted( $t_def['name'] ) ); } ?>
 		</th>
 		<td>
-			<?php print_custom_field_input( $t_def, ( $f_master_bug_id === 0 ) ? null : $f_master_bug_id ) ?>
+			<?php print_custom_field_input( $t_def, ( $f_master_bug_id === 0 ) ? null : $f_master_bug_id, $t_def['require_report'] ) ?>
 		</td>
 	</tr>
 <?php
@@ -656,12 +654,12 @@ if( $t_show_attachments ) {
 		<td>
 			<label>
 				<input <?php echo helper_get_tab_index() ?> type="radio" class="ace" name="view_state" value="<?php echo VS_PUBLIC ?>" <?php check_checked( $f_view_state, VS_PUBLIC ) ?> />
-				<span class="lbl"> <?php echo lang_get( 'public' ) ?> </span>
+				<span class="lbl padding-6"><?php echo lang_get( 'public' ) ?></span>
 			</label>
 			&#160;&#160;&#160;&#160;
 			<label>
 				<input <?php echo helper_get_tab_index() ?> type="radio" class="ace" name="view_state" value="<?php echo VS_PRIVATE ?>" <?php check_checked( $f_view_state, VS_PRIVATE ) ?> />
-				<span class="lbl"> <?php echo lang_get( 'private' ) ?> </span>
+				<span class="lbl padding-6"><?php echo lang_get( 'private' ) ?></span>
 			</label>
 		</td>
 	</tr>
@@ -688,12 +686,12 @@ if( $t_show_attachments ) {
 		<td>
 			<label>
 				<input <?php echo helper_get_tab_index() ?> type="checkbox" class="ace" id="copy_notes_from_parent" name="copy_notes_from_parent" <?php check_checked( $f_copy_notes_from_parent ) ?> />
-				<span class="lbl"> <?php echo lang_get( 'copy_notes_from_parent' ) ?> </span>
+				<span class="lbl padding-6"><?php echo lang_get( 'copy_notes_from_parent' ) ?></span>
 			</label>
 			&#160;&#160;&#160;&#160;
 			<label>
 				<input <?php echo helper_get_tab_index() ?> type="checkbox" class="ace" id="copy_attachments_from_parent" name="copy_attachments_from_parent" <?php check_checked( $f_copy_attachments_from_parent ) ?> />
-				<span class="lbl"> <?php echo lang_get( 'copy_attachments_from_parent' ) ?> </span>
+				<span class="lbl padding-6"><?php echo lang_get( 'copy_attachments_from_parent' ) ?></span>
 			</label>
 		</td>
 	</tr>
@@ -707,7 +705,7 @@ if( $t_show_attachments ) {
 		<td>
 			<label>
 				<input <?php echo helper_get_tab_index() ?> type="checkbox" class="ace" id="report_stay" name="report_stay" <?php check_checked( $f_report_stay ) ?> />
-				<span class="lbl"> <?php echo lang_get( 'check_report_more_bugs' ) ?> </span>
+				<span class="lbl padding-6"><?php echo lang_get( 'check_report_more_bugs' ) ?></span>
 			</label>
 		</td>
 	</tr>

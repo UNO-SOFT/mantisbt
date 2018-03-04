@@ -283,16 +283,16 @@ layout_page_begin();
 			continue;
 		}
 		$t_has_write_access = custom_field_has_write_access( $t_id, $f_bug_id );
-		$t_class_required = $t_require && $t_has_write_access ? 'class="required"' : '';
 ?>
 	<tr>
 		<th class="category">
+			<?php if( $t_require && $t_has_write_access ) {?><span class="required">*</span><?php } ?>
 			<?php echo lang_get_defaulted( $t_def['name'] ) ?>
 		</th>
 		<td>
 <?php
 			if( $t_has_write_access ) {
-				print_custom_field_input( $t_def, $f_bug_id );
+				print_custom_field_input( $t_def, $f_bug_id, $t_require );
 			} elseif( custom_field_has_read_access( $t_id, $f_bug_id ) ) {
 				print_custom_field_value( $t_def, $t_id, $f_bug_id );
 			}
@@ -333,19 +333,23 @@ layout_page_begin();
 		printf( '	<input type="hidden" name="resolution" value="%s" />' . "\n", config_get( 'bug_reopen_resolution' ) );
 	}
 ?>
-<?php if( access_has_bug_level( config_get( 'private_bugnote_threshold' ), $f_bug_id ) ) { ?>
+<?php
+	$t_default_bugnote_view_status = config_get( 'default_bugnote_view_status' );
+	$t_bugnote_private = $t_default_bugnote_view_status == VS_PRIVATE;
+	$t_bugnote_class = $t_bugnote_private ? 'form-control bugnote-private' : 'form-control';
+
+	if( access_has_bug_level( config_get( 'private_bugnote_threshold' ), $f_bug_id ) ) { ?>
 			<tr>
 				<th class="category">
 					<?php echo lang_get( 'view_status' ) ?>
 				</th>
 				<td>
 <?php
-		$t_default_bugnote_view_status = config_get( 'default_bugnote_view_status' );
 		if( access_has_bug_level( config_get( 'set_view_status_threshold' ), $f_bug_id ) ) {
 ?>
 			<input type="checkbox" id="bugnote_add_view_status" class="ace" name="private"
 				<?php check_checked( $t_default_bugnote_view_status, VS_PRIVATE ); ?> />
-			<label class="lbl" for="bugnote_add_view_status"> <?php echo lang_get( 'private' ) ?> </label>
+			<label class="lbl padding-6" for="bugnote_add_view_status"><?php echo lang_get( 'private' ) ?></label>
 <?php
 		} else {
 			echo get_enum_element( 'project_view_state', $t_default_bugnote_view_status );
@@ -360,7 +364,7 @@ layout_page_begin();
 					<?php echo lang_get( 'add_bugnote_title' ) ?>
 				</th>
 				<td>
-					<textarea class="form-control" name="bugnote_text" id="bugnote_text" cols="80" rows="10"></textarea>
+					<textarea name="bugnote_text" id="bugnote_text" class="<?php echo $t_bugnote_class ?>" cols="80" rows="7"></textarea>
 				</td>
 			</tr>
 <?php
@@ -391,6 +395,7 @@ layout_page_begin();
 </div>
 </div>
 <div class="widget-toolbox padding-8 clearfix">
+	<span class="required pull-right"> * <?php echo lang_get( 'required' ) ?></span>
 	<input type="submit" class="btn btn-primary btn-white btn-round" value="<?php echo lang_get( $t_status_label . '_bug_button' ) ?>" />
 </div>
 </div>
