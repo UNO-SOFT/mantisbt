@@ -774,6 +774,12 @@ $g_email_separator2 = str_pad('', 70, '-');
  */
 $g_email_padding_length	= 28;
 
+/**
+ * Duration (in days) to retry failed emails before deleting them from queue.
+ * @global integer $g_email_retry_in_days
+ */
+$g_email_retry_in_days = 7;
+
 ###########################
 # MantisBT Version String #
 ###########################
@@ -1400,6 +1406,13 @@ $g_default_project_view_status = VS_PUBLIC;
  */
 $g_default_bug_view_status = VS_PUBLIC;
 
+/**
+ * Default value for bug description field used on bug report page.
+ *
+ * @global string $g_default_bug_description
+ */
+ $g_default_bug_description = '';
+ 
 /**
  * Default value for steps to reproduce field.
  * @global string $g_default_bug_steps_to_reproduce
@@ -4346,7 +4359,7 @@ $g_global_settings = array(
 	'ldap_simulation_file_path', 'plugin_path', 'bottom_include_page', 'top_include_page',
 	'default_home_page', 'logout_redirect_page', 'manual_url', 'logo_url', 'wiki_engine_url',
 	'cdn_enabled', 'public_config_names', 'email_login_enabled', 'email_ensure_unique',
-	'impersonate_user_threshold'
+	'impersonate_user_threshold', 'email_retry_in_days'
 );
 
 /**
@@ -4431,6 +4444,7 @@ $g_public_config_names = array(
 	'date_partitions',
 	'datetime_picker_format',
 	'default_bug_additional_info',
+	'default_bug_description',
 	'default_bug_eta',
 	'default_bug_priority',
 	'default_bug_projection',

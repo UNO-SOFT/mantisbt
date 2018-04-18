@@ -45,8 +45,6 @@
  * @uses php_api.php
  * @uses user_pref_api.php
  * @uses wiki_api.php
- * @uses utf8/utf8.php
- * @uses utf8/str_pad.php
  */
 
 /**
@@ -65,13 +63,29 @@ if( file_exists( 'mantis_offline.php' ) && !isset( $_GET['mbadmin'] ) ) {
 
 $g_request_time = microtime( true );
 
+# Load supplied constants
+require_once( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'constant_inc.php' );
+
+# Enforce our minimum PHP requirements
+if( version_compare( PHP_VERSION, PHP_MIN_VERSION, '<' ) ) {
+	echo '<strong>FATAL ERROR: Your version of PHP is too old. '
+		. 'MantisBT requires ' . PHP_MIN_VERSION . ' or newer</strong><br />'
+		. 'Your are running PHP version <em>' . PHP_VERSION . '</em>';
+	die();
+}
+
+# Enforce PHP mbstring extension
+if( !extension_loaded( 'mbstring' ) ) {
+	echo '<strong>FATAL ERROR: PHP mbstring extension is not enabled.</strong><br />'
+		. 'MantisBT requires this extension for Unicode (UTF-8) support<br />'
+		. 'http://www.php.net/manual/en/mbstring.installation.php';
+	die();
+}
+
 ob_start();
 
 # Load Composer autoloader
 require_once( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'vendor/autoload.php' );
-
-# Load supplied constants
-require_once( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'constant_inc.php' );
 
 # Include default configuration settings
 require_once( dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'config_defaults_inc.php' );
@@ -207,22 +221,8 @@ function autoload_mantis( $p_class ) {
 # Register the autoload function to make it effective immediately
 spl_autoload_register( 'autoload_mantis' );
 
-# Load UTF8-capable string functions
-define( 'UTF8', $g_library_path . 'utf8' );
-require_lib( 'utf8/utf8.php' );
-require_lib( 'utf8/str_pad.php' );
-
 # Include PHP compatibility file
 require_api( 'php_api.php' );
-
-# Enforce our minimum PHP requirements
-if( version_compare( PHP_VERSION, PHP_MIN_VERSION, '<' ) ) {
-	@ob_end_clean();
-	echo '<strong>FATAL ERROR: Your version of PHP is too old. '
-		. 'MantisBT requires ' . PHP_MIN_VERSION . ' or newer</strong><br />'
-		. 'Your are running PHP version <em>' . PHP_VERSION . '</em>';
-	die();
-}
 
 # Ensure that output is blank so far (output at this stage generally denotes
 # that an error has occurred)
