@@ -1004,7 +1004,7 @@ function filter_deserialize( $p_serialized_filter ) {
 	# in this case, the filter version field inside the array is to be used
 	# and if not present, set the current filter version
 
-	# check fitler version mark
+	# check filter version mark
 	$t_setting_arr = explode( '#', $p_serialized_filter, 2 );
 	$t_version_string = $t_setting_arr[0];
 	if( in_array( $t_version_string, array( 'v1', 'v2', 'v3', 'v4' ) ) ) {
@@ -1483,7 +1483,6 @@ function filter_get_bug_rows_query_clauses( array $p_filter, $p_project_id = nul
 
 	$t_limit_reporters = config_get( 'limit_reporters' );
 	$t_report_bug_threshold = config_get( 'report_bug_threshold' );
-	$t_where_param_count = 0;
 
 	$t_current_user_id = auth_get_current_user_id();
 
@@ -1503,8 +1502,6 @@ function filter_get_bug_rows_query_clauses( array $p_filter, $p_project_id = nul
 	}
 
 	$t_filter = filter_ensure_valid_filter( $p_filter );
-
-	$t_view_type = $t_filter['_view_type'];
 
 	db_param_push();
 
@@ -2774,7 +2771,7 @@ function filter_db_update_filter( $p_filter_id, $p_filter_string, $p_project_id 
 
 /**
  * Add a filter to the database.
- * This fucntion does not perform any validation on access or inserted data
+ * This function does not perform any validation on access or inserted data
  *
  * @param string $p_filter_string  Filter string in filter-serialized format
  * @param integer $p_user_id      User id owner of the filter
@@ -2913,16 +2910,6 @@ function filter_db_get_name( $p_filter_id ) {
 	}
 
 	return $t_filter_row['name'];
-}
-
-/**
- * Check if the specified filter id exists.
- *
- * @return true: exists, false: otherwise.
- */
-function filter_exists( $p_filter_id ) {
-	$t_filter = filter_cache_row( $p_filter_id, /* trigger_errors */ false );
-	return is_array( $t_filter );
 }
 
 /**
@@ -3096,6 +3083,8 @@ function filter_db_get_available_queries( $p_project_id = null, $p_user_id = nul
 		if( !$t_filter_obj ) {
 			continue;
 		}
+
+		$t_row = filter_get_row( $t_filter_id );
 		$t_row['criteria'] = $t_filter_obj;
 		$t_row['url'] = filter_get_url( $t_filter_obj );
 		$t_filter_data[$t_filter_name] = $t_row;
@@ -3945,7 +3934,7 @@ function filter_is_temporary( array $p_filter ) {
  * temporary filter by its session key.
  * The parameter can be ither an existing key, so its used directly,
  * or a filter array, which can contain a property with the key
- * If a filter is provided that does not contain the key proeprty, an empty
+ * If a filter is provided that does not contain the key property, an empty
  * string is returned.
  * @param array|string $p_key_or_filter	Either a string key, or a filter array
  * @return string|null	Formatted parameter string, or null

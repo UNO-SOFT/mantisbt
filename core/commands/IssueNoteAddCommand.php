@@ -243,11 +243,7 @@ class IssueNoteAddCommand extends Command {
 		}
 
 		# Handle the file upload
-		if( count( $this->files > 0 ) ) {
-			$t_file_infos = file_attach_files( $this->issue->id, $this->files );
-		} else {
-			$t_file_infos = array();
-		}
+		$t_file_infos = file_attach_files( $this->issue->id, $this->files );
 
 		# We always set the note time to BUGNOTE, and the API will overwrite it with TIME_TRACKING
 		# if time tracking is not 0 and the time tracking feature is enabled.
@@ -314,9 +310,6 @@ class IssueNoteAddCommand extends Command {
 		if( !is_array( $this->files ) ) {
 			$this->files = array();
 		}
-
-		$t_files_invalid_fields = array();
-		$t_files_required_fields = array();
 
 		$t_files_required_fields = array( 'name', 'tmp_name' );
 		foreach( $this->files as $t_file ) {

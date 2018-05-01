@@ -183,7 +183,7 @@ function print_successful_redirect( $p_redirect_to ) {
  * Print avatar image for the given user ID
  *
  * @param integer $p_user_id 		A user identifier.
- * @param string $p_class_prefix	CSS classs prefix.
+ * @param string $p_class_prefix	CSS class prefix.
  * @param integer $p_size    		Image pixel size.
  * @return void
  */
@@ -1248,7 +1248,7 @@ function print_custom_field_projects_list( $p_field_id ) {
  * @return void
  */
 function print_plugin_priority_list( $p_priority ) {
-	if( $p_priority < 1 && $p_priority > 5 ) {
+	if( $p_priority < 1 || $p_priority > 5 ) {
 		echo '<option value="', $p_priority, '" selected="selected">', $p_priority, '</option>';
 	}
 
