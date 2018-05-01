@@ -1390,7 +1390,7 @@ function print_column_status( BugData $p_bug, $p_columns_target = COLUMNS_TARGET
 	$t_current_user = auth_get_current_user_id();
 	# choose color based on status
 	$status_label = html_get_status_css_class( $p_bug->status, $t_current_user, $p_bug->project_id );
-	echo '<td class="column-status">';
+	echo '<td class="column-status ' . $status_label . '">';
 	echo '<div class="align-left">';
 	echo '<i class="fa fa-square fa-status-box ' . $status_label . '"></i> ';
 	printf( '<span title="%s">%s</span>',
