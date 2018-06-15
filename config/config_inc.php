@@ -81,7 +81,7 @@ $g_bug_reminder_threshold = 20;
 
 $g_max_file_size = 20000000;
 $g_disallowed_files = trim($g_disallowed_files . ','
-						   . 'php,php3,phtml,html,class,java,exe,pl', ',');
+						   . 'msg,php,php3,phtml,html,class,java,exe,pl', ',');
 $g_preview_attachments_inline_max_size = 10240;
 
 
