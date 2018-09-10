@@ -113,15 +113,15 @@ $g_show_timer = ON;
 define( 'MAX_EVENTS', 5 );
 $g_my_view_bug_count = 30;
 
-$g_my_view_boxes = array (
-	'assigned'	  => '1',
-	'unassigned'	=> '2',
-	'reported'	  => '3',
-	'monitored'	 => '4',
-	'recent_mod'	=> '5',
-	'resolved'	  => '6',
-	'feedback'	  => '0',
-	'verify'		=> '0',
+$g_my_view_boxes = array(
+	'assigned'      => '1',
+	'unassigned'    => '2',
+	'reported'      => '3',
+	'resolved'      => '8',
+	'recent_mod'    => '7',
+	'monitored'     => '4',
+	'feedback'      => '6',
+	'verify'        => '0',
 	'my_comments'   => '0'
 );
 
