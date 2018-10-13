@@ -211,6 +211,7 @@ $g_max_failed_login_count = 5;
 $g_default_show_changed = 24;
 
 $g_use_persistent_connections = ON;
+$g_compress_html = OFF;
 
 $g_show_avatar = OFF;
 $g_show_avatar_threshold = 1000;
