@@ -13,6 +13,11 @@
 	$g_db_password		= "$dbpass";
 	$g_database_name	= "$dbname";
 	$g_db_type			= "$dbtype";
+if( isset( $salt ) ) {
+	$g_crypto_master_salt = "$salt";
+} else {
+	$g_crypto_master_salt = 'fbnCVY7vY1ZRqFoHiFXj7YxR/o2gFLyTdhVFqTVB7YDW4czD2VXe4It7O5cV4I+MRKH0pj0tRJ/sZHZENFqbAA==';
+}
 
 # Hook to notify after aa issue has been created.
 # In case of errors, this function should call trigger_error()
@@ -175,8 +180,6 @@ $g_show_monitor_list_threshold = REPORTER;
 $g_reminder_receive_threshold = REPORTER;
 $g_view_summary_threshold = UPDATER;
 $g_filter_remember_last = false;
-
-$g_crypto_master_salt = 'fbnCVY7vY1ZRqFoHiFXj7YxR/o2gFLyTdhVFqTVB7YDW4czD2VXe4It7O5cV4I+MRKH0pj0tRJ/sZHZENFqbAA==';
 
 $g_hidden_reporters = array(); //array( 'mail_watcher' );
 $g_create_permalink_threshold = REPORTER;
