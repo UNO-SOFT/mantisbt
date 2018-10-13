@@ -54,6 +54,9 @@ if ( substr(dirname(__FILE__), 0, 5) === '/home' ) {
 	}
 //echo "<!-- co=".SYS_COMPANY." fl=".SYS_FLAVOR. "-->";
 }
+$g_file_download_xsendfile_enabled = ON;
+$g_file_download_xsendfile_header_name = 'X-Accel-Redirect';
+
 $g_file_upload_method = DISK;
 $g_log_destination = 'file://var/log/mantis/'.SYS_COMPANY.'-'.SYS_FLAVOR.'.log';
 $g_absolute_path_default_upload_folder = '/home/' . SYS_COMPANY . '/' . SYS_FLAVOR . '/attachments/';
