@@ -223,11 +223,11 @@ $g_time_tracking_stopwatch = ON;
 
 $g_create_permalink_threshold = REPORTER;
 $g_stored_query_create_threshold = REPORTER;
-//$g_timeline_view_threshold = NOBODY;
-$g_timeline_view_threshold = 1000;
+$g_timeline_view_threshold = NOBODY;
+//$g_timeline_view_threshold = 1000;
 
 $g_css_include_file = "unosoft.css";
-$g_cdn_enabled = ON;
+$g_cdn_enabled = OFF;
 
 $g_impersonate_user_threshold = NOBODY;
 
