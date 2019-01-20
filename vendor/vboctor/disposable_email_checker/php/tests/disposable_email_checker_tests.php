@@ -40,6 +40,20 @@ class DisposableEmailCheckerTests extends PHPUnit_Framework_TestCase
 		$this->assertTrue( DisposableEmailChecker::is_disposable_email( 'xmaily.com' ) );
 	}
 
+	public function testAddDomains() {
+		DisposableEmailChecker::add_domains( array( 'abc.com', 'XYZ.com' ) );
+		$this->assertTrue( DisposableEmailChecker::is_disposable_email( 'xyz.com' ) );
+		$this->assertTrue( DisposableEmailChecker::is_disposable_email( 'someone@xyz.com' ) );
+		$this->assertTrue( DisposableEmailChecker::is_disposable_email( 'abc.com' ) );
+		$this->assertTrue( DisposableEmailChecker::is_disposable_email( 'someone@ABC.com' ) );
+	}
+
+	public function testRemoveDomains() {
+		DisposableEmailChecker::remove_domains( array( 'XMAILY.com', 'not-existence-domain.com' ) );
+		$this->assertFalse( DisposableEmailChecker::is_disposable_email( 'someone@xmaily.com' ) );
+		$this->assertFalse( DisposableEmailChecker::is_disposable_email( 'xmaily.com' ) );
+	}
+
 	public function testDisposableDomainNoMatch() {
 		$this->assertFalse( DisposableEmailChecker::is_disposable_email( 'someone@outlook.com' ) );
 		$this->assertFalse( DisposableEmailChecker::is_disposable_email( 'outlook.com' ) );

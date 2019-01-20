@@ -17,7 +17,7 @@ use Slim\Exception\ContainerException as SlimContainerException;
 /**
  * Slim's default DI container is Pimple.
  *
- * Slim\App expects a container that implements Interop\Container\ContainerInterface
+ * Slim\App expects a container that implements Psr\Container\ContainerInterface
  * with these service keys configured and ready for use:
  *
  *  - settings: an array or instance of \ArrayAccess
@@ -31,16 +31,16 @@ use Slim\Exception\ContainerException as SlimContainerException;
  *  - notAllowedHandler: a callable with the signature: function($request, $response, $allowedHttpMethods)
  *  - callableResolver: an instance of \Slim\Interfaces\CallableResolverInterface
  *
- * @property-read array settings
- * @property-read \Slim\Interfaces\Http\EnvironmentInterface environment
- * @property-read \Psr\Http\Message\ServerRequestInterface request
- * @property-read \Psr\Http\Message\ResponseInterface response
- * @property-read \Slim\Interfaces\RouterInterface router
- * @property-read \Slim\Interfaces\InvocationStrategyInterface foundHandler
- * @property-read callable errorHandler
- * @property-read callable notFoundHandler
- * @property-read callable notAllowedHandler
- * @property-read \Slim\Interfaces\CallableResolverInterface callableResolver
+ * @property-read array $settings
+ * @property-read \Slim\Interfaces\Http\EnvironmentInterface $environment
+ * @property-read \Psr\Http\Message\ServerRequestInterface $request
+ * @property-read \Psr\Http\Message\ResponseInterface $response
+ * @property-read \Slim\Interfaces\RouterInterface $router
+ * @property-read \Slim\Interfaces\InvocationStrategyInterface $foundHandler
+ * @property-read callable $errorHandler
+ * @property-read callable $notFoundHandler
+ * @property-read callable $notAllowedHandler
+ * @property-read \Slim\Interfaces\CallableResolverInterface $callableResolver
  */
 class Container extends PimpleContainer implements ContainerInterface
 {
@@ -101,7 +101,7 @@ class Container extends PimpleContainer implements ContainerInterface
     }
 
     /********************************************************************************
-     * Methods to satisfy Interop\Container\ContainerInterface
+     * Methods to satisfy Psr\Container\ContainerInterface
      *******************************************************************************/
 
     /**
