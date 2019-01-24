@@ -232,6 +232,7 @@ $g_cdn_enabled = OFF;
 $g_impersonate_user_threshold = NOBODY;
 
 $g_filter_views = SIMPLE_DEFAULT;
+$g_action_button_position = POSITION_BOTH;
 
 //if(file_exists('config_statuses_inc.php'))
 	require_once(dirname(__FILE__) . '/config_statuses_inc.php');
