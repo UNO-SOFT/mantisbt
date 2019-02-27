@@ -114,7 +114,7 @@ if ( strcmp(SYS_FLAVOR, 'prd') != 0 ) { //nem PRD
   $g_show_detailed_errors = ON;
 }
 
-$g_log_level = LOG_NONE | LOG_EMAIL | LOG_EMAIL_RECIPIENT | LOG_AJAX | LOG_FILTERING;
+$g_log_level = LOG_NONE | LOG_EMAIL | LOG_EMAIL_RECIPIENT | LOG_AJAX | LOG_LDAP;
 //$g_log_destination = 'page:';
 $g_show_timer = ON;
 
