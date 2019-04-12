@@ -195,6 +195,12 @@ $g_filter_use_last = OFF;
 $g_email_from_is_last_updater = ON;
 $g_default_email_bugnote_limit = 3;
 
+// minden új ügynél minden fejlesztő kapjon emailt
+if( SYS_COMPANY == 'pcs' || SYS_COMPANY == 'pp' ) {
+	$g_notify_flags['new']['threshold_min'] = DEVELOPER;
+	$g_notify_flags['new']['threshold_max'] = ADMINISTRATOR;
+}
+
 $g_backward_year_count = 1;
 $g_forward_year_count = 1;
 
