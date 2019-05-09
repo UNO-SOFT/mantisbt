@@ -4,7 +4,7 @@ SELECT COUNT(0)
   WHERE extract('dow' from S.a) NOT IN (0, 6) AND extract('hour' FROM S.a) BETWEEN $3 AND $4;
 $$ LANGUAGE SQL;
 
-SELECT A.id, A.summary, A.tipus, A.bekuldve, A.elso_reakcio, A.lezarva,
+SELECT A.id, A.summary, A.tipus, A.bekuldve, A.elso_reakcio, A.lezarva, A.hatarido,
        workhours_between(A.bekuldve, A.elso_reakcio) AS reakcioido_ora,
        workhours_between(A.bekuldve, A.lezarva) AS brutto_varakozas_ora,
        LEAST(workhours_between(A.bekuldve, A.lezarva)*0.9, A.biztositora_varakozas) AS biztositora_varakozas_ora,
@@ -18,6 +18,9 @@ SELECT A.id, A.summary,
                                     X.type = 0 AND X.field_name = 'status' AND X.new_value IN ('991', '993') AND X.bug_id = H.bug_id) AND
                 H.type = 0 AND H.field_name = 'status' AND H.new_value IN ('991', '993') AND H.bug_id = A.id) AS tipus,
        TO_TIMESTAMP(A.date_submitted) AS bekuldve,
+       (SELECT TO_TIMESTAMP(CASE Y.value WHEN '' THEN NULL ELSE cast(Y.value AS bigint) END)
+          FROM mantis_custom_field_string_table Y, mantis_custom_field_table X
+          WHERE Y.bug_id = A.id AND Y.field_id = X.id AND X.name = 'határidő') AS hatarido,
        (SELECT TO_TIMESTAMP(MIN(H.date_submitted)) FROM mantis_user_table U, mantis_bugnote_table H WHERE U.access_level > 25 AND U.id = H.reporter_id AND H.bug_id = A.id) AS elso_reakcio,
        (SELECT TO_TIMESTAMP(MIN(H.date_modified)) FROM mantis_bug_history_table H WHERE H.type = 0 AND H.field_name = 'status' AND H.new_value IN ('991', '993') AND H.bug_id = A.id) AS lezarva,
        (SELECT SUM(CASE WHEN B.w = 'B' AND B.prev_w = 'U' THEN workhours_between(TO_TIMESTAMP(B.prev_submitted), TO_TIMESTAMP(B.date_submitted)) ELSE 0 END)
@@ -58,4 +61,3 @@ SELECT A.bug_id, MIN(A.date_modified), 'B' w
   WHERE EXISTS (SELECT 1 FROM mantis_bug_history_table H WHERE H.type = 0 AND H.field_name = 'status' AND H.new_value IN ('991', '993') AND H.bug_id = A.id)
   ORDER BY A.id DESC
   ) A;
-
