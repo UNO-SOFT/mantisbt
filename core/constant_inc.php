@@ -21,7 +21,7 @@
 /**
  * Mantis Version
  */
-define( 'MANTIS_VERSION', '2.20.0' );
+define( 'MANTIS_VERSION', '2.21.0' );
 define( 'FILTER_VERSION', 'v9' );
 
 # --- constants -------------------
@@ -259,6 +259,7 @@ define( 'ERROR_TYPE_MISMATCH', 26 );
 define( 'ERROR_SPAM_SUSPECTED', 27 );
 define( 'ERROR_FIELD_TOO_LONG', 28 );
 define( 'ERROR_INVALID_FIELD_VALUE', 29 );
+define( 'ERROR_LOGFILE_NOT_WRITABLE', 30 );
 
 # ERROR_CONFIG_*
 define( 'ERROR_CONFIG_OPT_NOT_FOUND', 100 );
@@ -735,3 +736,6 @@ define( 'DB_TYPE_MYSQL', 1 );
 define( 'DB_TYPE_PGSQL', 2 );
 define( 'DB_TYPE_MSSQL', 3 );
 define( 'DB_TYPE_ORACLE', 4 );
+
+# Database special capabilities identifiers
+define( 'DB_CAPABILITY_WINDOW_FUNCTIONS', 1 );
