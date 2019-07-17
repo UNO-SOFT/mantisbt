@@ -122,13 +122,13 @@ define( 'MAX_EVENTS', 5 );
 $g_my_view_bug_count = 30;
 
 $g_my_view_boxes = array(
-	'assigned'      => '1',
-	'unassigned'    => '2',
+	'assigned'      => '2',
+	'unassigned'    => '1',
 	'reported'      => '3',
-	'resolved'      => '8',
+	'resolved'      => '7',
 	'recent_mod'    => '4',
-	'monitored'     => '7',
-	'feedback'      => '6',
+	'monitored'     => '6',
+	'feedback'      => '8',
 	'verify'        => '0',
 	'my_comments'   => '0'
 );
