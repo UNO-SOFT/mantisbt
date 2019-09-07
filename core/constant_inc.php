@@ -21,7 +21,7 @@
 /**
  * Mantis Version
  */
-define( 'MANTIS_VERSION', '2.21.2' );
+define( 'MANTIS_VERSION', '2.22.0' );
 define( 'FILTER_VERSION', 'v9' );
 
 # --- constants -------------------
@@ -656,11 +656,6 @@ define( 'MOMENT_HASH', 'sha256-K+AZsAFjiBd4piqBmFzaxDsiQiHfREubm1ExNGW1JIA=' );
 define( 'DATETIME_PICKER_VERSION', '4.17.47' );
 define( 'DATETIME_PICKER_HASH', 'sha256-5YmaxAwMjIpMrVlK84Y/+NjCpKnFYa8bWWBbUHSBGfU=' );
 
-# Chart JS
-define( 'CHARTJS_VERSION', '2.7.3' );
-define( 'CHARTJS_HASH', 'sha384-WJu6cbQvbPRsw+66L1nOomDAZzhTALnUlpchFlWHimhJ9o95CMue7xEZXXDRKV2S' );
-define( 'CHARTJSBUNDLE_HASH', 'sha384-e4YKd0O/y4TmH7qskMQzKnOrqN83RJ7TmJ4RsBLHodJ6jHOE30I7J1uZfLdvybhc' );
-
 # Tyeahead JS
 define( 'TYPEAHEAD_VERSION', '1.1.1' );
 define( 'TYPEAHEAD_HASH', 'sha256-qZIhMVBV4/crmcmYXNq5ZE5gPRiiPPMKVYbapf5HDBs=' );
@@ -729,6 +724,7 @@ define( 'PAGE_CONFIG_DEFAULT', 'adm_permissions_report.php' );
 define( 'MANAGE_CONFIG_ACTION_CREATE', 'create' );
 define( 'MANAGE_CONFIG_ACTION_CLONE', 'clone' );
 define( 'MANAGE_CONFIG_ACTION_EDIT', 'edit' );
+define( 'MANAGE_CONFIG_ACTION_VIEW', 'view' );
 
 # Database functional type identifiers.
 define( 'DB_TYPE_UNDEFINED', 0 );
