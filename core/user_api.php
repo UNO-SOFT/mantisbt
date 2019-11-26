@@ -1035,7 +1035,7 @@ function user_get_expanded_name_from_row( array $p_user_row ) {
 
 /**
  * Get name used for sorting.
- * 
+ *
  * @param array $p_user_row The user row with 'realname' and 'username' fields
  * @return string name for sorting
  */
@@ -1791,3 +1791,31 @@ function user_has_more_than_one_project( $p_user_id ) {
 	}
 	return true;
 }
+
+/**
+ * Return an array with the user ids above the access threshold.
+ *
+ * @param integer $p_level   Access Level to check users. The default is to include ANYBODY.
+ * @param bool    $p_enabled true: must be enabled, false: must be disabled, null: don't care.
+ * @return array The user ids of users.
+ */
+function users_with_access_level( $p_level = ANYBODY, $p_enabled = null ) {
+	db_param_push();
+	$t_query = 'SELECT id FROM {user} WHERE access_level >= ' . db_param();
+	$t_param = array( $p_level );
+
+	if( $p_enabled !== null ) {
+		$t_query .= ' AND enabled = ' . db_param();
+		$t_param[] = (bool)$p_enabled;
+	}
+
+	$t_users = array();
+
+	$t_result = db_query( $t_query, $t_param );
+	while( $t_row = db_fetch_array( $t_result ) ) {
+		$t_users[] = (int)$t_row['id'];
+	}
+	# Get the number of users
+	return $t_users;
+}
+

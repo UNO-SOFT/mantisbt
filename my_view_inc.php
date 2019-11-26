@@ -249,7 +249,22 @@ $c_filter['my_comments'] = array(
 );
 
 $t_url_link_parameters['my_comments'] = FILTER_PROPERTY_NOTE_USER_ID. '=' . META_FILTER_MYSELF . '&' . FILTER_PROPERTY_HIDE_STATUS . '=' . $t_hide_status_default;
-$t_rows = filter_get_bug_rows( $f_page_number, $t_per_page, $t_page_count, $t_bug_count, $c_filter[$t_box_title] );
+
+
+$t_rows = array();
+
+if( $t_box_title === 'vv' ) {
+	$t_developers = users_with_access_level( DEVELOPER, true );
+	$t_url_link_parameters['vv'] = 'view_type=advanced&' . filter_encode_field_and_value( FILTER_PROPERTY_SEARCH, 'Verzióváltó') . '&' . filter_encode_field_and_value( FILTER_PROPERTY_REPORTER_ID, $t_developers, FILTER_TYPE_MULTI_STRING );
+	foreach( filter_verziovaltok() as $t_bug_id ) {
+		if( !bug_is_closed( $t_bug_id ) ) {
+			$t_rows[] = bug_get( $t_bug_id, false );
+		}
+	}
+} else {
+	$t_rows = filter_get_bug_rows( $f_page_number, $t_per_page, $t_page_count, $t_bug_count, $c_filter[$t_box_title] );
+}
+
 
 # Improve performance by caching category data in one pass
 if( helper_get_current_project() == 0 ) {

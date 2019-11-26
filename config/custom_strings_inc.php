@@ -72,4 +72,6 @@ if ( SYS_COMPANY === 'waberer' ) {
 }
 
 //$MANTIS_ERROR[ERROR_BUG_VALIDATE_FAILURE] = 'A bejelentés hibás (minden kötelező mező kitöltött?)';
+
+$s_my_view_title_vv = 'Verzióváltók';
 ?>
