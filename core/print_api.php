@@ -1959,7 +1959,7 @@ function print_bug_attachment( array $p_attachment, $p_security_token ) {
  * @return void
  */
 function print_bug_attachment_header( array $p_attachment, $p_security_token ) {
-	//echo "\n" . '<div class="anchor" style="position:relative; top:-100px;" id="f' . $p_attachment['id'] . '"></div>';
+	echo "\n" . '<div class="anchor" style="position:relative; top:-100px;" id="f' . $p_attachment['id'] . '"></div>';
 	if( $p_attachment['exists'] ) {
 		if( $p_attachment['can_download'] ) {
 			echo '<a href="' . string_attribute( $p_attachment['download_url'] ) . '">';
