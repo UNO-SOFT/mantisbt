@@ -21,7 +21,7 @@
 /**
  * Mantis Version
  */
-define( 'MANTIS_VERSION', '2.22.1' );
+define( 'MANTIS_VERSION', '2.23.0' );
 define( 'FILTER_VERSION', 'v9' );
 
 # --- constants -------------------
@@ -653,15 +653,15 @@ define( 'FONT_AWESOME_VERSION', '4.6.3' );
 define( 'FONT_AWESOME_HASH', 'sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1' );
 
 # Moment & DateTimePicker
-define( 'MOMENT_VERSION', '2.15.2' );
-define( 'MOMENT_HASH', 'sha256-K+AZsAFjiBd4piqBmFzaxDsiQiHfREubm1ExNGW1JIA=' );
+define( 'MOMENT_VERSION', '2.24.0' );
+define( 'MOMENT_HASH', 'sha256-AdQN98MVZs44Eq2yTwtoKufhnU+uZ7v2kXnD5vqzZVo=' );
 define( 'DATETIME_PICKER_VERSION', '4.17.47' );
 define( 'DATETIME_PICKER_HASH_JS', 'sha256-5YmaxAwMjIpMrVlK84Y/+NjCpKnFYa8bWWBbUHSBGfU=' );
 define( 'DATETIME_PICKER_HASH_CSS', 'sha256-yMjaV542P+q1RnH6XByCPDfUFhmOafWbeLPmqKh11zo=' );
 
 # Tyeahead JS
-define( 'TYPEAHEAD_VERSION', '1.1.1' );
-define( 'TYPEAHEAD_HASH', 'sha256-qZIhMVBV4/crmcmYXNq5ZE5gPRiiPPMKVYbapf5HDBs=' );
+define( 'TYPEAHEAD_VERSION', '1.3.0' );
+define( 'TYPEAHEAD_HASH', 'sha256-VWMJXexFUMAwIXw/PoOzOleP6q97pIbKWuY4v9gMXoY=' );
 
 # List JS
 define( 'LISTJS_VERSION', '1.5.0' );

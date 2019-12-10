@@ -257,6 +257,7 @@ if( $t_config_exists ) {
 		}
 	}
 
+	/** @var ADOConnection $g_db */
 	$g_db = ADONewConnection( $f_db_type );
 	$t_result = @$g_db->Connect( $f_hostname, $f_db_username, $f_db_password, $f_database_name );
 	if( $g_db->IsConnected() ) {
@@ -515,7 +516,6 @@ if( 2 == $t_install_state ) {
 ?>
 
 </table>
-</table>
 </div>
 </div>
 </div>
@@ -568,7 +568,7 @@ if( !$g_database_upgrade ) {
 	foreach( $t_prefix_defaults as $t_db_type => $t_defaults ) {
 		echo '<div id="default_' . $t_db_type . '" class="hidden">';
 		foreach( $t_defaults as $t_key => $t_value ) {
-			echo "\n\t" . '<span name="' . $t_key . '">' . $t_value . '</span>';
+			echo "\n\t" . '<span id="' . $t_key . '">' . $t_value . '</span>';
 		}
 		echo "\n" . '</div>' . "\n";
 	}
@@ -780,6 +780,7 @@ if( 3 == $t_install_state ) {
 			$g_db = ADONewConnection( $f_db_type );
 			$t_result = $g_db->Connect( $f_hostname, $f_admin_username, $f_admin_password );
 
+			/** @var ADODB_DataDict $t_dict */
 			$t_dict = NewDataDictionary( $g_db );
 
 			$t_sqlarray = $t_dict->CreateDatabase( $f_database_name, array(
@@ -863,6 +864,7 @@ if( 3 == $t_install_state ) {
 			# fake out database access routines used by config_get
 		}
 		$t_last_update = config_get( 'database_version', -1, ALL_USERS, ALL_PROJECTS );
+		/** @var array $g_upgrade Upgrade steps defined in schema.php */
 		$t_last_id = count( $g_upgrade ) - 1;
 		$i = $t_last_update + 1;
 		if( $f_log_queries ) {
@@ -874,6 +876,7 @@ if( 3 == $t_install_state ) {
 			$g_db->execute( 'SET NAMES UTF8' );
 		}
 
+		/** @var ADODB_DataDict $t_dict */
 		$t_dict = NewDataDictionary( $g_db );
 
 		# Special processing for specific schema versions
@@ -881,7 +884,7 @@ if( 3 == $t_install_state ) {
 		# not a Mantis schema upgrade but nevertheless required due to
 		# changes in the code
 
-		if( $t_last_update > 51 && $t_last_update < 189 ) {
+		if( $f_db_type == 'pgsql' && $t_last_update > 51 && $t_last_update < 189 ) {
 			# Since MantisBT 1.1.0 / ADOdb 4.96 (corresponding to schema 51)
 			# 'L' columns are BOOLEAN instead of SMALLINT
 			# Check for any DB discrepancies and update columns if needed
@@ -890,36 +893,86 @@ if( 3 == $t_install_state ) {
 				# Some columns need converting
 				$t_msg = "PostgreSQL: check Boolean columns' actual type";
 				if( is_array( $t_bool_columns ) ) {
+					$t_count = count( $t_bool_columns );
 					print_test(
 						$t_msg,
-						count( $t_bool_columns ) == 0,
+						$t_count == 0,
 						false,
-						count( $t_bool_columns ) . ' columns must be converted to BOOLEAN' );
+						"$t_count columns must be converted to BOOLEAN"
+					);
+
+					# Convert the columns
+					foreach( $t_bool_columns as $t_row ) {
+						/**
+						 * @var string $v_table_name
+						 * @var string $v_column_name
+						 * @var boolean $v_is_nullable
+						 * @var boolean $v_column_default
+						 */
+						extract( $t_row, EXTR_PREFIX_ALL, 'v' );
+
+						$t_null = $v_is_nullable ? 'NULL' : 'NOT NULL';
+						$t_default = is_null( $v_column_default ) ? 'NULL' : $v_column_default;
+						$t_sqlarray = $t_dict->AlterColumnSQL(
+							$v_table_name,
+							$v_column_name . ' L ' . $t_null . ' DEFAULT ' . $t_default
+						);
+						print_test(
+							'Converting column ' . $v_table_name . '.' . $v_column_name . ' to BOOLEAN',
+							2 == $t_dict->ExecuteSQLArray( $t_sqlarray, false ),
+							true,
+							print_r( $t_sqlarray, true )
+						);
+						if( $g_failed ) {
+							# Error occurred, bail out
+							break;
+						}
+					}
 				} else {
 					# We did not get an array => error occurred
 					print_test( $t_msg, false, true, $t_bool_columns );
 				}
-
-				# Convert the columns
-				foreach( $t_bool_columns as $t_row ) {
-					extract( $t_row, EXTR_PREFIX_ALL, 'v' );
-					$t_null = $v_is_nullable ? 'NULL' : 'NOT NULL';
-					$t_default = is_null( $v_column_default ) ? 'NULL' : $v_column_default;
-					$t_sqlarray = $t_dict->AlterColumnSQL(
-						$v_table_name,
-						$v_column_name . ' L ' . $t_null . ' DEFAULT ' . $t_default );
-					print_test(
-						'Converting column ' . $v_table_name . '.' . $v_column_name . ' to BOOLEAN',
-						2 == $t_dict->ExecuteSQLArray( $t_sqlarray, false ),
-						true,
-						print_r( $t_sqlarray, true ) );
-					if( $g_failed ) {
-						# Error occurred, bail out
-						break;
-					}
-				}
 			}
 		}
+		# Follow-up fix for user_pref.redirect_delay, which was incorrectly
+		# set to boolean in check_pgsql_bool_columns() before MantisBT 2.23.0,
+		# so we need to check its type and convert it back to integer if needed.
+		# See issue #26109.
+		elseif( $f_db_type == 'pgsql' && $t_last_update > 43
+			&& version_compare( MANTIS_VERSION, '2.23.0', '<=' )
+		) {
+			$t_table = db_get_table( 'user_pref' );
+			$t_column = 'redirect_delay';
+
+			try {
+				$t_is_integer = pgsql_get_column_type( $t_table, $t_column ) == 'integer';
+				$t_msg = "Column must be converted to INTEGER";
+				$t_exception_occured = false;
+			}
+			catch( Exception $e ) {
+				$t_exception_occured = true;
+				$t_msg = $e->getMessage();
+			}
+
+			print_test(
+				"PostgreSQL: check column '$t_table.$t_column' data type",
+				!$t_exception_occured && $t_is_integer,
+				/* hard fail */ $t_exception_occured,
+				$t_msg
+			);
+			if( !$t_exception_occured && !$t_is_integer ) {
+				$t_sqlarray = $t_dict->AlterColumnSQL( $t_table,
+					'redirect_delay  I  NOTNULL  DEFAULT 0'
+				);
+				print_test(
+					"Converting column '$t_table.$t_column'' to INTEGER",
+					2 == $t_dict->ExecuteSQLArray( $t_sqlarray, false ),
+					true,
+					print_r( $t_sqlarray, true )
+				);
+			}
+		}
+
 		# End of special processing for specific schema versions
 
 		while( ( $i <= $t_last_id ) && !$g_failed ) {
@@ -1171,7 +1224,7 @@ if( 5 == $t_install_state ) {
 ?>
 <tr>
 	<td colspan="2">
-		<table width="50%" cellpadding="10" cellspacing="1">
+		<table>
 			<tr>
 				<td>
 					Please add the following lines to

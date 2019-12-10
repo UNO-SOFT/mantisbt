@@ -49,6 +49,7 @@
  * @author Mazab IZW
  * @author MojaEdukacja
  * @author Py64
+ * @author Rail
  * @author Rambro
  * @author Rezonansowy
  * @author Sp5uhe
@@ -742,7 +743,7 @@ $s_edit_project_version_title = 'Edycja wersji projektu';
 $s_update_version_button = 'Aktualizuj wersję';
 $s_released = 'Opublikowana';
 $s_not_released = 'Jeszcze nie wypuszczone';
-$s_scheduled_release = 'Zaplanowane wypuszczenie';
+$s_scheduled_release = 'Zaplanowane wydanie';
 $s_obsolete = 'Przestarzałe';
 $s_version_updated_msg = 'Wersja została pomyślnie zaktualizowana...';
 $s_account_delete_protected_msg = 'Konto jest zabezpieczone. Nie można usunąć tego konta.';
@@ -973,6 +974,8 @@ $s_move_bug_button = 'Przenieś';
 $s_attached_files = 'Dołączone pliki';
 $s_publish = 'Opublikuj';
 $s_add_user_to_monitor = 'Dodaj';
+$s_browser_does_not_support_audio = 'Twoja przeglądarka nie obsługuje tagu audio.';
+$s_browser_does_not_support_video = 'Twoja przeglądarka nie obsługuje tagu video.';
 $s_bug_view_title = 'Wyświetl szczegóły problemu';
 $s_no_users_monitoring_bug = 'Nikt nie obserwuje tego zgłoszenia.';
 $s_users_monitoring_bug = 'Użytkownicy obserwujący to zgłoszenie';
@@ -1051,7 +1054,7 @@ $s_resolved_progress = '%1$d z %2$d zgłoszeń zrealizowano. Postęp (%3$d%%).';
 $s_roadmap_empty_manager = 'Brak dostępnych informacji o Planie Pracy. Problemy pojawią się, gdy projekty mają przypisane wersje a problemy posiadają ustawioną "Wersję docelową".';
 $s_http_auth_realm = 'Logowanie do MantisBT';
 $s_bug = 'zgłoszenie';
-$s_bugs = 'kwestie';
+$s_bugs = 'zgłoszenia';
 $s_add_new_relationship = 'Nowe powiązanie';
 $s_add_new_relationship_button = 'Dodaj';
 $s_this_bug = 'Bieżące zgłoszenia';
@@ -1351,7 +1354,7 @@ $MANTIS_ERROR[ERROR_TAG_DUPLICATE] = 'Tag o podanej nazwie już istnieje.';
 $MANTIS_ERROR[ERROR_TAG_NAME_INVALID] = 'Nazwa tagu jest nieprawidłowa.';
 $MANTIS_ERROR[ERROR_TAG_NOT_ATTACHED] = 'Ten tag nie jest powiązany z tym błędem.';
 $MANTIS_ERROR[ERROR_TAG_ALREADY_ATTACHED] = 'Ten tag już jest powiązany z tym błędem.';
-$MANTIS_ERROR[ERROR_TOKEN_NOT_FOUND] = 'Token could not be found.';
+$MANTIS_ERROR[ERROR_TOKEN_NOT_FOUND] = 'Nie znaleziono tokena';
 $MANTIS_ERROR[ERROR_EVENT_UNDECLARED] = 'Zdarzenie „%1$s” nie zostało jeszcze zadeklarowane.';
 $MANTIS_ERROR[ERROR_PLUGIN_NOT_REGISTERED] = 'Wtyczka „%1$s” nie jest zarejestrowana.';
 $MANTIS_ERROR[ERROR_PLUGIN_NOT_LOADED] = 'Wtyczka "%1$s" nie jest załadowana, upewnij się, że są spełnione jej zależności.';

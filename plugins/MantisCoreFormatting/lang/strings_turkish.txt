@@ -38,6 +38,7 @@
  * @ingroup Language
  * @file
  *
+ * @author BaRaN6161 TURK
  * @author Korayal
  */
 
@@ -47,6 +48,9 @@ $s_plugin_format_config = 'Yapılandırma';
 $s_plugin_format_process_text = 'Metin İşleme';
 $s_plugin_format_process_text_warning_notice = 'Gerçekten ne yaptığınızı bilmiyorsanız kapatmayın. Kapalı durumda iken çapraz kod çalıştırma saldırılarına uğrayabilirsiniz ! (cross site scripting (XSS))';
 $s_plugin_format_process_urls = 'URL İşleme';
-$s_plugin_format_process_buglinks = 'MantisBT Bağlantıları (Sorun/Sorun Notu)';
+$s_plugin_format_process_buglinks = 'MantisBT iç bağlantıları (Sorunlar ve Sayı Notları)';
+$s_plugin_format_process_buglinks_info = 'Yapılandırmanız, <em>Sayı</em> etiketini "<literal>% </literal>" ve <em>Sayı Notu</em> etiketini "<literal>%s</literal>" olarak tanımlar.';
+$s_plugin_format_process_markdown = 'Markdown İşlemi';
+$s_plugin_format_process_markdown_info = 'Markdown desteği ile stil, metin formatlama sözdizimi, HTML\'ye çevrilebilecek şekilde tasarlanmıştır.';
 $s_plugin_format_enabled = 'Açık';
 $s_plugin_format_disabled = 'Kapalı';

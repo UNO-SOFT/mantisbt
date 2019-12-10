@@ -3658,12 +3658,16 @@ $g_file_type_icons = array(
 	'jpeg'	=> 'fa-file-image-o',
 	'log'	=> 'fa-file-text-o',
 	'lzh'	=> 'fa-file-archive-o',
+	'md'	=> 'fa-file-text-o',
 	'mhtml'	=> 'fa-file-code-o',
 	'mid'	=> 'fa-file-audio-o',
 	'midi'	=> 'fa-file-audio-o',
 	'mov'	=> 'fa-file-movie-o',
+	'mp3'	=> 'fa-file-audio-o',
+	'mp4'	=> 'fa-file-movie-o',
 	'msg'	=> 'fa-envelope-o',
 	'one'	=> 'fa-file-o',
+	'ogg'	=> 'fa-file-movie-o',
 	'patch'	=> 'fa-file-text-o',
 	'pcx'	=> 'fa-file-image-o',
 	'pdf'	=> 'fa-file-pdf-o',
@@ -3789,8 +3793,7 @@ $g_rss_enabled = ON;
  * Show issue relationships using graphs.
  *
  * In order to use this feature, you must first install GraphViz.
- *
- * Graphviz homepage:    http://www.research.att.com/sw/tools/graphviz/
+ * @see https://www.graphviz.org/ Graphviz homepage
  *
  * Refer to the notes near the top of core/graphviz_api.php and
  * core/relationship_graph_api.php for more information.

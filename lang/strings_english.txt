@@ -584,6 +584,7 @@ $s_fixed_in_version = 'Fixed in Version';
 $s_target_version = 'Target Version';
 $s_votes = 'Votes';
 $s_summary = 'Summary';
+$s_synthesis = 'Synthesis';
 $s_description = 'Description';
 $s_steps_to_reproduce = 'Steps To Reproduce';
 $s_update_information_button = 'Update Information';
@@ -1282,6 +1283,8 @@ $s_move_bug_button = 'Move';
 $s_attached_files = 'Attached Files';
 $s_publish = 'Publish';
 $s_add_user_to_monitor = 'Add';
+$s_browser_does_not_support_audio = 'Your browser does not support audio tag.';
+$s_browser_does_not_support_video = 'Your browser does not support video tag.';
 
 # view_bug_page.php
 $s_bug_view_title = 'View Issue Details';
@@ -1479,6 +1482,14 @@ $s_email_on_deleted = 'E-mail on Deleted';
 $s_email_on_sponsorship_changed = 'E-mail on Sponsorship changed';
 $s_email_on_relationship_changed = 'E-mail on Relationship changed';
 $s_email_on_updated = 'E-mail on Updated';
+$s_email_on_monitor = 'E-mail when user starts monitoring';
+$s_view_tags = 'View tags attached to a bug';
+$s_attach_tags = 'Attach tags to a bug';
+$s_detach_tags = 'Detach tags from a bug';
+$s_detach_own_tags = 'Detach tags attached by the same user';
+$s_create_new_tags = 'Create new tags';
+$s_edit_tags = 'Edit tag names and descriptions';
+$s_edit_own_tags = 'Edit tags created by the same user';
 
 # Dynamic filters (load filter controls via AJAX upon request)
 $s_loading = 'Loading...';

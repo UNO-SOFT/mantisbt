@@ -54,6 +54,7 @@
  * @author Smarky
  * @author Wehwei
  * @author Wwycheuk
+ * @author Xiplus
  */
 
 $s_actiongroup_menu_move = '移動';
@@ -467,6 +468,7 @@ $s_fixed_in_version = '已修正版本';
 $s_target_version = '目標版本';
 $s_votes = '投票';
 $s_summary = '摘要';
+$s_synthesis = '總覽';
 $s_description = '說明';
 $s_steps_to_reproduce = '重新產生問題的步驟';
 $s_update_information_button = '更新資訊';
@@ -986,6 +988,8 @@ $s_move_bug_button = '移動';
 $s_attached_files = '附加檔案';
 $s_publish = '發佈';
 $s_add_user_to_monitor = '新增';
+$s_browser_does_not_support_audio = '您的瀏覽器不支援 audio 標籤。';
+$s_browser_does_not_support_video = '您的瀏覽器不支援 video 標籤。';
 $s_bug_view_title = '檢視問題詳細資料';
 $s_no_users_monitoring_bug = '目前沒有使用者追蹤此問題。';
 $s_users_monitoring_bug = '正在追蹤此問題的使用者';
@@ -1154,6 +1158,14 @@ $s_email_on_deleted = '刪除時以 E-Mail 通知';
 $s_email_on_sponsorship_changed = '贊助資料更動時發出 E-Mail';
 $s_email_on_relationship_changed = '相關問題更動時以 E-Mail 通知';
 $s_email_on_updated = '更新時以電郵通知';
+$s_email_on_monitor = '當使用者開始追蹤的電子郵件';
+$s_view_tags = '檢視附加在程式錯誤的標籤';
+$s_attach_tags = '附加在程式錯誤的標籤';
+$s_detach_tags = '取消附加在程式錯誤的標籤';
+$s_detach_own_tags = '由同一名使用者所取消附加在程式錯誤的標籤';
+$s_create_new_tags = '建立新標籤';
+$s_edit_tags = '編輯標籤名稱與描述';
+$s_edit_own_tags = '由同一名使用者所建立的編輯';
 $s_loading = '讀取中…';
 $s_between_date = '之間';
 $s_on_or_before_date = '於此或之前';
@@ -1370,9 +1382,9 @@ $MANTIS_ERROR[ERROR_LOST_PASSWORD_CONFIRM_HASH_INVALID] = '確認網址不正確
 $MANTIS_ERROR[ERROR_LOST_PASSWORD_MAX_IN_PROGRESS_ATTEMPTS_REACHED] = '目前請求數量已超出系統限制，請聯繫系統管理員。';
 $MANTIS_ERROR[ERROR_USER_CHANGE_LAST_ADMIN] = '您不可以將最後一個管理者帳號移除或降級，若要完成您目前的動作請先建立另一個管理者帳號。';
 $MANTIS_ERROR[ERROR_PAGE_REDIRECTION] = '頁面導向錯誤，請確認 config_inc.php 或 custom_*.php 檔案的 PHP 區塊 (&lt;?php ?&gt;) 之外沒有任何空白的字元。';
-$MANTIS_ERROR[ERROR_TAG_NOT_FOUND] = '查無此標籤名稱。';
-$MANTIS_ERROR[ERROR_TAG_DUPLICATE] = '此標籤名稱已存在。';
-$MANTIS_ERROR[ERROR_TAG_NAME_INVALID] = '此標籤名稱無效。';
+$MANTIS_ERROR[ERROR_TAG_NOT_FOUND] = '查無標籤「%1$s」。';
+$MANTIS_ERROR[ERROR_TAG_DUPLICATE] = '標籤名稱「%1$s」已存在。';
+$MANTIS_ERROR[ERROR_TAG_NAME_INVALID] = '標籤名稱「%1$s」無效。';
 $MANTIS_ERROR[ERROR_TAG_NOT_ATTACHED] = '此問題並未附加該標籤。';
 $MANTIS_ERROR[ERROR_TAG_ALREADY_ATTACHED] = '此問題已經附加該標籤。';
 $MANTIS_ERROR[ERROR_TOKEN_NOT_FOUND] = '查無相關資訊。';
@@ -1409,7 +1421,7 @@ $MANTIS_ERROR[ERROR_SPAM_SUSPECTED] = '您已達到在 %d 秒内允許 %d 次事
 $MANTIS_ERROR[ERROR_FIELD_TOO_LONG] = '欄位 "%1$s" 必須小於或等於 %2$d 字元長度。';
 $MANTIS_ERROR[ERROR_API_TOKEN_NAME_NOT_UNIQUE] = 'API 密鑰名稱 "%s" 已被使用。請返回重新選擇。';
 $MANTIS_ERROR[ERROR_LOGFILE_NOT_WRITABLE] = '在 $g_log_destination「%s」指定的檔案不可寫入。';
-$s_dropzone_default_message = '將檔案放至這裡上傳 (或點選)';
+$s_dropzone_default_message = '透過拖放、選擇、或是貼上來附加檔案。';
 $s_dropzone_fallback_message = '您的瀏覽器不支援托放檔案上傳功能。';
 $s_dropzone_file_too_big = '檔案太大（{{filesize}}MiB）。檔案大小上限：{{maxFilesize}}MiB。';
 $s_dropzone_invalid_file_type = '您不能上傳此類型的檔案。';
