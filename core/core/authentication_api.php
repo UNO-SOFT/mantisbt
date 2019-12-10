@@ -776,11 +776,6 @@ function auth_process_plain_password( $p_password, $p_salt = null, $p_method = n
 		$t_login_method = $p_method;
 	}
 
-	$t_msg = auth_check_password_policy( $p_password );
-	if( $t_msg !== "" ) {
-		trigger_error( ERROR_USER_PASSWORD_POLICY, $t_msg );
-	}
-
 	switch( $t_login_method ) {
 		case CRYPT:
 
@@ -1188,7 +1183,7 @@ function auth_http_is_logout_pending() {
 function auth_check_password_policy( $p_password ) {
 	if( strlen( $p_password ) < 8 ) {
 		return "Password too short!";
-    }
+	}
 	if( strlen( $p_password ) > 12 ) {
 		return "";
 	}

@@ -119,8 +119,10 @@ if( !( $t_ldap && config_get( 'use_ldap_realname' ) ) ) {
 # Update password if the two match and are not empty
 if( !is_blank( $f_password ) ) {
 	$t_msg = auth_check_password_policy( $f_password );
-	if( $t_msg !== "" ) {
-		trigger_error( ERROR_USER_PASSWORD_POLICY, $t_msg );
+	log_event( LOG_EMAIL, 'password_policy check: ' . $t_msg );
+	if( strlen($t_msg) !== 0 ) {
+		log_event( LOG_EMAIL, 'password_policy trigger_error: ' . $t_msg );
+		trigger_error( ERROR_USER_PASSWORD_POLICY, ERROR );
 	}
 
 	if( $f_password != $f_password_confirm ) {
