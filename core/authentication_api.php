@@ -1186,16 +1186,17 @@ function auth_http_is_logout_pending() {
 }
 
 function auth_check_password_policy( $p_password ) {
-	if( strlen( $p_password ) < 8 ) {
+	$t_length = strlen( $p_password );
+	if( $t_length < 8 ) {
 		return "Password too short!";
-    }
-	if( strlen( $p_password ) > 12 ) {
+	}
+	if( $t_length > 12 ) {
 		return "";
 	}
 	if (!preg_match("#[a-zA-Z]+#", $p_password)) {
 		return "Password must include at least one letter!";
 	}
-	if( strlen( $p_password ) > 10 ) {
+	if( $t_length > 10 ) {
 		return "";
 	}
 	if (!preg_match("#[0-9]+#", $p_password)) {
