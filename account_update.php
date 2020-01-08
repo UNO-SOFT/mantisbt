@@ -120,7 +120,8 @@ if( !( $t_ldap && config_get( 'use_ldap_realname' ) ) ) {
 if( !is_blank( $f_password ) ) {
 	$t_msg = auth_check_password_policy( $f_password );
 	if( $t_msg !== "" ) {
-		trigger_error( ERROR_USER_PASSWORD_POLICY, $t_msg );
+		error_parameters( lang_get( $t_msg ) );
+		trigger_error( ERROR_USER_PASSWORD_POLICY, ERROR );
 	}
 
 	if( $f_password != $f_password_confirm ) {
