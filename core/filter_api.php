@@ -3101,7 +3101,7 @@ function filter_db_get_available_queries( $p_project_id = null, $p_user_id = nul
 
 		$t_result = db_query( $t_query, array( true, $t_user_id ) );
 	}
-	
+
 	$t_filters = array();
 
 	# first build the id=>name array
@@ -4100,7 +4100,7 @@ function filter_verziovaltok( ) {
 	if( count( $g_verziovaltok ) > 0 ) {
 		return $g_verziovaltok;
 	}
-	$t_query = "SELECT id FROM {bug} WHERE summary LIKE '%erzi_v_lt_%' AND summary ~ " . db_param();
+	$t_query = "SELECT id FROM {bug} WHERE (summary LIKE '%erzi_v_lt_%' OR summary like '%erzi_ v_lt_%') AND summary ~ " . db_param();
 	$t_result = db_query( $t_query, array( '[0-9]{1,2}[.][0-9]{2}' ) );
 	$t_bug_ids = array();
 	while( $t_row = db_fetch_array( $t_result ) ) {
@@ -4108,4 +4108,4 @@ function filter_verziovaltok( ) {
 	}
 	$g_verziovaltok = $t_bug_ids;
 	return $t_bug_ids;
-}	
+}
