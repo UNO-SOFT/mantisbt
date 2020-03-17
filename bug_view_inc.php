@@ -106,18 +106,6 @@ $t_action_button_position = config_get( 'action_button_position' );
 
 $t_bugslist = gpc_get_cookie( config_get_global( 'bug_list_cookie' ), false );
 
-if( $t_flags['history_show'] ) {
-	if( $f_history ) {
-		$t_history_link = '#history';
-		$t_history_label = lang_get( 'jump_to_history' );
-	} else {
-		$t_history_link = 'view.php?id=' . $f_issue_id . '&history=1#history';
-		$t_history_label = lang_get( 'display_history' );
-	}
-} else {
-	$t_history_link = '';
-}
-
 $t_top_buttons_enabled = !$t_force_readonly && ( $t_action_button_position == POSITION_TOP || $t_action_button_position == POSITION_BOTH );
 $t_bottom_buttons_enabled = !$t_force_readonly && ( $t_action_button_position == POSITION_BOTTOM || $t_action_button_position == POSITION_BOTH );
 
@@ -169,7 +157,14 @@ foreach ( $t_issue_view['links'] as $t_plugin => $t_hooks ) {
 print_small_button( '#bugnotes', lang_get( 'jump_to_bugnotes' ) );
 
 # Display or Jump to History
-if( !is_blank( $t_history_link ) ) {
+if( $t_flags['history_show'] ) {
+	if( $f_history ) {
+		$t_history_link = '#history';
+		$t_history_label = lang_get( 'jump_to_history' );
+	} else {
+		$t_history_link = 'view.php?id=' . $f_issue_id . '&history=1#history';
+		$t_history_label = lang_get( 'display_history' );
+	}
 	print_small_button( $t_history_link, $t_history_label );
 }
 
@@ -218,17 +213,17 @@ if( $t_bottom_buttons_enabled ) {
 echo '<tbody>';
 
 if( $t_flags['id_show'] || $t_flags['project_show'] || $t_flags['category_show'] ||
-    isset( $t_issue['view_state'] ) || isset( $t_issue_view['created_at'] ) || isset( $t_issue_view['updated_at'] )
+    $t_flags['view_state_show'] || $t_flags['created_at_show'] || $t_flags['updated_at_show']
 ) {
 
 	# Labels
 	echo '<tr class="bug-header">';
-	echo '<th class="bug-id category" width="15%">', isset( $t_issue['id'] ) ? lang_get( 'id' ) : '', '</th>';
-	echo '<th class="bug-project category" width="20%">', isset( $t_issue['project'] ) && isset( $t_issue['project']['name'] ) ? lang_get( 'email_project' ) : '', '</th>';
+	echo '<th class="bug-id category" width="15%">', $t_flags['id_show'] ? lang_get( 'id' ) : '', '</th>';
+	echo '<th class="bug-project category" width="20%">', $t_flags['project_show'] ? lang_get( 'email_project' ) : '', '</th>';
 	echo '<th class="bug-category category" width="15%">', $t_flags['category_show'] ? lang_get( 'category' ) : '', '</th>';
-	echo '<th class="bug-view-status category" width="15%">', isset( $t_issue['view_state'] ) ? lang_get( 'view_status' ) : '', '</th>';
-	echo '<th class="bug-date-submitted category" width="15%">', isset( $t_issue_view['created_at'] ) ? lang_get( 'date_submitted' ) : '', '</th>';
-	echo '<th class="bug-last-modified category" width="20%">', isset( $t_issue_view['updated_at'] ) ? lang_get( 'last_update' ) : '','</th>';
+	echo '<th class="bug-view-status category" width="15%">', $t_flags['view_state_show'] ? lang_get( 'view_status' ) : '', '</th>';
+	echo '<th class="bug-date-submitted category" width="15%">', $t_flags['created_at_show'] ? lang_get( 'date_submitted' ) : '', '</th>';
+	echo '<th class="bug-last-modified category" width="20%">', $t_flags['updated_at_show'] ? lang_get( 'last_update' ) : '','</th>';
 	echo '</tr>';
 
 	echo '<tr class="bug-header-data">';
@@ -297,11 +292,11 @@ if( $t_flags['reporter_show'] || $t_flags['handler_show'] || $t_flags['due_date_
 	if( $t_flags['due_date_show'] ) {
 		echo '<th class="bug-due-date category">', lang_get( 'due_date' ), '</th>';
 
-		if( $t_issue_view['overdue'] ) {
-			echo '<td class="bug-due-date overdue">', $t_issue_view['due_date'], '</td>';
-		} else {
-			echo '<td class="bug-due-date">', $t_issue_view['due_date'], '</td>';
+		$t_css = 'bug-due-date';
+		if( $t_issue_view['overdue'] !== false ) {
+			$t_css .= ' due-' . $t_issue_view['overdue'];
 		}
+		echo '<td class="' . $t_css . '">', $t_issue_view['due_date'], '</td>';
 	} else {
 		$t_spacer += 2;
 	}
@@ -547,7 +542,7 @@ echo '<tr class="hidden"></tr>';
 if( $t_flags['summary_show'] && isset( $t_issue['summary'] ) ) {
 	echo '<tr>';
 	echo '<th class="bug-summary category">', lang_get( 'summary' ), '</th>';
-	echo '<td class="bug-summary" colspan="5">', string_display_line( $t_issue_view['id_formatted'] . ': ' . $t_issue['summary'] ), '</td>';
+	echo '<td class="bug-summary" colspan="5">', string_display_line( bug_format_id( $f_issue_id ) . ': ' . $t_issue['summary'] ), '</td>';
 	echo '</tr>';
 }
 
@@ -733,7 +728,7 @@ if( config_get( 'time_tracking_enabled' ) &&
 }
 
 # History
-if( $t_flags['history_show'] ) {
+if( $t_flags['history_show'] && $f_history ) {
 ?>
 	<div class="col-md-12 col-xs-12">
 		<a id="history"></a>
@@ -946,16 +941,16 @@ function bug_view_relationship_view_box( $p_bug_id, $p_can_update ) {
 	}
 
 	$t_relationship_graph = ON == config_get( 'relationship_graph_enable' );
-	$t_show_top_div = $p_can_update || $t_relationship_graph;
-	?>
+	$t_event_buttons = event_signal( 'EVENT_MENU_ISSUE_RELATIONSHIP', $p_bug_id );
+	$t_show_top_div = $p_can_update || $t_relationship_graph || !empty( $t_event_buttons );
+?>
 	<div class="col-md-12 col-xs-12">
 	<div class="space-10"></div>
-
-	<?php
+<?php
 	$t_collapse_block = is_collapsed( 'relationships' );
 	$t_block_css = $t_collapse_block ? 'collapsed' : '';
 	$t_block_icon = $t_collapse_block ? 'fa-chevron-down' : 'fa-chevron-up';
-	?>
+?>
 	<div id="relationships" class="widget-box widget-color-blue2 <?php echo $t_block_css ?>">
 	<div class="widget-header widget-header-small">
 		<h4 class="widget-title lighter">
@@ -969,20 +964,41 @@ function bug_view_relationship_view_box( $p_bug_id, $p_can_update ) {
 		</div>
 	</div>
 	<div class="widget-body">
-		<?php if( $t_show_top_div ) { ?>
+<?php
+	if( $t_show_top_div ) {
+?>
 		<div class="widget-toolbox padding-8 clearfix">
-		<?php
-			if( $t_relationship_graph ) {
-		?>
-		<div class="btn-group pull-right noprint">
-		<span class="small"><?php print_small_button( 'bug_relationship_graph.php?bug_id=' . $p_bug_id . '&graph=relation', lang_get( 'relation_graph' ) )?></span>
-		<span class="small"><?php print_small_button( 'bug_relationship_graph.php?bug_id=' . $p_bug_id . '&graph=dependency', lang_get( 'dependency_graph' ) )?></span>
-		</div>
-		<?php
-			} # $t_relationship_graph
+<?php
+		# Default relationship buttons
+		$t_buttons = array();
+		if( $t_relationship_graph ) {
+			$t_buttons[lang_get( 'relation_graph' )] =
+				'bug_relationship_graph.php?bug_id=' . $p_bug_id . '&graph=relation';
+			$t_buttons[lang_get( 'dependency_graph' )] =
+				'bug_relationship_graph.php?bug_id=' . $p_bug_id . '&graph=dependency';
+		}
 
-			if( $p_can_update ) {
-			?>
+		# Plugin-added buttons
+		foreach( $t_event_buttons as $t_plugin => $t_plugin_buttons ) {
+			foreach( $t_plugin_buttons as $t_callback => $t_callback_buttons ) {
+				if( is_array( $t_callback_buttons ) ) {
+					$t_buttons = array_merge( $t_buttons, $t_callback_buttons );
+				}
+			}
+		}
+?>
+		<div class="btn-group pull-right noprint">
+<?php
+		# Print the buttons, if any
+		foreach( $t_buttons as $t_label => $t_url ) {
+			print_small_button( $t_url, $t_label );
+		}
+?>
+		</div>
+
+<?php
+		if( $p_can_update ) {
+?>
 		<form method="post" action="bug_relationship_add.php" class="form-inline noprint">
 		<?php echo form_security_field( 'bug_relationship_add' ) ?>
 		<input type="hidden" name="src_bug_id" value="<?php echo $p_bug_id?>" />
@@ -991,11 +1007,13 @@ function bug_view_relationship_view_box( $p_bug_id, $p_can_update ) {
 		<input type="text" class="input-sm" name="dest_bug_id" value="" />
 		<input type="submit" class="btn btn-primary btn-sm btn-white btn-round" name="add_relationship" value="<?php echo lang_get( 'add_new_relationship_button' )?>" />
 		</form>
-			<?php
-			} # can update
-			?>
+<?php
+		} # can update
+?>
 		</div>
-		<?php } # show top div ?>
+<?php
+	} # show top div
+?>
 
 		<div class="widget-main no-padding">
 			<div class="table-responsive">
@@ -1151,7 +1169,6 @@ function bug_view_button_bug_assign_to( BugData $p_bug ) {
  * @return void
  */
 function bug_view_action_buttons( $p_bug_id, $p_flags ) {
-	$t_readonly = bug_is_readonly( $p_bug_id );
 	$t_bug = bug_get( $p_bug_id );
 
 	echo '<div class="btn-group">';

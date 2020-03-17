@@ -41,6 +41,7 @@
  * @author BukhariSaeed
  * @author E THP
  * @author Muhammad Shuaib
+ * @author Obaid Raza
  * @author امین اکبر
  * @author عثمان خان شاہ
  * @author محبوب عالم
@@ -823,7 +824,6 @@ $s_relationship_warning_blocking_bugs_not_resolved_2 = '<strong>توجا دیں<
 $s_create_child_bug_button = 'کاپی بناو';
 $s_bug_cloned_to = 'ایشوذ کی کاپی بناو';
 $s_bug_created_from = '  ایشوذ اس سے بن رھے ھیں';
-$s_viewing_bug_relationship_graph_title = 'تعلق کا گراف';
 $s_relation_graph = ' تعلق کا گراف';
 $s_dependency_graph = 'دارو مدار کا گراف';
 $s_vertical = 'ویرٹیکل';
@@ -908,8 +908,8 @@ $MANTIS_ERROR[ERROR_SQL] = ' کی خرابی آ گی ھے اس کے بارے م�
 $MANTIS_ERROR[ERROR_REPORT] = 'آپ کی معلومات مین خرابی تھی.';
 $MANTIS_ERROR[ERROR_NO_FILE_SPECIFIED] = 'کوی فاہل بتای نہی گی';
 $MANTIS_ERROR[ERROR_FILE_DISALLOWED] = 'اس قسم کی فاہل کی اجازت نہی';
-$MANTIS_ERROR[ERROR_NO_DIRECTORY] = 'لسٹ دستیاب نہی ھے.
-Please check the project settings.';
+$MANTIS_ERROR[ERROR_NO_DIRECTORY] = 'فہرست دستیاب نہیں ہے۔
+براہ کرم منصوبے کی ترتیبات کی جانچ کریں۔';
 $MANTIS_ERROR[ERROR_DUPLICATE_PROJECT] = 'اس نام کا منصو بہ پہلے ہی موجود ھے.';
 $MANTIS_ERROR[ERROR_EMPTY_FIELD] = 'اپنی اندراج والی قیمت دیکھیں ایک بہت ہی خاص اندراج نہی ھے \'%1$s\'';
 $MANTIS_ERROR[ERROR_PROTECTED_ACCOUNT] = 'یہ کھاتہ مھفوظ ھے آپ اسے استہمال نہی کر سکتے جب تک اسے غیر  مہفوظ نہ بنایا جاے۔.';

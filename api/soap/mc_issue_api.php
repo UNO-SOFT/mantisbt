@@ -840,7 +840,7 @@ function mc_issue_get_biggest_id( $p_username, $p_password, $p_project_id ) {
 /**
  * Get the id of an issue via the issue's summary.
  *
- * @param string $p_username The name of the user trying to delete the issue.
+ * @param string $p_username The name of the user trying to retrieve the information.
  * @param string $p_password The password of the user.
  * @param string $p_summary  The summary of the issue to retrieve.
  * @return integer The id of the issue with the given summary, 0 if there is no such issue.
@@ -945,7 +945,7 @@ function mc_issue_add( $p_username, $p_password, $p_issue ) {
  * Update Issue in database
  *
  * Created By KGB
- * @param string   $p_username The name of the user trying to add the issue.
+ * @param string   $p_username The name of the user trying to update the issue.
  * @param string   $p_password The password of the user.
  * @param integer  $p_issue_id The issue id of the existing issue being updated.
  * @param stdClass $p_issue    A IssueData structure containing information about the new issue.
@@ -1283,7 +1283,6 @@ function mc_issue_note_add( $p_username, $p_password, $p_issue_id, stdClass $p_n
 		}
 
 		if( isset( $p_note['reporter'] ) ) {
-			$t_reporter_id = mci_get_user_id( $p_note['reporter'] );
 			$t_payload['reporter'] = array( 'id' => mci_get_user_id( $p_note['reporter'] ) );
 		}
 
@@ -1369,7 +1368,7 @@ function mc_issue_note_add( $p_username, $p_password, $p_issue_id, stdClass $p_n
 /**
  * Delete a note given its id.
  *
- * @param string  $p_username      The name of the user trying to add a note to an issue.
+ * @param string  $p_username      The name of the user trying to delete a note from an issue.
  * @param string  $p_password      The password of the user.
  * @param integer $p_issue_note_id The id of the note to be deleted.
  * @return boolean true: success, false: failure
@@ -1402,7 +1401,7 @@ function mc_issue_note_delete( $p_username, $p_password, $p_issue_note_id ) {
 /**
  * Update a note
  *
- * @param string   $p_username The name of the user trying to add a note to an issue.
+ * @param string   $p_username The name of the user trying to update a note of an issue.
  * @param string   $p_password The password of the user.
  * @param stdClass $p_note     The note to update.
  * @return true on success, false on failure
@@ -1440,8 +1439,6 @@ function mc_issue_note_update( $p_username, $p_password, stdClass $p_note ) {
 		return mci_fault_access_denied( $t_user_id );
 	}
 
-	$t_issue_author_id = bugnote_get_field( $t_issue_note_id, 'reporter_id' );
-
 	# Check if the user owns the bugnote and is allowed to update their own bugnotes
 	# regardless of the update_bugnote_threshold level.
 	$t_user_owns_the_bugnote = bugnote_is_user_reporter( $t_issue_note_id, $t_user_id );
@@ -1477,7 +1474,7 @@ function mc_issue_note_update( $p_username, $p_password, stdClass $p_note ) {
 /**
  * Submit a new relationship.
  *
- * @param string   $p_username     The name of the user trying to add a note to an issue.
+ * @param string   $p_username     The name of the user trying to add a relationship to an issue.
  * @param string   $p_password     The password of the user.
  * @param integer  $p_issue_id     The id of the issue of the source issue.
  * @param stdClass $p_relationship The relationship to add (RelationshipData SOAP object).
@@ -1537,7 +1534,7 @@ function mc_issue_relationship_add( $p_username, $p_password, $p_issue_id, stdCl
 /**
  * Delete the relationship with the specified target id.
  *
- * @param string  $p_username        The name of the user trying to add a note to an issue.
+ * @param string  $p_username        The name of the user trying to delete a relationship from an issue.
  * @param string  $p_password        The password of the user.
  * @param integer $p_issue_id        The id of the source issue for the relationship.
  * @param integer $p_relationship_id The id of relationship to delete.
@@ -1810,7 +1807,7 @@ function mci_check_access_to_bug( $p_user_id, $p_bug_id ) {
 /**
  * Get all issues matching the ids.
  *
- * @param string                $p_username         The name of the user trying to access the filters.
+ * @param string                $p_username         The name of the user trying to access the issues.
  * @param string                $p_password         The password of the user.
  * @param IntegerArray          $p_issue_ids        Number of issues to display per page.
  * @return array that represents an IssueDataArray structure
@@ -1841,7 +1838,7 @@ function mc_issues_get( $p_username, $p_password, $p_issue_ids ) {
 /**
  * Get all issues header matching the ids.
  *
- * @param string                $p_username         The name of the user trying to access the filters.
+ * @param string                $p_username         The name of the user trying to access the issues.
  * @param string                $p_password         The password of the user.
  * @param IntegerArray          $p_issue_ids        Number of issues to display per page.
  * @return array that represents an IssueHeaderDataArray structure

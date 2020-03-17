@@ -49,6 +49,7 @@
  * @author Hercule
  * @author IAlex
  * @author Jean-Frédéric
+ * @author Jeromedl
  * @author Kropotkine 113
  * @author Lapinkiller
  * @author Lbayle
@@ -83,7 +84,7 @@ $s_actiongroup_menu_update_category = 'Mettre à jour la catégorie';
 $s_actiongroup_menu_set_sticky = 'Activer / désactiver l’épinglage';
 $s_actiongroup_menu_update_field = 'Mettre à jour %1$s';
 $s_actiongroup_menu_update_product_version = 'Mettre à jour la version du produit';
-$s_actiongroup_menu_update_target_version = 'Mettre à jour la version cible';
+$s_actiongroup_menu_update_target_version = 'Mettre à jour la version ciblée';
 $s_actiongroup_menu_update_fixed_in_version = 'Mettre à jour la version résolue';
 $s_actiongroup_menu_update_product_build = 'Mettre à jour la compilation';
 $s_actiongroup_menu_update_due_date = 'Mettre à jour la date d’échéance';
@@ -640,7 +641,7 @@ $s_superfluous = 'La connexion d’un état vers lui-même est implicite, il n�
 $s_unreachable = 'Vous ne pouvez pas positionner une anomalie à cet état';
 $s_no_exit = 'Vous ne pouvez pas positionner une anomalie hors de cet état';
 $s_access_levels = 'Niveaux d’accès';
-$s_access_change = 'Niveau d’accès minimal pour modifier cet état';
+$s_access_change = 'Niveau d’accès minimal pour atteindre cet état';
 $s_desc_bug_submit_status = 'État à positionner pour un nouvelle anomalie';
 $s_desc_bug_reopen_status = 'État des anomalies rouvertes';
 $s_desc_bug_resolved_status_threshold = 'État dans lequel une anomalie est considérée comme résolue';
@@ -665,6 +666,7 @@ $s_resolved_status = 'État quand une anomalie est considérée comme résolue';
 $s_readonly_status = 'État dans lequel une anomalie ne peut plus être modifiée';
 $s_reopen_status = 'État à positionner pour une anomalie rouverte';
 $s_reopen_resolution = 'Résolution à positionner pour une anomalie rouverte';
+$s_limit_view_unless_threshold_option = 'Afficher les problèmes des autres utilisateurs (si non positionné, l’accès sera limité aux problèmes signalés, gérés ou suivis par l’utilisateur)';
 $s_config_delete_sure = 'Voulez-vous vraiment supprimer la configuration pour :';
 $s_in_project = 'du projet';
 $s_delete_config_button = 'Supprimer la configuration';
@@ -681,6 +683,7 @@ $s_set_configuration_option_action_create = 'Créer une option de configuration'
 $s_set_configuration_option_action_edit = 'Modifier une option de configuration';
 $s_set_configuration_option_action_clone = 'Dupliquer une option de configuration';
 $s_set_configuration_option_action_view = 'Afficher l’option de configuration';
+$s_show_all_complex = 'Afficher la valeur pour toutes les options « %1$s »';
 $s_plugin = 'Greffon';
 $s_plugins_installed = 'Greffons installés';
 $s_plugins_available = 'Greffons disponibles';
@@ -1001,8 +1004,8 @@ $s_move_bug_button = 'Déplacer';
 $s_attached_files = 'Pièces jointes';
 $s_publish = 'Publier';
 $s_add_user_to_monitor = 'Ajouter';
-$s_browser_does_not_support_audio = 'Votre navigateur ne supporte pas la balise <tt>audio</tt>.';
-$s_browser_does_not_support_video = 'Votre navigateur ne supporte pas la balise <tt>video</tt>.';
+$s_browser_does_not_support_audio = 'Votre navigateur ne prend pas en charge la balise "audio".';
+$s_browser_does_not_support_video = 'Votre navigateur ne prend pas en charge la balise "video".';
 $s_bug_view_title = 'Voir les détails de l’anomalie';
 $s_no_users_monitoring_bug = 'Aucun utilisateur ne surveille cette anomalie.';
 $s_users_monitoring_bug = 'Utilisateurs surveillant cette anomalie';
@@ -1104,13 +1107,13 @@ $s_copy_from_parent = 'Copier les données étendues de l’anomalie parente';
 $s_copy_notes_from_parent = 'Copier les notes d’anomalie';
 $s_copy_attachments_from_parent = 'Copier les pièces jointes';
 $s_with = 'avec';
-$s_viewing_bug_relationship_graph_title = 'Graphique relationnel';
-$s_viewing_bug_dependency_graph_title = 'Graphique des dépendances';
 $s_relation_graph = 'Graphique des relations';
 $s_dependency_graph = 'Graphique des dépendances';
 $s_vertical = 'Vertical';
 $s_horizontal = 'Horizontal';
 $s_view_issue = 'Afficher l’anomalie';
+$s_show_summary = 'Afficher le résumé';
+$s_hide_summary = 'Masquer le résumé';
 $s_perm_rpt_capability = 'Capacité';
 $s_view = 'Voir';
 $s_issues = 'Anomalies';
@@ -1254,6 +1257,8 @@ $s_copy_columns_to = 'Copier les colonnes vers';
 $s_due_date = 'Date d’échéance';
 $s_overdue = 'en retard';
 $s_overdue_since = 'En retard depuis %1$s';
+$s_overdue_one_day = 'Le retard est inférieur à un jour';
+$s_overdue_days = 'Retard dans %1$d jours';
 $s_view_account_title = 'Informations sur l’utilisateur';
 $s_manage_user = 'Gérer l’utilisateur';
 $s_label = '%1$s :';

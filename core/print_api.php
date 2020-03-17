@@ -759,25 +759,32 @@ function print_category_option_list( $p_category_id = 0, $p_project_id = null ) 
 		echo '<option value="0"';
 		check_selected( $p_category_id, 0 );
 		echo '>';
-		echo category_full_name( 0, false ), '</option>';
+		echo category_full_name( 0, false );
+		echo '</option>', PHP_EOL;
 	} else {
 		if( 0 == $p_category_id ) {
 			if( count( $t_cat_arr ) == 1 ) {
 				$p_category_id = (int) $t_cat_arr[0]['id'];
 			} else {
-				echo '<option value="0"';
-				echo check_selected( $p_category_id, 0 );
+				echo '<option value="0" disabled hidden';
+				check_selected( $p_category_id, 0 );
 				echo '>';
-				echo string_attribute( lang_get( 'select_option' ) ) . '</option>';
+				echo string_attribute( lang_get( 'select_option' ) );
+				echo '</option>', PHP_EOL;
 			}
 		}
 	}
 
 	foreach( $t_cat_arr as $t_category_row ) {
 		$t_category_id = (int)$t_category_row['id'];
+		$t_category_name = category_full_name(
+			$t_category_id,
+			$t_category_row['project_id'] != $t_project_id
+		);
 		echo '<option value="' . $t_category_id . '"';
 		check_selected( $p_category_id, $t_category_id );
-		echo '>' . string_attribute( category_full_name( $t_category_id, $t_category_row['project_id'] != $t_project_id ) ) . '</option>';
+		echo '>';
+		echo string_attribute( $t_category_name ), '</option>', PHP_EOL;
 	}
 }
 
@@ -1171,7 +1178,6 @@ function print_project_user_list_option_list2( $p_user_id ) {
 					u.user_id IS NULL
 				ORDER BY p.name';
 	$t_result = db_query( $t_query, array( (int)$p_user_id, true ) );
-	$t_category_count = db_num_rows( $t_result );
 	while( $t_row = db_fetch_array( $t_result ) ) {
 		$t_project_name = string_attribute( $t_row['name'] );
 		$t_user_id = $t_row['id'];
@@ -1220,7 +1226,6 @@ function print_custom_field_projects_list( $p_field_id ) {
 
 	foreach( $t_project_ids as $t_project_id ) {
 		$t_project_name = project_get_field( $t_project_id, 'name' );
-		$t_sequence = custom_field_get_sequence( $p_field_id, $t_project_id );
 		echo '<strong>', string_display_line( $t_project_name ), '</strong>: ';
 		print_extra_small_button( 'manage_proj_custom_field_remove.php?field_id=' . $c_field_id . '&project_id=' . $t_project_id . '&return=custom_field' . $t_security_token, lang_get( 'remove_link' ) );
 		echo '<br />- ';

@@ -1130,6 +1130,42 @@ function bug_is_closed( $p_bug_id ) {
 }
 
 /**
+ * Return a bug's overdue warning level.
+ * Determines the level based on the difference between the bug's due date
+ * and the current date/time, based on the defined delays
+ * @see $g_due_date_warning_levels
+ *
+ * @param $p_bug_id
+ *
+ * @return int|false Warning level (0 = overdue), false if N/A.
+ */
+function bug_overdue_level( $p_bug_id ) {
+	if( bug_is_resolved( $p_bug_id ) ) {
+		return false;
+	}
+
+	$t_bug = bug_get( $p_bug_id );
+	$t_due_date = $t_bug->due_date;
+
+	if( date_is_null( $t_due_date ) ) {
+		return false;
+	}
+
+	$t_warning_levels = config_get( 'due_date_warning_levels', null, null, $t_bug->project_id );
+	if( !empty( $t_warning_levels ) && !is_array( $t_warning_levels ) ) {
+		trigger_error( ERROR_GENERIC );
+	}
+
+	$t_now = db_now();
+	foreach( $t_warning_levels as $t_level => $t_delay ) {
+		if( $t_now > $t_due_date - $t_delay ) {
+			return $t_level;
+		}
+	}
+	return false;
+}
+
+/**
  * Check if a given bug is overdue
  * @param integer $p_bug_id Integer representing bug identifier.
  * @return boolean true if bug is overdue, false otherwise
@@ -1137,16 +1173,7 @@ function bug_is_closed( $p_bug_id ) {
  * @uses database_api.php
  */
 function bug_is_overdue( $p_bug_id ) {
-	$t_due_date = bug_get_field( $p_bug_id, 'due_date' );
-	if( !date_is_null( $t_due_date ) ) {
-		$t_now = db_now();
-		if( $t_now > $t_due_date ) {
-			if( !bug_is_resolved( $p_bug_id ) ) {
-				return true;
-			}
-		}
-	}
-	return false;
+	return bug_overdue_level( $p_bug_id ) === 0;
 }
 
 /**
@@ -1694,7 +1721,7 @@ function bug_get_bugnote_stats_array( array $p_bugs_id, $p_user_id = null ) {
  * associated with the bug was modified and the total bugnote
  * count in one db query
  * @param integer $p_bug_id Integer representing bug identifier.
- * @return object consisting of bugnote stats
+ * @return array|false Bugnote stats, false if no bugnotes
  * @access public
  * @uses database_api.php
  */
@@ -1851,8 +1878,17 @@ function bug_set_field( $p_bug_id, $p_field_name, $p_value ) {
  * @uses database_api.php
  */
 function bug_assign( $p_bug_id, $p_user_id, $p_bugnote_text = '', $p_bugnote_private = false ) {
-	if( ( $p_user_id != NO_USER ) && !access_has_bug_level( config_get( 'handle_bug_threshold' ), $p_bug_id, $p_user_id ) ) {
-		trigger_error( ERROR_USER_DOES_NOT_HAVE_REQ_ACCESS );
+	if( $p_user_id != NO_USER ) {
+		$t_bug_sponsored = config_get( 'enable_sponsorship' )
+			&& sponsorship_get_amount( sponsorship_get_all_ids( $p_bug_id ) ) > 0;
+		# The new handler is checked at project level
+		$t_project_id = bug_get_field( $p_bug_id, 'project_id' );
+		if( !access_has_project_level( config_get( 'handle_bug_threshold' ), $t_project_id, $p_user_id ) ) {
+			trigger_error( ERROR_HANDLER_ACCESS_TOO_LOW, ERROR );
+		}
+		if( $t_bug_sponsored && !access_has_project_level( config_get( 'handle_sponsored_bugs_threshold' ), $t_project_id, $p_user_id ) ) {
+			trigger_error( ERROR_SPONSORSHIP_HANDLER_ACCESS_LEVEL_TOO_LOW, ERROR );
+		}
 	}
 
 	# extract current information into history variables
@@ -1875,8 +1911,10 @@ function bug_assign( $p_bug_id, $p_user_id, $p_bugnote_text = '', $p_bugnote_pri
 		history_log_event_direct( $p_bug_id, 'handler_id', $h_handler_id, $p_user_id );
 
 		# Add bugnote if supplied ignore false return
-		$t_bugnote_id = bugnote_add( $p_bug_id, $p_bugnote_text, 0, $p_bugnote_private, 0, '', null, false );
-		bugnote_process_mentions( $p_bug_id, $t_bugnote_id, $p_bugnote_text );
+		if( !is_blank( $p_bugnote_text ) ) {
+			$t_bugnote_id = bugnote_add( $p_bug_id, $p_bugnote_text, 0, $p_bugnote_private, 0, '', null, false );
+			bugnote_process_mentions( $p_bug_id, $t_bugnote_id, $p_bugnote_text );
+		}
 
 		# updated the last_updated date
 		bug_update_date( $p_bug_id );

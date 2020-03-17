@@ -41,6 +41,7 @@
  * @author EugeneZelenko
  * @author Jim-by
  * @author Macofe
+ * @author Nerogaf
  * @author Red Winged Duck
  * @author Renessaince
  * @author Wizardist
@@ -458,6 +459,7 @@ $s_fixed_in_version = 'Выпраўленая ў вэрсіі';
 $s_target_version = 'Мэтавая вэрсія';
 $s_votes = 'Галасы';
 $s_summary = 'Апісаньне';
+$s_synthesis = 'Сынтэз';
 $s_description = 'Апісаньне';
 $s_steps_to_reproduce = 'Крокі для паўтарэньня';
 $s_update_information_button = 'Абнавіць інфармацыю';
@@ -641,6 +643,7 @@ $s_resolved_status = 'Статус, які азначае, што праблем
 $s_readonly_status = 'Статус, у якім праблема будзе даступная толькі для чытаньня';
 $s_reopen_status = 'Статус, які надаецца праблеме адкрываемай зноў';
 $s_reopen_resolution = 'Вырашэньне, якое надаецца праблеме адкрываемай зноў';
+$s_limit_view_unless_threshold_option = 'Паказваць памылкі іншых карыстальнікаў (калі не зададзена, доступ будзе абмяжоўвацца пададзенымі, апрацаванымі ці адсочванымі памылкамі карыстальніка)';
 $s_config_delete_sure = 'Вы ўпэўнены, што жадаеце выдаліць налады для:';
 $s_in_project = 'у праекце';
 $s_delete_config_button = 'Выдаліць налады';
@@ -976,6 +979,8 @@ $s_move_bug_button = 'Перанесьці';
 $s_attached_files = 'Далучаныя файлы';
 $s_publish = 'Апублікаваць';
 $s_add_user_to_monitor = 'Дадаць';
+$s_browser_does_not_support_audio = 'Ваш броўзэр не падтрымлівае аўдыётэгі.';
+$s_browser_does_not_support_video = 'Ваш браўзэр не падтрымлівае відэатэгі.';
 $s_bug_view_title = 'Паказаць падрабязнасьці праблемы';
 $s_no_users_monitoring_bug = 'Ніхто ня сочыць за гэтай праблемай.';
 $s_users_monitoring_bug = 'Карыстальнікі, якія сочаць за гэтай праблемай';
@@ -1076,13 +1081,13 @@ $s_copy_from_parent = 'Капіяваць пашыраныя зьвесткі з
 $s_copy_notes_from_parent = 'Капіяваць камэнтары да праблемы';
 $s_copy_attachments_from_parent = 'Капіяваць далучэньні';
 $s_with = 'з';
-$s_viewing_bug_relationship_graph_title = 'Дыяграма сувязяў';
-$s_viewing_bug_dependency_graph_title = 'Дыяграма залежнасьцяў';
 $s_relation_graph = 'Дыяграма сувязяў';
 $s_dependency_graph = 'Дыяграма залежнасьцяў';
 $s_vertical = 'Вэртыкальны';
 $s_horizontal = 'Гарызантальны';
 $s_view_issue = 'Паказаць праблему';
+$s_show_summary = 'Паказаць падсумаваньне';
+$s_hide_summary = 'Схаваць падсумаваньне';
 $s_perm_rpt_capability = 'Магчымасьць';
 $s_view = 'Паказаць';
 $s_issues = 'Праблемы';
@@ -1144,6 +1149,14 @@ $s_email_on_deleted = 'Паведамляць праз электронную п
 $s_email_on_sponsorship_changed = 'Паведамляць праз электронную пошту пра зьмены спансараваньня';
 $s_email_on_relationship_changed = 'Паведамляць праз электронную пошту пра зьмены сувязяў';
 $s_email_on_updated = 'Электронны ліст пры абнаўленьні';
+$s_email_on_monitor = 'Даслаць э-мэйл, калі карыстальнік пачынае назіраньне';
+$s_view_tags = 'Прагляд тэгаў, прымацаваных да памылкі';
+$s_attach_tags = 'Прымацаваць тэгі да памылкі';
+$s_detach_tags = 'Адмацаваць тэгі ад памылкі';
+$s_detach_own_tags = 'Адлучыць тэгі, прымацаваныя адным і тым жа карыстальнікам';
+$s_create_new_tags = 'Стварыць новыя тэгі';
+$s_edit_tags = 'Рэдагаваць назвы й апісаньні тэгаў';
+$s_edit_own_tags = 'Рэдагаваць тэгі, створаныя адным і тым жа карыстальнікам';
 $s_loading = 'Загрузка…';
 $s_between_date = 'Паміж';
 $s_on_or_before_date = 'На, ці пасьля';

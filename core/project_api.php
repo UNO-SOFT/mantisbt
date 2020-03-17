@@ -594,7 +594,6 @@ function project_get_local_user_rows( $p_project_id ) {
 	$t_result = db_query( $t_query, array( (int)$p_project_id ) );
 
 	$t_user_rows = array();
-	$t_row_count = db_num_rows( $t_result );
 
 	while( $t_row = db_fetch_array( $t_result ) ) {
 		array_push( $t_user_rows, $t_row );
@@ -772,7 +771,7 @@ function project_update_user_access( $p_project_id, $p_user_id, $p_access_level 
  * @param integer $p_project_id   A project identifier.
  * @param integer $p_user_id      A user identifier.
  * @param integer $p_access_level Project Access level to grant the user.
- * @return boolean
+ * @return void
  */
 function project_set_user_access( $p_project_id, $p_user_id, $p_access_level ) {
 	project_add_users( $p_project_id, array( $p_user_id => $p_access_level ) );
@@ -843,7 +842,7 @@ function project_remove_user( $p_project_id, $p_user_id ) {
  * Remove multiple users from project.
  * @param integer $p_project_id  A project identifier.
  * @param array $p_user_ids      Array of user identifiers.
- * @return type
+ * @return void
  */
 function project_remove_users( $p_project_id, array $p_user_ids ) {
 	# normalize input
