@@ -52,7 +52,7 @@ $t_data = array(
 );
 
 $t_command = new UserResetPasswordCommand( $t_data );
-$t_command->execute();
+$t_reset, $t_result = $t_command->execute();
 
 $t_redirect_url = 'manage_user_page.php';
 
