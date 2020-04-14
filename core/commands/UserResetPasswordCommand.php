@@ -96,7 +96,7 @@ class UserResetPasswordCommand extends Command {
 		} else {
 			$t_result = user_reset_failed_login_count_to_zero( $this->user_id_reset );
 		}
-		return array();
+		return array( $t_reset, $t_result );
 	}
 }
 
