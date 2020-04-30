@@ -1553,12 +1553,14 @@ class BugFilterQuery extends DbQuery {
 				$t_textsearch_where_clause .= 'NOT ';
 			}
 
+            // Force case-insensitive search iff the term is all lowercase.
+			$t_force_ci = strtolower( $t_search_term ) == $t_search_term;
 			$c_search = '%' . $t_search_term . '%';
-			$t_textsearch_where_clause .= '( ' . $this->sql_like( '{bug}.summary', $c_search )
-					. ' OR ' . $this->sql_like( '{bug_text}.description', $c_search )
-					. ' OR ' . $this->sql_like( '{bug_text}.steps_to_reproduce', $c_search )
-					. ' OR ' . $this->sql_like( '{bug_text}.additional_information', $c_search )
-					. ' OR ' . $this->sql_like( '{bugnote_text}.note', $c_search );
+			$t_textsearch_where_clause .= '( ' . $this->sql_like( '{bug}.summary', $c_search, null, $t_force_ci )
+					. ' OR ' . $this->sql_like( '{bug_text}.description', $c_search, null, $t_force_ci )
+					. ' OR ' . $this->sql_like( '{bug_text}.steps_to_reproduce', $c_search, null, $t_force_ci )
+					. ' OR ' . $this->sql_like( '{bug_text}.additional_information', $c_search, null, $t_force_ci )
+					. ' OR ' . $this->sql_like( '{bugnote_text}.note', $c_search, null, $t_force_ci );
 
 			if( is_numeric( $t_search_term ) ) {
 				# Note: no need to test negative values, '-' sign has been removed
