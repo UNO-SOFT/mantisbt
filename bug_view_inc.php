@@ -423,7 +423,7 @@ if( $t_flags['projection_show'] || $t_flags['eta_show'] ) {
 
 if( ( $t_flags['profiles_platform_show'] && isset( $t_issue['platform'] ) && !is_blank( $t_issue['platform'] ) ) ||
 	( $t_flags['profiles_os_show'] && isset( $t_issue['os'] ) && !is_blank( $t_issue['os'] ) ) ||
-    ( $t_flags['profiles_os_version_show'] && isset( $t_issue['os_version'] ) && !is_blank( $t_issue['os_version'] ) ) ) {
+    ( $t_flags['profiles_os_build_show'] && isset( $t_issue['os_build'] ) && !is_blank( $t_issue['os_build'] ) ) ) {
 	$t_spacer = 0;
 
 	echo '<tr>';
@@ -445,9 +445,9 @@ if( ( $t_flags['profiles_platform_show'] && isset( $t_issue['platform'] ) && !is
 	}
 
 	# OS Version
-	if( $t_flags['profiles_os_version_show'] && isset( $t_issue['os_version'] ) && !is_blank( $t_issue['os_version'] ) ) {
+	if( $t_flags['profiles_os_build_show'] && isset( $t_issue['os_build'] ) && !is_blank( $t_issue['os_build'] ) ) {
 		echo '<th class="bug-os-version category">', lang_get( 'os_version' ), '</th>';
-		echo '<td class="bug-os-version">', string_display_line( $t_issue['os_version'] ), '</td>';
+		echo '<td class="bug-os-version">', string_display_line( $t_issue['os_build'] ), '</td>';
 	} else {
 		$t_spacer += 2;
 	}
@@ -464,7 +464,7 @@ if( ( $t_flags['profiles_platform_show'] && isset( $t_issue['platform'] ) && !is
 #
 
 if( ( $t_flags['versions_product_version_show'] && isset( $t_issue['version'] ) ) ||
-    ( $t_flags['versions_product_build_show'] && isset( $t_issue['product_build'] ) ) ) {
+    ( $t_flags['versions_product_build_show'] && isset( $t_issue['build'] ) ) ) {
 	$t_spacer = 2;
 
 	echo '<tr>';
@@ -478,9 +478,9 @@ if( ( $t_flags['versions_product_version_show'] && isset( $t_issue['version'] ) 
 	}
 
 	# Product Build
-	if( $t_flags['versions_product_build_show'] && isset( $t_issue['product_build'] ) ) {
+	if( $t_flags['versions_product_build_show'] && isset( $t_issue['build'] ) ) {
 		echo '<th class="bug-product-build category">', lang_get( 'product_build' ), '</th>';
-		echo '<td class="bug-product-build">', string_display_line( $t_issue['product_build'] ), '</td>';
+		echo '<td class="bug-product-build">', string_display_line( $t_issue['build'] ), '</td>';
 	} else {
 		$t_spacer += 2;
 	}
