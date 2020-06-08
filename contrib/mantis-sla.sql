@@ -60,4 +60,5 @@ SELECT A.bug_id, MIN(A.date_modified), 'B' w
   FROM mantis_bug_table A
   WHERE EXISTS (SELECT 1 FROM mantis_bug_history_table H WHERE H.type = 0 AND H.field_name = 'status' AND H.new_value IN ('991', '993') AND H.bug_id = A.id)
   ORDER BY A.id DESC
-  ) A;
+  ) A
+  WHERE A.lezarva IS NULL OR A.lezarva >= (NOW() - interval '30 day');
