@@ -147,7 +147,7 @@ class IssueViewPageCommand extends Command {
 
 		$t_flags['id_show'] = in_array( 'id', $t_fields );
 		if( $t_flags['id_show'] ) {
-			$t_issue_view['id_formatted'] = bug_format_id( $t_issue_id );
+			$t_issue_view['id_formatted'] = '#' . bug_format_id( $t_issue_id );
 		}
 
 		$t_flags['created_at_show'] = in_array( 'date_submitted', $t_fields );

@@ -660,7 +660,7 @@ function string_get_bug_view_link( $p_bug_id, $p_detail_info = true, $p_fqdn = f
 				$t_link .= ' class="resolved"';
 			}
 		}
-		$t_link .= '>' . bug_format_id( $p_bug_id ) . '</a>';
+		$t_link .= '>#' . bug_format_id( $p_bug_id ) . '</a>';
 	} else {
 		$t_link = bug_format_id( $p_bug_id );
 	}
