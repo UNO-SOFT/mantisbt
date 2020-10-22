@@ -21,7 +21,7 @@
 /**
  * Mantis Version
  */
-define( 'MANTIS_VERSION', '2.24.2' );
+define( 'MANTIS_VERSION', '2.24.3' );
 define( 'FILTER_VERSION', 'v9' );
 
 # --- constants -------------------
@@ -232,6 +232,10 @@ define( 'BUG_UPDATE_TYPE_CHANGE_STATUS', 'change_status' );
 define( 'CONFIRMATION_TYPE_SUCCESS', 0 );
 define( 'CONFIRMATION_TYPE_WARNING', 1 );
 define( 'CONFIRMATION_TYPE_FAILURE', 2 );
+
+# Plugin management
+define( 'PLUGIN_PRIORITY_LOW', 1 );
+define( 'PLUGIN_PRIORITY_HIGH', 5 );
 
 # error messages
 define( 'ERROR_PHP', -1 );
