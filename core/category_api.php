@@ -85,6 +85,10 @@ function category_ensure_exists( $p_category_id ) {
  * @return bool True if the category exists, false otherwise.
  */
 function category_exists_in_project( $p_category_id, $p_project_id ) {
+	$t_allow_no_category = config_get( 'allow_no_category', null, null, $p_project_id );
+	if( $t_allow_no_category && $p_category_id == 0 ) {
+		return true;
+	}
 	$t_categories = array_column( category_get_all_rows( $p_project_id ), 'id' );
 	return in_array( $p_category_id, $t_categories );
 }
