@@ -59,9 +59,6 @@ $g_category_cache = array();
  * @access public
  */
 function category_exists( $p_category_id ) {
-	if( $p_category_id == 0 ) {
-		return true;
-	}
 	$t_category_row = category_get_row( $p_category_id, /* error_if_not_exists */ false );
 	return $t_category_row !== false;
 }
@@ -88,9 +85,6 @@ function category_ensure_exists( $p_category_id ) {
  * @return bool True if the category exists, false otherwise.
  */
 function category_exists_in_project( $p_category_id, $p_project_id ) {
-	if( $p_category_id == 0 ) {
-		return true;
-	}
 	$t_categories = array_column( category_get_all_rows( $p_project_id ), 'id' );
 	return in_array( $p_category_id, $t_categories );
 }
