@@ -228,6 +228,10 @@ $g_show_avatar = OFF;
 $g_show_avatar_threshold = 1000;
 $g_time_tracking_enabled = ON;
 $g_time_tracking_stopwatch = ON;
+$g_time_tracking_view_threshold = DEVELOPER;
+$g_time_tracking_edit_threshold = DEVELOPER;
+$g_time_tracking_reporting_threshold = MANAGER;
+$g_time_tracking_without_note = ON;
 
 $g_create_permalink_threshold = REPORTER;
 $g_stored_query_create_threshold = REPORTER;
