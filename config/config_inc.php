@@ -143,7 +143,7 @@ $g_handle_bug_threshold = REPORTER;
 $g_update_bug_assign_threshold = UPDATER;
 $g_update_bug_status_threshold = REPORTER;
 $g_update_bug_threshold = REPORTER;
-$g_roadmap_update_threshold = REPORTER;
+$g_roadmap_update_threshold = DEVELOPER;
 
 $g_delete_attachments_threshold = UPDATER;
 $g_delete_bug_threshold = MANAGER;
@@ -269,7 +269,7 @@ $g_timeline_view_threshold = NOBODY;
 //$g_timeline_view_threshold = 1000;
 
 $g_css_include_file = "unosoft.css";
-$g_cdn_enabled = OFF;
+$g_cdn_enabled = ON;
 
 $g_impersonate_user_threshold = NOBODY;
 
