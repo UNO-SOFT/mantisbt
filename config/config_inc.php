@@ -109,6 +109,7 @@ $g_top_include_page = 'top_page_inc.php';
 
 $g_bugnote_order = 'DESC';
 
+$g_show_detailed_errors = OFF;
 if ( strcmp(SYS_FLAVOR, 'prd') != 0 ) { //nem PRD
   $g_limit_email_domain = 'unosoft.hu';
   $g_show_detailed_errors = ON;
@@ -116,7 +117,8 @@ if ( strcmp(SYS_FLAVOR, 'prd') != 0 ) { //nem PRD
 
 $g_log_level = LOG_NONE | LOG_EMAIL | LOG_EMAIL_RECIPIENT | LOG_AJAX | LOG_LDAP;
 //$g_log_destination = 'page:';
-$g_show_timer = ON;
+$g_show_timer = OFF;
+$g_show_version = OFF;
 
 define( 'MAX_EVENTS', 5 );
 $g_my_view_bug_count = 30;
@@ -150,15 +152,12 @@ $g_delete_bug_threshold = MANAGER;
 $g_bugnote_user_edit_threshold = UPDATER;
 $g_bugnote_user_delete_threshold = DEVELOPER;
 
-$g_show_version = ON;
-
-$g_show_product_version = 3;
+$g_show_product_version = ON;
 $g_show_version_dates_threshold = REPORTER;
 $g_view_issues_page_columns[] = 'target_version';
 $g_view_issues_page_columns[] = 'fixed_in_version';
 $g_print_issues_page_columns[] = 'target_version';
 $g_print_issues_page_columns[] = 'fixed_in_version';
-$g_show_product_version = ON;
 
 $g_plugin_FileDistribution_url = '/static';
 $g_plugin_FileDistribution_path = '/var/local/mantis/'.SYS_FLAVOR
@@ -167,7 +166,6 @@ $g_plugin_FileDistribution_path = '/var/local/mantis/'.SYS_FLAVOR
 $g_allow_no_category = ON;
 
 $g_accel_redirect = ON;
-$g_show_detailed_errors = OFF;
 
 $g_relationship_graph_enable = ON;
 
