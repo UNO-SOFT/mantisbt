@@ -116,13 +116,13 @@ function email_regex_simple() {
  * @return boolean
  */
 function email_is_valid( $p_email ) {
-	$t_validate_email = config_get( 'validate_email' );
+	$t_validate_email = config_get_global( 'validate_email' );
 
 	# if we don't validate then just accept
 	# If blank email is allowed or current user is admin, then accept blank emails which are useful for
 	# accounts that should never receive email notifications (e.g. anonymous account)
 	if( OFF == $t_validate_email ||
-		ON == config_get( 'use_ldap_email' ) ||
+		ON == config_get_global( 'use_ldap_email' ) ||
 		( is_blank( $p_email ) && ( ON == config_get( 'allow_blank_email' ) || current_user_is_administrator() ) )
 	) {
 		return true;
@@ -541,12 +541,16 @@ function email_signup( $p_user_id, $p_confirm_hash, $p_admin_name = '' ) {
 }
 
 /**
- * Send confirm_hash URL to user forgets the password
- * @param integer $p_user_id      A valid user identifier.
- * @param string  $p_confirm_hash Confirmation hash.
+ * Send confirm_hash URL to let user reset their password.
+ *
+ * @param integer $p_user_id        A valid user identifier.
+ * @param string  $p_confirm_hash   Confirmation hash.
+ * @param bool    $p_reset_by_admin True if password was reset by admin,
+ *                                  False (default) for user request (lost password)
+ *
  * @return void
  */
-function email_send_confirm_hash_url( $p_user_id, $p_confirm_hash ) {
+function email_send_confirm_hash_url( $p_user_id, $p_confirm_hash, $p_reset_by_admin = false ) {
 	if( OFF == config_get( 'send_reset_password' ) ) {
 		log_event( LOG_EMAIL_VERBOSE, 'Password reset email notifications disabled.' );
 		return;
@@ -567,7 +571,16 @@ function email_send_confirm_hash_url( $p_user_id, $p_confirm_hash ) {
 
 	$t_subject = '[' . config_get( 'window_title' ) . '] ' . lang_get( 'lost_password_subject' );
 
-	$t_message = lang_get( 'reset_request_msg' ) . " \n\n" . string_get_confirm_hash_url( $p_user_id, $p_confirm_hash ) . " \n\n" . lang_get( 'new_account_username' ) . ' ' . $t_username . " \n" . lang_get( 'new_account_IP' ) . ' ' . $_SERVER['REMOTE_ADDR'] . " \n\n" . lang_get( 'new_account_do_not_reply' );
+	if( $p_reset_by_admin ) {
+		$t_message = lang_get( 'reset_request_admin_msg' );
+	} else {
+		$t_message = lang_get( 'reset_request_msg' );
+	}
+	$t_message .= "\n\n"
+		. string_get_confirm_hash_url( $p_user_id, $p_confirm_hash ) . "\n\n"
+		. lang_get( 'new_account_username' ) . ' ' . $t_username . "\n"
+		. lang_get( 'new_account_IP' ) . ' ' . $_SERVER['REMOTE_ADDR'] . "\n\n"
+		. lang_get( 'new_account_do_not_reply' );
 
 	# Send password reset regardless of mail notification preferences
 	# or else users won't be able to receive their reset passwords
@@ -1322,14 +1335,24 @@ function email_send( EmailData $p_email_data ) {
 			break;
 	}
 
+	# S/MIME signature
+	if( ON == config_get_global( 'email_smime_enable' ) ) {
+		$t_mail->sign(
+			config_get_global( 'email_smime_cert_file' ),
+			config_get_global( 'email_smime_key_file' ),
+			config_get_global( 'email_smime_key_password' ),
+			config_get_global( 'email_smime_extracerts_file' )
+		);
+	}
+
 	#apply DKIM settings
-	if( config_get( 'email_dkim_enable' ) ) {
-		$t_mail->DKIM_domain = config_get( 'email_dkim_domain' );
-		$t_mail->DKIM_private = config_get( 'email_dkim_private_key_file_path' );
-		$t_mail->DKIM_private_string = config_get( 'email_dkim_private_key_string' );
-		$t_mail->DKIM_selector = config_get( 'email_dkim_selector' );
-		$t_mail->DKIM_passphrase = config_get( 'email_dkim_passphrase' );
-		$t_mail->DKIM_identity = config_get( 'email_dkim_identity' );
+	if( config_get_global( 'email_dkim_enable' ) ) {
+		$t_mail->DKIM_domain = config_get_global( 'email_dkim_domain' );
+		$t_mail->DKIM_private = config_get_global( 'email_dkim_private_key_file_path' );
+		$t_mail->DKIM_private_string = config_get_global( 'email_dkim_private_key_string' );
+		$t_mail->DKIM_selector = config_get_global( 'email_dkim_selector' );
+		$t_mail->DKIM_passphrase = config_get_global( 'email_dkim_passphrase' );
+		$t_mail->DKIM_identity = config_get_global( 'email_dkim_identity' );
 	}
 
 	$t_mail->isHTML( false );              # set email format to plain text

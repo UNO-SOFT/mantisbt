@@ -190,6 +190,9 @@ set_capability_row( 'update_readonly_bug_threshold' );
 set_capability_row( 'update_bug_status_threshold' );
 set_capability_row( 'set_view_status_threshold' );
 set_capability_row( 'change_view_status_threshold' );
+set_capability_row( 'bug_revision_view_threshold' );
+set_capability_row( 'bug_revision_drop_threshold' );
+set_capability_row( 'set_bug_sticky_threshold' );
 set_capability_row( 'show_monitor_list_threshold' );
 set_capability_row( 'monitor_add_others_bug_threshold' );
 set_capability_row( 'monitor_delete_others_bug_threshold' );
@@ -220,6 +223,14 @@ set_capability_row( 'tag_detach_own_threshold' );
 set_capability_row( 'tag_create_threshold' );
 set_capability_row( 'tag_edit_threshold' );
 set_capability_row( 'tag_edit_own_threshold' );
+
+# Attachments
+if( config_get( 'allow_file_upload' ) == ON ) {
+	set_capability_row( 'view_attachments_threshold' );
+	set_capability_row( 'download_attachments_threshold' );
+	set_capability_row( 'delete_attachments_threshold' );
+	set_capability_row( 'upload_bug_file_threshold' );
+}
 
 # Others
 set_capability_row( 'view_changelog_threshold' );

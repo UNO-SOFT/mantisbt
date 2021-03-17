@@ -499,21 +499,23 @@ function print_news_entry( $p_headline, $p_body, $p_poster_id, $p_view_state, $p
 	<div class="widget-box <?php echo $t_news_css ?>">
 		<div class="widget-header widget-header-small">
 			<h4 class="widget-title lighter">
-				<i class="ace-icon fa fa-edit"></i>
+				<?php print_icon( 'fa-edit', 'ace-icon' ); ?>
 				<?php echo $t_headline ?>
 			</h4>
 			<div class="widget-toolbar">
 				<a data-action="collapse" href="#">
-					<i class="ace-icon fa fa-chevron-up bigger-125"></i>
+					<?php print_icon( 'fa-chevron-up', 'ace-icon bigger-125' ); ?>
 				</a>
 			</div>
 		</div>
 
 		<div class="widget-body">
 			<div class="widget-toolbox padding-8 clearfix">
-				<i class="fa fa-user"></i> <?php echo prepare_user_name( $p_poster_id ); ?>
+				<?php print_icon( 'fa-user' ); ?>
+				<?php echo prepare_user_name( $p_poster_id ); ?>
 				&#160;&#160;&#160;&#160;
-				<i class="fa fa-clock-o"></i> <?php echo $t_date_posted; ?>
+				<?php print_icon( 'fa-clock-o' ); ?>
+				<?php echo $t_date_posted; ?>
 			</div>
 			<div class="widget-main">
 				<?php
@@ -641,7 +643,7 @@ function print_project_option_list( $p_project_id = null, $p_include_all_project
  * @return void
  */
 function print_subproject_option_list( $p_parent_id, $p_project_id = null, $p_filter_project_id = null, $p_trace = false, $p_can_report_only = false, array $p_parents = array() ) {
-	if ( config_get( 'subprojects_enabled' ) == OFF ) {
+	if ( config_get_global( 'subprojects_enabled' ) == OFF ) {
 		return;
 	}
 
@@ -1755,7 +1757,7 @@ function print_signup_link() {
  * @return void
  */
 function print_login_link() {
-	print_link_button( auth_login_page(), lang_get( 'login_title' ) );
+	print_link_button( auth_login_page(), lang_get( 'login' ) );
 }
 
 /**
@@ -1780,7 +1782,11 @@ function print_lost_password_link() {
  */
 function print_file_icon( $p_filename ) {
 	$t_icon = file_get_icon_url( $p_filename );
-	echo '<i class="fa ' . string_attribute( $t_icon['url'] ) . '" title="' . string_attribute( $t_icon['alt'] ) . ' file icon" ></i>';
+	print_icon(
+		string_attribute( $t_icon['url'] ),
+		'',
+		sprintf( lang_get( 'file_icon_description' ), string_attribute( $t_icon['alt'] ) )
+	);
 }
 
 /**
@@ -1791,7 +1797,9 @@ function print_file_icon( $p_filename ) {
  * @return void
  */
 function print_rss( $p_feed_url, $p_title = '' ) {
-	echo '<a class="rss" rel="alternate" href="', htmlspecialchars( $p_feed_url ), '" title="', $p_title, '"><i class="fa fa-rss fa-lg orange" title="', $p_title, '"></i></a>';
+	echo '<a class="rss" rel="alternate" href="', htmlspecialchars( $p_feed_url ), '" title="', $p_title, '">';
+	print_icon( 'fa-rss', 'fa-lg orange', $p_title );
+	echo '</a>';
 }
 
 /**
@@ -1993,9 +2001,11 @@ function print_bug_attachment_header( array $p_attachment, $p_security_token ) {
 	}
 
 	if( $p_attachment['can_delete'] ) {
-		echo '<a class="noprint red zoom-130 pull-right" href="bug_file_delete.php?file_id=' . $p_attachment['id'] .
-			form_security_param( 'bug_file_delete', $p_security_token ) . '">
-			<i class="1 ace-icon fa fa-trash-o bigger-115"></i></a>';
+		echo '<a class="noprint red zoom-130 pull-right" '
+			. 'href="bug_file_delete.php?file_id=' . $p_attachment['id']
+			. form_security_param( 'bug_file_delete', $p_security_token ) . '">';
+		print_icon( 'fa-trash-o', '1 ace-icon bigger-115' );
+		echo '</a>';
 	}
 }
 
@@ -2053,7 +2063,7 @@ function print_bug_attachment_preview_image( array $p_attachment ) {
 
 	echo "\n<div class=\"bug-attachment-preview-image\">";
 	echo '<a href="' . string_attribute( $p_attachment['download_url'] ) . '">';
-	echo '<img src="' . string_attribute( $t_image_url ) . '" alt="' . string_attribute( $t_title ) . '" style="' . string_attribute( $t_preview_style ) . '" />';
+	echo '<img src="' . string_attribute( $t_image_url ) . '" alt="' . string_attribute( $t_title ) . '" loading="lazy" style="' . string_attribute( $t_preview_style ) . '" />';
 	echo '</a></div>';
 }
 
@@ -2119,21 +2129,20 @@ function print_timezone_option_list( $p_timezone ) {
  * @return string
  */
 function get_filesize_info( $p_size, $p_unit ) {
-	return sprintf( lang_get( 'file_size_info' ), number_format( $p_size ), $p_unit );
+	return sprintf( lang_get( 'max_file_size_info' ), number_format( $p_size ), $p_unit );
 }
 
 /**
- * Print maximum file size information
+ * Print maximum file size information.
+ *
  * @param integer $p_size    Size in bytes.
- * @param integer $p_divider Optional divider, defaults to 1000.
- * @param string  $p_unit    Optional language string of unit, defaults to KB.
+ * @param integer $p_divider Optional divider, defaults to 1024.
+ * @param string  $p_unit    Optional language string of unit, defaults to KiB.
  * @return void
  */
-function print_max_filesize( $p_size, $p_divider = 1000, $p_unit = 'kb' ) {
+function print_max_filesize( $p_size, $p_divider = 1024, $p_unit = 'kib' ) {
 	echo '<span class="small" title="' . get_filesize_info( $p_size, lang_get( 'bytes' ) ) . '">';
-	echo lang_get( 'max_file_size_label' )
-		. lang_get( 'word_separator' )
-		. get_filesize_info( $p_size / $p_divider, lang_get( $p_unit ) );
+	echo get_filesize_info( $p_size / $p_divider, lang_get( $p_unit ) );
 	echo '</span>';
 }
 

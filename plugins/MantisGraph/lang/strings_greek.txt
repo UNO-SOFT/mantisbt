@@ -38,8 +38,8 @@
  * @ingroup Language
  * @file
  *
- * @author Abijeet Patro
  * @author FirehawkV17
+ * @author NikosLikomitros
  * @author Nikosgranturismogt
  * @author Omnipaedista
  * @author Ανώνυμος Βικιπαιδιστής

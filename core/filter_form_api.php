@@ -1051,8 +1051,7 @@ function print_filter_values_show_profile( array $p_filter ) {
 			if( filter_field_is_any( $t_current ) ) {
 				$t_any_found = true;
 			} else {
-				$t_profile = profile_get_row_direct( $t_current );
-				$t_this_string = $t_profile['platform'] . ' ' . $t_profile['os'] . ' ' . $t_profile['os_build'];
+				$t_this_string = profile_get_name( $t_current );
 			}
 			if( $t_first_flag != true ) {
 				$t_output = $t_output . '<br />';
@@ -2583,7 +2582,7 @@ function filter_form_draw_inputs( $p_filter, $p_for_screen = true, $p_static = f
 				'os_filter_target' /* content id */
 				));
 		$t_row3->add_item( new TableFieldsItem(
-				$get_field_header( 'os_build_filter', lang_get( 'os_version' ) ),
+				$get_field_header( 'os_build_filter', lang_get( 'os_build' ) ),
 				filter_form_get_input( $t_filter, 'os_build', $t_show_inputs ),
 				1 /* colspan */,
 				null /* class */,

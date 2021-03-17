@@ -62,20 +62,20 @@ function ldap_connect_bind( $p_binddn = '', $p_password = '' ) {
 		trigger_error( ERROR_LDAP_EXTENSION_NOT_LOADED, ERROR );
 	}
 
-	$t_ldap_server = config_get( 'ldap_server' );
+	$t_ldap_server = config_get_global( 'ldap_server' );
 
-	log_event( LOG_LDAP, 'Attempting connection to LDAP server/URI \'' . $t_ldap_server . '\'.' );
+	log_event( LOG_LDAP, 'Checking syntax of LDAP server URI \'' . $t_ldap_server . '\'.' );
 	$t_ds = @ldap_connect( $t_ldap_server );
 	if( $t_ds === false ) {
-		log_event( LOG_LDAP, 'Connection to LDAP server failed' );
+		log_event( LOG_LDAP, 'LDAP server URI syntax check failed, make sure its in URI form' );
 		trigger_error( ERROR_LDAP_SERVER_CONNECT_FAILED, ERROR );
 		# Return required as function may be called with error suppressed
 		return false;
 	}
 
-	log_event( LOG_LDAP, 'Connection accepted by LDAP server' );
+	log_event( LOG_LDAP, 'LDAP server URI syntax check succeeded' );
 
-	$t_network_timeout = config_get( 'ldap_network_timeout' );
+	$t_network_timeout = config_get_global( 'ldap_network_timeout' );
 	if( $t_network_timeout > 0 ) {
 		log_event( LOG_LDAP, "Setting LDAP network timeout to " . $t_network_timeout );
 		$t_result = @ldap_set_option( $t_ds, LDAP_OPT_NETWORK_TIMEOUT, $t_network_timeout );
@@ -84,7 +84,7 @@ function ldap_connect_bind( $p_binddn = '', $p_password = '' ) {
 		}
 	}
 
-	$t_protocol_version = config_get( 'ldap_protocol_version' );
+	$t_protocol_version = config_get_global( 'ldap_protocol_version' );
 	if( $t_protocol_version > 0 ) {
 		log_event( LOG_LDAP, 'Setting LDAP protocol version to ' . $t_protocol_version );
 		$t_result = @ldap_set_option( $t_ds, LDAP_OPT_PROTOCOL_VERSION, $t_protocol_version );
@@ -94,17 +94,48 @@ function ldap_connect_bind( $p_binddn = '', $p_password = '' ) {
 	}
 
 	# Set referrals flag.
-	$t_follow_referrals = ON == config_get( 'ldap_follow_referrals' );
+	$t_follow_referrals = ON == config_get_global( 'ldap_follow_referrals' );
 	$t_result = @ldap_set_option( $t_ds, LDAP_OPT_REFERRALS, $t_follow_referrals );
 	if( !$t_result ) {
 		ldap_log_error( $t_ds );
 	}
 
+	# Set minimum TLS protocol version flag (ex: LDAP_OPT_X_TLS_PROTOCOL_TLS1_2).
+	if( version_compare( PHP_VERSION, '7.1.0', '>=' ) ) {
+		$t_tls_protocol_min = config_get_global( 'ldap_tls_protocol_min' );
+		if( $t_tls_protocol_min > 0 ) {
+			log_event( LOG_LDAP, 'Attempting to set minimum TLS protocol' );
+			$t_result = @ldap_set_option( $t_ds, LDAP_OPT_X_TLS_PROTOCOL_MIN, $t_tls_protocol_min );
+			if( !$t_result ) {
+				ldap_log_error( $t_ds );
+				log_event( LOG_LDAP, "Error: Failed to set minimum TLS version on LDAP server" );
+				trigger_error( ERROR_LDAP_UNABLE_TO_SET_MIN_TLS, ERROR );
+
+				# Return required as function may be called with error suppressed
+				return false;
+			}
+		}
+	}
+
+	$t_use_starttls = config_get_global( 'ldap_use_starttls' );
+	if ( $t_use_starttls ) {
+		log_event( LOG_LDAP, 'Attempting StartTLS' );
+		$t_result = @ldap_start_tls( $t_ds );
+		if( !$t_result ) {
+			ldap_log_error( $t_ds );
+			log_event( LOG_LDAP, "Error: Cannot initiate StartTLS on LDAP server" );
+			trigger_error( ERROR_LDAP_UNABLE_TO_STARTTLS, ERROR );
+
+			# Return required as function may be called with error suppressed
+			return false;
+		}
+	}
+	
 	# If no Bind DN and Password is set, attempt to login as the configured
-	#  Bind DN.
+	# Bind DN.
 	if( is_blank( $p_binddn ) && is_blank( $p_password ) ) {
-		$p_binddn = config_get( 'ldap_bind_dn', '' );
-		$p_password = config_get( 'ldap_bind_passwd', '' );
+		$p_binddn = config_get_global( 'ldap_bind_dn', '' );
+		$p_password = config_get_global( 'ldap_bind_passwd', '' );
 	}
 
 	if( !is_blank( $p_binddn ) && !is_blank( $p_password ) ) {
@@ -169,7 +200,7 @@ function ldap_realname_from_username( $p_username ) {
 	if( ldap_simulation_is_enabled() ) {
 		$t_realname = ldap_simulatiom_realname_from_username( $p_username );
 	} else {
-		$t_ldap_realname_field = config_get( 'ldap_realname_field' );
+		$t_ldap_realname_field = config_get_global( 'ldap_realname_field' );
 		$t_realname = (string)ldap_get_field_from_username( $p_username, $t_ldap_realname_field );
 	}
 	return $t_realname;
@@ -204,7 +235,7 @@ function ldap_escape_string( $p_string ) {
 function ldap_cache_user_data( $p_username ) {
 	global $g_cache_ldap_data;
 
-	# Returne cached data if available
+	# Return cached data if available
 	if( isset( $g_cache_ldap_data[$p_username] ) ) {
 		return $g_cache_ldap_data[$p_username];
 	}
@@ -221,15 +252,15 @@ function ldap_cache_user_data( $p_username ) {
 	}
 
 	# Search
-	$t_ldap_organization = config_get( 'ldap_organization' );
-	$t_ldap_root_dn      = config_get( 'ldap_root_dn' );
-	$t_ldap_uid_field    = config_get( 'ldap_uid_field' );
+	$t_ldap_organization = config_get_global( 'ldap_organization' );
+	$t_ldap_root_dn      = config_get_global( 'ldap_root_dn' );
+	$t_ldap_uid_field    = config_get_global( 'ldap_uid_field' );
 
 	$t_search_filter = '(&' . $t_ldap_organization
 		. '(' . $t_ldap_uid_field . '=' . ldap_escape_string( $p_username ) . '))';
 	$t_search_attrs = array(
 		'mail',
-		config_get( 'ldap_realname_field' )
+		config_get_global( 'ldap_realname_field' )
 	);
 
 	log_event( LOG_LDAP, 'Searching for ' . $t_search_filter );
@@ -327,10 +358,10 @@ function ldap_authenticate_by_username( $p_username, $p_password ) {
 	} else {
 		$c_username = ldap_escape_string( $p_username );
 
-		$t_ldap_organization = config_get( 'ldap_organization' );
-		$t_ldap_root_dn = config_get( 'ldap_root_dn' );
+		$t_ldap_organization = config_get_global( 'ldap_organization' );
+		$t_ldap_root_dn = config_get_global( 'ldap_root_dn' );
 
-		$t_ldap_uid_field = config_get( 'ldap_uid_field', 'uid' );
+		$t_ldap_uid_field = config_get_global( 'ldap_uid_field', 'uid' );
 		$t_search_filter = '(&' . $t_ldap_organization . '(' . $t_ldap_uid_field . '=' . $c_username . '))';
 		$t_search_attrs = array(
 			$t_ldap_uid_field,
@@ -391,11 +422,11 @@ function ldap_authenticate_by_username( $p_username, $p_password ) {
 
 			$t_fields_to_update = array('password' => md5( $p_password ));
 
-			if( ON == config_get( 'use_ldap_realname' ) ) {
+			if( ON == config_get_global( 'use_ldap_realname' ) ) {
 				$t_fields_to_update['realname'] = ldap_realname_from_username( $p_username );
 			}
 
-			if( ON == config_get( 'use_ldap_email' ) ) {
+			if( ON == config_get_global( 'use_ldap_email' ) ) {
 				$t_fields_to_update['email'] = ldap_email_from_username( $p_username );
 			}
 

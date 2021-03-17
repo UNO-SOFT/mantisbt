@@ -138,6 +138,13 @@ if( $f_master_bug_id > 0 ) {
 		$t_project_id = $t_default_project;
 	}
 
+	# Check for bug report threshold
+	if( !access_has_project_level( config_get( 'report_bug_threshold' ) ) ) {
+		# If can't report on current project, show project selector if there is any other allowed project
+		access_ensure_any_project_level( 'report_bug_threshold' );
+		print_header_redirect( 'login_select_proj_page.php?ref=bug_report_page.php' );
+	}
+
 	if( ( ALL_PROJECTS == $t_project_id || project_exists( $t_project_id ) )
 		&& $t_project_id != $t_current_project
 		&& project_enabled( $t_project_id ) ) {
@@ -152,12 +159,6 @@ if( $f_master_bug_id > 0 ) {
 		print_header_redirect( 'login_select_proj_page.php?ref=bug_report_page.php' );
 	}
 
-	# Check for bug report threshold
-	if( !access_has_project_level( config_get( 'report_bug_threshold' ) ) ) {
-		# If can't report on current project, show project selector if there is any other allowed project
-		access_ensure_any_project_level( 'report_bug_threshold' );
-		print_header_redirect( 'login_select_proj_page.php?ref=bug_report_page.php' );
-	}
 	access_ensure_project_level( config_get( 'report_bug_threshold' ) );
 
 	$f_build				= gpc_get_string( 'build', '' );
@@ -208,7 +209,7 @@ $t_show_monitors = in_array( 'monitors', $t_fields )
 $t_show_profiles = config_get( 'enable_profiles' );
 $t_show_platform = $t_show_profiles && in_array( 'platform', $t_fields );
 $t_show_os = $t_show_profiles && in_array( 'os', $t_fields );
-$t_show_os_version = $t_show_profiles && in_array( 'os_version', $t_fields );
+$t_show_os_build = $t_show_profiles && in_array( 'os_build', $t_fields );
 $t_show_resolution = in_array( 'resolution', $t_fields );
 $t_show_status = in_array( 'status', $t_fields );
 $t_show_tags =
@@ -241,14 +242,14 @@ if( $t_show_attachments ) {
 <div class="col-md-12 col-xs-12">
 <form id="report_bug_form"
 	method="post" <?php echo $t_form_encoding; ?>
-	action="bug_report.php?posted=1">
+	action="bug_report.php">
 <?php echo form_security_field( 'bug_report' ) ?>
 <input type="hidden" name="m_id" value="<?php echo $f_master_bug_id ?>" />
 <input type="hidden" name="project_id" value="<?php echo $t_project_id ?>" />
 <div class="widget-box widget-color-blue2">
 	<div class="widget-header widget-header-small">
 		<h4 class="widget-title lighter">
-				<i class="ace-icon fa fa-edit"></i>
+				<?php print_icon( 'fa-edit', 'ace-icon' ); ?>
 				<?php echo lang_get( 'enter_report_details_title' ) ?>
 		</h4>
 	</div>
@@ -366,11 +367,11 @@ if( $t_show_attachments ) {
 				'data-picker-locale="' . lang_get_current_datetime_locale() .
 				'" data-picker-format="' . config_get( 'datetime_picker_format' ) . '" ' .
 				'size="20" maxlength="16" value="' . $t_date_to_display . '" />' ?>
-			<i class="fa fa-calendar fa-xlg datetimepicker"></i>
+			<?php print_icon( 'fa-calendar', 'fa-xlg datetimepicker' ); ?>
 		</td>
 	</tr>
 <?php } ?>
-<?php if( $t_show_platform || $t_show_os || $t_show_os_version ) { ?>
+<?php if( $t_show_platform || $t_show_os || $t_show_os_build ) { ?>
 	<tr>
 		<th class="category">
 			<label for="profile_id"><?php echo lang_get( 'select_profile' ) ?></label>
@@ -420,7 +421,7 @@ if( $t_show_attachments ) {
 				</tr>
 				<tr>
 					<th class="category">
-						<label for="os_build"><?php echo lang_get( 'os_version' ) ?></label>
+						<label for="os_build"><?php echo lang_get( 'os_build' ) ?></label>
 					</th>
 					<td>
 						<?php
@@ -678,7 +679,8 @@ if( $t_show_attachments ) {
 			<?php print_dropzone_template() ?>
 			<input type="hidden" name="max_file_size" value="<?php echo $t_max_file_size ?>" />
 			<div class="dropzone center" <?php print_dropzone_form_data() ?>>
-				<i class="upload-icon ace-icon fa fa-cloud-upload blue fa-3x"></i><br>
+				<?php print_icon( 'fa-cloud-upload', 'upload-icon ace-icon blue fa-3x' ); ?>
+				<br>
 				<span class="bigger-150 grey"><?php echo lang_get( 'dropzone_default_message' ) ?></span>
 				<div id="dropzone-previews-box" class="dropzone-previews dz-max-files-reached"></div>
 			</div>
