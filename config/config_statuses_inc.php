@@ -24,7 +24,7 @@ $g_status_enum_workflow[U_TEST_OK] = '80:resolved';
 $g_status_enum_workflow[U_RESOLVED] = '50:assigned,90:closed';
 $g_status_enum_workflow[U_CLOSED] = '';
 
-$g_status_enum_string = '10:new,20:feedback,30:proposal,40:acknowledged,50:assigned,60:test,70:test_ok,80:resolved,90:closed';
+$g_status_enum_string = '10:new,20:feedback,25:ask_proposal,30:proposal,40:acknowledged,50:assigned,60:test,70:test_ok,80:resolved,90:closed';
 
 $g_set_status_threshold = array (
 	U_NEW => REPORTER,
