@@ -1,44 +1,42 @@
 <?php
-/*
-if(!defined('NEW_')) define('NEW_', 10);  // uj
-if(!defined('FEEDBACK')) define('FEEDBACK', 20);  // kerdes
-if(!defined('ASK_PROPOSAL')) define('ASK_PROPOSAL', 25);  // ajanlat keres
-if(!defined('PROPOSAL')) define('PROPOSAL', 30);  // ajanlat
-if(!defined('ACKNOWLEDGED')) define('ACKNOWLEDGED', 40);  // elfogadva
-if(!defined('ASSIGNED')) define('ASSIGNED', 50);  // folyamatban
-if(!defined('TEST')) define('TEST', 60);  // belso teszt
-if(!defined('TEST_OK')) define('TEST_OK', 70);  // belso teszt ok
-if(!defined('RESOLVED')) define('RESOLVED', 80);  // atadva
-if(!defined('CLOSED')) define('CLOSED', 90);  // lezarva
-if(!defined('STORNO')) define('STORNO', 100);
- */
+define('U_NEW', 10);  // uj
+define('U_FEEDBACK', 20);  // kerdes
+define('U_ASK_PROPOSAL', 25);  // ajanlat keres
+define('U_PROPOSAL', 30);  // ajanlat
+define('U_ACKNOWLEDGED', 40);  // elfogadva
+define('U_ASSIGNED', 50);  // folyamatban
+define('U_TEST', 60);  // belso teszt
+define('U_TEST_OK', 70);  // belso teszt ok
+define('U_RESOLVED', 80);  // atadva
+define('U_CLOSED', 90);  // lezarva
+define('U_STORNO', 100);
 
 require_once(dirname(__FILE__) . '/../config_defaults_inc.php');
 
-$g_status_enum_workflow[10] = '20:feedback,50:assigned,90:closed';
-$g_status_enum_workflow[20] = '25:ask_proposal,50:assigned,90:closed';
-$g_status_enum_workflow[25] = '30:proposal,20:feedback,90:closed';
-$g_status_enum_workflow[30] = '40:acknowledged,90:closed';
-$g_status_enum_workflow[40] = '50:assigned,90:closed';
-$g_status_enum_workflow[50] = '20:feedback,60:test,80:resolved';
-$g_status_enum_workflow[60] = '50:assigned,70:test_ok';
-$g_status_enum_workflow[70] = '80:resolved';
-$g_status_enum_workflow[80] = '50:assigned,90:closed';
-$g_status_enum_workflow[90] = '';
+$g_status_enum_workflow[U_NEW] = '20:feedback,50:assigned,90:closed';
+$g_status_enum_workflow[U_FEEDBACK] = '25:ask_proposal,50:assigned,90:closed';
+$g_status_enum_workflow[U_ASK_PROPOSAL] = '30:proposal,20:feedback,90:closed';
+$g_status_enum_workflow[U_PROPOSAL] = '40:acknowledged,90:closed';
+$g_status_enum_workflow[U_ACKNOWLEDGED] = '50:assigned,90:closed';
+$g_status_enum_workflow[U_ASSIGNED] = '20:feedback,60:test,80:resolved';
+$g_status_enum_workflow[U_TEST] = '50:assigned,70:test_ok';
+$g_status_enum_workflow[U_TEST_OK] = '80:resolved';
+$g_status_enum_workflow[U_RESOLVED] = '50:assigned,90:closed';
+$g_status_enum_workflow[U_CLOSED] = '';
 
 $g_status_enum_string = '10:new,20:feedback,30:proposal,40:acknowledged,50:assigned,60:test,70:test_ok,80:resolved,90:closed';
 
 $g_set_status_threshold = array (
-	10 => REPORTER,
-	20 => UPDATER,
-	25 => REPORTER,
-	30 => MANAGER,
-	40 => REPORTER,
-	50 => UPDATER,
-	60 => DEVELOPER,
-	70 => UPDATER,
-	80 => DEVELOPER,
-	90 => DEVELOPER	
+	U_NEW => REPORTER,
+	U_FEEDBACK => UPDATER,
+	U_ASK_PROPOSAL => REPORTER,
+	U_PROPOSAL => MANAGER,
+	U_ACKNOWLEDGED => REPORTER,
+	U_ASSIGNED => UPDATER,
+	U_TEST => DEVELOPER,
+	U_TEST_OK => UPDATER,
+	U_RESOLVED => DEVELOPER,
+	U_CLOSED => DEVELOPER	
 );
 
 $g_status_colors = array(
@@ -57,25 +55,25 @@ $g_status_colors = array(
 /*
 
  digraph Mantis {
-	NEW_ [label="új" color="green"];
-	FEEDBACK [label="kérdés" color="red" shape="rectangle"];
-	ASSIGNED [label="folyamatban"];
-	RESOLVED [label="átadva" color="red" shape="rectangle"];
-	CLOSED [label="lezárva"];
-	TEST [label="belső teszt"];
-	TEST_OK [label="belső teszt ok"];
-	ASK_PROPOSAL [label="ajánlat kérés"];
-	PROPOSAL [label="ajánlat" color="red" shape="rectangle"];
-	ACCEPTED [label="elfogadva" color="green"];
+	U_NEW [label="új" color="green"];
+	U_FEEDBACK [label="kérdés" color="red" shape="rectangle"];
+	U_ASSIGNED [label="folyamatban"];
+	U_RESOLVED [label="átadva" color="red" shape="rectangle"];
+	U_CLOSED [label="lezárva"];
+	U_TEST [label="belső teszt"];
+	U_TEST_OK [label="belső teszt ok"];
+	U_ASK_PROPOSAL [label="ajánlat kérés"];
+	U_PROPOSAL [label="ajánlat" color="red" shape="rectangle"];
+	U_ACCEPTED [label="elfogadva" color="green"];
 
-	NEW_ -> ASK_PROPOSAL -> PROPOSAL -> ACCEPTED -> ASSIGNED;
-	ASK_PROPOSAL -> FEEDBACK -> ASK_PROPOSAL;
-	FEEDBACK -> PROPOSAL -> CLOSED;
+	U_NEW -> U_ASK_PROPOSAL -> U_PROPOSAL -> U_ACCEPTED -> U_ASSIGNED;
+	U_ASK_PROPOSAL -> U_FEEDBACK -> U_ASK_PROPOSAL;
+	U_FEEDBACK -> U_PROPOSAL -> U_CLOSED;
 
-	NEW_ -> FEEDBACK -> ASSIGNED -> FEEDBACK -> CLOSED;
-	NEW_ -> ASSIGNED -> RESOLVED -> CLOSED [weight=10];
-	ASSIGNED -> TEST -> TEST_OK -> RESOLVED -> ASSIGNED;
-	TEST -> ASSIGNED;
+	U_NEW -> U_FEEDBACK -> U_ASSIGNED -> U_FEEDBACK -> U_CLOSED;
+	U_NEW -> U_ASSIGNED -> U_RESOLVED -> U_CLOSED [weight=10];
+	U_ASSIGNED -> U_TEST -> U_TEST_OK -> U_RESOLVED -> U_ASSIGNED;
+	U_TEST -> U_ASSIGNED;
 }
 
 BEGIN;
