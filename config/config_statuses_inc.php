@@ -225,8 +225,8 @@ $g_default_email_on_bugnote = ON;
 
 $g_hide_status_default = CLOSED;
 $g_hide_status = CLOSED;
-$g_bug_resolved_status_threshold = RESOLVED;
-$g_bug_readonly_status_threshold = RESOLVED;
+$g_bug_resolved_status_threshold = U_CLOSED;
+$g_bug_readonly_status_threshold = U_CLOSED;
 $g_update_readonly_bug_threshold = DEVELOPER;
 $g_private_bug_threshold = UPDATER;
 $g_private_bugnote_threshold = UPDATER;
@@ -234,8 +234,8 @@ $g_update_bug_status_threshold = REPORTER;
 $g_set_view_status_threshold = UPDATER;
 $g_change_view_status_threshold = UPDATER;
 
-$g_bug_reopen_status = 50;
-$g_bug_closed_status_threshold = 90;
+$g_bug_reopen_status = U_ASSIGNED;
+$g_bug_closed_status_threshold = U_CLOSED;
 
 $g_bug_status_modulo = 1;
 $g_bug_status_modulo_permanent = ON;
