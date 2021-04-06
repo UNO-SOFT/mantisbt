@@ -41,7 +41,7 @@ $g_set_status_threshold = array (
 
 $g_status_colors = array(
 	'new' => '#FF9999',
-	'feedback' => '#FFED75',
+	'feedback' => '#FDA7FF',
 	'ask_proposal' => '#FFED75',
 	'proposal' => '#F9FFA7',
 	'acknowledged' => '#ABEDEC',
