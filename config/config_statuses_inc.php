@@ -16,7 +16,7 @@ require_once(dirname(__FILE__) . '/../config_defaults_inc.php');
 $g_status_enum_workflow[U_NEW] = '20:feedback,25:ask_proposal,50:assigned,90:closed';
 $g_status_enum_workflow[U_FEEDBACK] = '25:ask_proposal,50:assigned,90:closed';
 $g_status_enum_workflow[U_ASK_PROPOSAL] = '30:proposal,20:feedback,90:closed';
-$g_status_enum_workflow[U_PROPOSAL] = '40:acknowledged,30:proposal,90:closed';
+$g_status_enum_workflow[U_PROPOSAL] = '40:acknowledged,25:ask_proposal,90:closed';
 $g_status_enum_workflow[U_ACKNOWLEDGED] = '50:assigned,90:closed';
 $g_status_enum_workflow[U_ASSIGNED] = '20:feedback,60:test,80:resolved';
 $g_status_enum_workflow[U_TEST] = '50:assigned,70:test_ok';
