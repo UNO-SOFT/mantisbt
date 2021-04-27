@@ -7,8 +7,10 @@ $s_my_view_title_vv = 'Verzióváltók';
 
 $s_status_enum_string = '10:új,20:kérdés,25:ajánlat kérés,30:ajánlat,40:elfogadva,50:folyamatban,60:teszt,70:teszt&nbsp;ok,80:átadva,90:lezárva';
 
+if ( SYS_COMPANY === 'kobe' ) {
+    $s_status_enum_string = '10:új,20:kérdés,25:ajánlat kérés,30:ajánlat,40:elfogadva,50:folyamatban,60:teszt,70:teszt&nbsp;ok,80:átadva,85:élesre tehető,90:lezárva';
+}
 
-$s_resolution_enum_string = '10:nyitott,20:kijavítva,21:storno,29:végrehajtva,30:újranyitva,40:reprodukálhatatlan,50:javíthatatlan,60:másolat,70:nem&nbsp;kell változtatni,80:felfüggesztve,90:nem lesz kijavítva';
 
 $s_new_bug_title = 'új';
 $s_new_bug_button = 'Új';
@@ -28,10 +30,12 @@ $s_test_ok_bug_title = 'teszt OK';
 $s_test_ok_bug_button = 'Megfelelelt';
 $s_resolved_bug_title = 'átadva';
 $s_resolved_bug_button = 'Átadás';
+$s_ship_bug_title = 'élesre tehető';
+$s_ship_bug_button = 'Élesre!';
 $s_closed_bug_title = 'lezárva';
 $s_closed_bug_button = 'Lezárás';
 
-$s_resolution_enum_string = '10:nyitott,20:kijavítva,21:storno,29:végrehajtva,30:újranyitva,40:reprodukálhatatlan,50:javíthatatlan,60:másolat,70:nem&nbsp;kell változtatni,80:felfüggesztve,90:nem lesz kijavítv';
+$s_resolution_enum_string = '10:nyitott,20:kijavítva,21:storno,29:végrehajtva,30:újranyitva,40:reprodukálhatatlan,50:javíthatatlan,60:másolat,70:nem&nbsp;kell változtatni,80:felfüggesztve,90:nem lesz kijavítva';
 
 $s_severity_enum_string = '10:kérés,50:hiba';
 

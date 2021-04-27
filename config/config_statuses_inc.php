@@ -52,6 +52,15 @@ $g_status_colors = array(
 	'closed' => '#FFFFFF',
 );
 
+if( SYS_COMPANY === 'kobe' ) {
+    define('U_SHIP', 85);
+    $g_status_enum_workflow[U_RESOLVED] = '50:assigned,85:ship,90:closed';
+    $g_status_enum_workflow[U_SHIP] = '90:closed,80:resolved';
+    $g_status_enum_string = '10:new,20:feedback,25:ask_proposal,30:proposal,40:acknowledged,50:assigned,60:test,70:test_ok,80:resolved,85:ship,90:closed';
+    $g_set_status_threshold[U_SHIP] = REPORTER;
+    $g_status_colors['ship'] = '#00FF00';
+}
+
 /*
 
  digraph Mantis {
