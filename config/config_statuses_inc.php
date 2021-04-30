@@ -10,6 +10,7 @@ define('U_TEST_OK', 70);  // belso teszt ok
 define('U_RESOLVED', 80);  // atadva
 define('U_CLOSED', 90);  // lezarva
 define('U_STORNO', 100);
+define('U_JOKER', 99);
 
 require_once(dirname(__FILE__) . '/../config_defaults_inc.php');
 
@@ -22,9 +23,10 @@ $g_status_enum_workflow[U_ASSIGNED] = '20:feedback,60:test,80:resolved';
 $g_status_enum_workflow[U_TEST] = '50:assigned,70:test_ok';
 $g_status_enum_workflow[U_TEST_OK] = '80:resolved';
 $g_status_enum_workflow[U_RESOLVED] = '50:assigned,90:closed';
-$g_status_enum_workflow[U_CLOSED] = '';
+$g_status_enum_workflow[U_CLOSED] = '99:joker';
+$g_status_enum_workflow[U_JOKER] = '50:assigned,80:resolved,90:closed';
 
-$g_status_enum_string = '10:new,20:feedback,25:ask_proposal,30:proposal,40:acknowledged,50:assigned,60:test,70:test_ok,80:resolved,90:closed';
+$g_status_enum_string = '10:new,20:feedback,25:ask_proposal,30:proposal,40:acknowledged,50:assigned,60:test,70:test_ok,80:resolved,90:closed,99:joker';
 
 $g_set_status_threshold = array (
 	U_NEW => REPORTER,
@@ -36,7 +38,8 @@ $g_set_status_threshold = array (
 	U_TEST => DEVELOPER,
 	U_TEST_OK => UPDATER,
 	U_RESOLVED => DEVELOPER,
-	U_CLOSED => DEVELOPER	
+	U_CLOSED => DEVELOPER,
+	U_JOKER => MANAGER
 );
 
 $g_status_colors = array(
@@ -218,6 +221,9 @@ $g_notify_flags = array_merge_recursive( $g_notify_flags, array (
 
 $g_auto_set_status_to_assigned = OFF;
 
+$g_bug_reopen_status = U_ASSIGNED;
+$g_bug_reopen_resolution = REOPENED;
+$g_reopen_bug_threshold = DEVELOPER;
 $g_allow_reporter_reopen = OFF;
 $g_allow_reporter_close = ON;
 
@@ -244,7 +250,6 @@ $g_update_bug_status_threshold = REPORTER;
 $g_set_view_status_threshold = UPDATER;
 $g_change_view_status_threshold = UPDATER;
 
-$g_bug_reopen_status = U_ASSIGNED;
 $g_bug_closed_status_threshold = U_CLOSED;
 
 $g_bug_status_modulo = 1;
