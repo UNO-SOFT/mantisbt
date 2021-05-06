@@ -269,7 +269,7 @@ $g_timeline_view_threshold = NOBODY;
 $g_css_include_file = "unosoft.css";
 $g_cdn_enabled = ON;
 
-$g_impersonate_user_threshold = NOBODY;
+$g_impersonate_user_threshold = ADMINISTRATOR;
 
 $g_filter_views = SIMPLE_DEFAULT;
 $g_action_button_position = POSITION_BOTH;
