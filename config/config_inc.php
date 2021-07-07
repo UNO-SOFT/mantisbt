@@ -227,6 +227,9 @@ $g_show_avatar_threshold = 1000;
 $g_time_tracking_enabled = ON;
 $g_time_tracking_stopwatch = ON;
 $g_time_tracking_view_threshold = UPDATER;
+if( SYS_COMPANY === 'cig' ) {
+    $g_time_tracking_view_threshold = REPORTER;
+}
 $g_time_tracking_edit_threshold = UPDATER;
 $g_time_tracking_reporting_threshold = MANAGER;
 $g_time_tracking_without_note = ON;
