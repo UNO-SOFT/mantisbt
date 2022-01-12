@@ -159,6 +159,76 @@ $g_view_issues_page_columns[] = 'fixed_in_version';
 $g_print_issues_page_columns[] = 'target_version';
 $g_print_issues_page_columns[] = 'fixed_in_version';
 
+$g_bug_report_page_fields = array(
+	'additional_info',
+	'attachments',
+	'category_id',
+	'due_date',
+	'handler',
+	'priority',
+	'product_version',
+	'reproducibility',
+	'severity',
+	'steps_to_reproduce',
+	'tags',
+	'view_state',
+);
+
+$g_bug_view_page_fields = array(
+	'additional_info',
+	'attachments',
+	'category_id',
+	'date_submitted',
+	'description',
+	'due_date',
+	'eta',
+	'fixed_in_version',
+	'handler',
+	'id',
+	'last_updated',
+	'priority',
+	'product_version',
+	'project',
+	'projection',
+	'reporter',
+	'reproducibility',
+	'resolution',
+	'severity',
+	'status',
+	'steps_to_reproduce',
+	'summary',
+	'tags',
+	'target_version',
+	'view_state',
+);
+
+$g_bug_update_page_fields = array(
+	'additional_info',
+	'category_id',
+	'date_submitted',
+	'description',
+	'due_date',
+	'eta',
+	'fixed_in_version',
+	'handler',
+	'id',
+	'last_updated',
+	'priority',
+	'product_version',
+	'project',
+	'projection',
+	'reporter',
+	'reproducibility',
+	'resolution',
+	'severity',
+	'status',
+	'steps_to_reproduce',
+	'summary',
+	'target_version',
+	'view_state',
+);
+
+
 $g_plugin_FileDistribution_url = '/static';
 $g_plugin_FileDistribution_path = '/var/local/mantis/'.SYS_FLAVOR
 	.'/'.SYS_COMPANY.'/static';
