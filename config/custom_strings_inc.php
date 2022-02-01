@@ -11,6 +11,7 @@ if ( SYS_COMPANY === 'kobe' ) {
     $s_status_enum_string = '10:új,20:kérdés,25:ajánlat kérés,30:ajánlat,40:elfogadva,50:folyamatban,60:teszt,70:teszt&nbsp;ok,80:átadva,85:élesre tehető,90:lezárva,99:joker';
 }
 
+$s_email_steps_to_reproduce = 'Feladat';
 
 $s_new_bug_title = 'új';
 $s_new_bug_button = 'Új';
