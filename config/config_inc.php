@@ -169,7 +169,7 @@ $g_bug_report_page_fields = array(
 	'product_version',
 	'reproducibility',
 	'severity',
-	'steps_to_reproduce',
+	#'steps_to_reproduce',
 	'tags',
 	'view_state',
 );
