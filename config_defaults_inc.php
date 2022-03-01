@@ -4098,6 +4098,12 @@ $g_time_tracking_edit_threshold = DEVELOPER;
 $g_time_tracking_reporting_threshold = MANAGER;
 
 /**
+ * access level where setting time tracking is required for all levels above this threshold, inclusive
+ * @global integer $g_time_tracking_required_threshold
+ */
+$g_time_tracking_required_threshold = ADMINISTRATOR+1;
+
+/**
  * allow time tracking to be recorded without a bugnote
  * @global integer $g_time_tracking_without_note
  */

@@ -213,7 +213,13 @@ class IssueNoteAddCommand extends Command {
 			if ( !access_has_bug_level( config_get( 'time_tracking_edit_threshold' ), $t_issue_id, $this->reporterId ) ) {
 				throw new ClientException( 'access denied for time tracking', ERROR_ACCESS_DENIED );
 			}
-		}
+        # Must reported add time tracking information?
+        } else {
+            $t_threshold = config_get( 'time_tracking_required_threshold', ADMINISTRATOR+1 );
+            if ( $t_threshold <= ADMINISTRATOR && access_has_bug_level( $t_threshold, $t_issue_id, $this->reporterId ) ) {
+				throw new ClientException( 'time tracking is required', ERROR_EMPTY_FIELD, array( lang_get( 'time_tracking' ) ) );
+            }
+        }
 	}
 
 	/**
