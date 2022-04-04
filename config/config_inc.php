@@ -156,6 +156,7 @@ $g_show_product_version = ON;
 $g_show_version_dates_threshold = REPORTER;
 
 if( SYS_COMPANY == 'unosoft' ) {
+
     $g_view_issues_page_columns = array(
         'selection', 'edit', 
         //'priority', 
@@ -179,7 +180,7 @@ if( SYS_COMPANY == 'unosoft' ) {
     );
 
     $g_bug_report_page_fields = array(
-        'additional_info',
+        //'additional_info',
         'attachments',
         //'category_id',
         'due_date',
@@ -190,7 +191,7 @@ if( SYS_COMPANY == 'unosoft' ) {
         'severity',
         #'steps_to_reproduce',
         'tags',
-        'view_state',
+        //'view_state',
     );
 
     $g_bug_view_page_fields = array(
@@ -421,8 +422,8 @@ $g_due_date_update_threshold = DEVELOPER;
  * @global  array $g_due_date_warning_levels
  */
 $g_due_date_warning_levels = array(
-	0,
-	7 * SECONDS_PER_DAY,
+	0 * SECONDS_PER_DAY,
+	1 * SECONDS_PER_DAY,
 	14 * SECONDS_PER_DAY,
 );
 
