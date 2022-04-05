@@ -72,7 +72,11 @@ $g_administrator_email = 'T.Gulacsi@unosoft.hu';
 $g_webmaster_email = $g_administrator_email;
 #$g_from_email = 'mantis-'.SYS_COMPANY.'-'.SYS_FLAVOR.'@unosoft.hu';
 $g_from_email = SYS_COMPANY.'@unosoft.hu';
-$g_from_name = SYS_COMPANY_NAME.(SYS_FLAVOR == 'prd' ? '' : '-'.SYS_FLAVOR).' Mantis hibakövető';
+$t_name = 'hibakövető';
+if( SYS_COMPANY == 'unosoft' ) {
+    $t_name = 'feladatkezelő';
+}
+$g_from_name = SYS_COMPANY_NAME.(SYS_FLAVOR == 'prd' ? '' : '-'.SYS_FLAVOR).' Mantis '.$t_name;
 #$g_return_path_email = str_replace('mantis-', 'noreply-', $g_from_email);
 $g_return_path_email = $g_from_email;
 $g_allow_blank_email = OFF;
@@ -97,10 +101,10 @@ $g_default_language = 'hungarian';
 
 $g_window_title = SYS_COMPANY_NAME
 	. (strcmp(SYS_FLAVOR, 'dev') == 0 ? ' DEV' : '')
-	. ' UNO-SOFT hibakövető';
+	. ' UNO-SOFT '.$t_name;
 $g_page_title = 'UNO-SOFT ' . SYS_COMPANY_NAME
 	. (strcmp(SYS_FLAVOR, 'dev') == 0 ? ' DEV' : '')
-	. ' hibakövető';
+	. ' ' . $t_name;
 
 // Top/bottom //
 // $g_bottom_include_page = '%absolute_path%';
@@ -212,7 +216,7 @@ if( SYS_COMPANY == 'unosoft' ) {
         //'projection',
         'reporter',
         //'reproducibility',
-        'resolution',
+        //'resolution',
         'severity',
         'status',
         'steps_to_reproduce',
@@ -223,7 +227,7 @@ if( SYS_COMPANY == 'unosoft' ) {
     );
 
     $g_bug_update_page_fields = array(
-        'additional_info',
+        //'additional_info',
         //'category_id',
         'date_submitted',
         'description',
@@ -239,14 +243,17 @@ if( SYS_COMPANY == 'unosoft' ) {
         //'projection',
         'reporter',
         //'reproducibility',
-        'resolution',
+        //'resolution',
         'severity',
         'status',
-        'steps_to_reproduce',
+        //'steps_to_reproduce',
         'summary',
         //'target_version',
         'view_state',
     );
+    $g_time_tracking_enabled = OFF;
+    $g_time_tracking_stopwatch = OFF;
+
 } else {
     $g_view_issues_page_columns[] = 'target_version';
     $g_view_issues_page_columns[] = 'fixed_in_version';
@@ -321,6 +328,17 @@ if( SYS_COMPANY == 'unosoft' ) {
         'target_version',
         'view_state',
     );
+
+    $g_time_tracking_enabled = ON;
+    $g_time_tracking_stopwatch = ON;
+    $g_time_tracking_view_threshold = UPDATER;
+    if( SYS_COMPANY === 'cig' ) {
+        $g_time_tracking_view_threshold = REPORTER;
+    }
+    $g_time_tracking_edit_threshold = UPDATER;
+    $g_time_tracking_reporting_threshold = MANAGER;
+    $g_time_tracking_without_note = ON;
+
 }
 
 $g_plugin_FileDistribution_url = '/static';
@@ -387,16 +405,6 @@ $g_compress_html = OFF;
 
 $g_show_avatar = OFF;
 $g_show_avatar_threshold = 1000;
-$g_time_tracking_enabled = ON;
-$g_time_tracking_stopwatch = ON;
-$g_time_tracking_view_threshold = UPDATER;
-if( SYS_COMPANY === 'cig' ) {
-    $g_time_tracking_view_threshold = REPORTER;
-}
-$g_time_tracking_edit_threshold = UPDATER;
-$g_time_tracking_reporting_threshold = MANAGER;
-$g_time_tracking_without_note = ON;
-
 $g_due_date_view_threshold = REPORTER;
 $g_due_date_update_threshold = DEVELOPER;
 /**
