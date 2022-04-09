@@ -7,6 +7,7 @@ if( SYS_COMPANY == 'unosoft' ) {
     $s_status_enum_string = '10:új,20:esedékes,50:folyamatban,80:nyugvó,90:lezárt';
 
     $s_resolution_enum_string = '10:nyitott';
+    $s_severity = 'Besorolás';
     $s_severity_enum_string = '10:feladat,50:incidens';
     $s_projection_enum_string = '';
 } else {
@@ -19,6 +20,7 @@ if( SYS_COMPANY == 'unosoft' ) {
     }
     $s_resolution_enum_string = '10:nyitott,20:kijavítva,21:storno,29:végrehajtva,30:újranyitva,40:reprodukálhatatlan,50:javíthatatlan,60:másolat,70:nem&nbsp;kell változtatni,80:felfüggesztve,90:nem lesz kijavítva';
     $s_severity_enum_string = '10:kérés,50:hiba';
+    $s_projection = 'Besorolás';
     $s_projection_enum_string = '10:támogatás,20:hiba,50:megrendelés';
 }
 
@@ -54,7 +56,5 @@ $s_joker_bug_title = 'joker';
 $s_joker_bug_button = 'Joker';
 
 $s_priority_enum_string	= '30:normál,40:magas,60:azonnali';
-
-$s_projection = 'Besorolás';
 
 ?>
