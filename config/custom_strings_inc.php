@@ -8,7 +8,7 @@ if( SYS_COMPANY == 'unosoft' ) {
 
     $s_resolution_enum_string = '10:nyitott';
     $s_severity = 'Besorolás';
-    $s_severity_enum_string = '10:feladat,50:incidens';
+    $s_severity_enum_string = '10:eseti,50:ismétlődő';
     $s_projection_enum_string = '';
 } else {
     //$s_status_enum_string = '10:új,101:új hiba,102:új megrendelés,103:új támogatás,301:hiba javítás,201:hiba kérdés,701:hiba belső teszten,801:hiba belső teszt ok,901:hibajavítás teszten,981:hibajavítás élesre tehető,991:hibajavítás élesen,202:ajánlat,302:ajánlat kérés,402:ajánlat elfogadva,502:megrendelés végrehajtása,602:megrendelés kérdés,702:megrendelés belső teszten,802:megrendelés belső teszt ok,902:megrendelés tesztre átadva,982:megrendelés élesre tehető,992:megrendelés élesen,203:támogatás kérdés,303:támogatás folyamatban,903:támogatás tesztre átadva,703:támogatás belső teszten,803:támogatás belső teszt ok,983:támogatás élesre tehető,993:támogatás élesen,999:lezárva,'.JOKER.':joker,996:zombi';
