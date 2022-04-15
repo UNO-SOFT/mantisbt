@@ -21,7 +21,7 @@
 /**
  * Mantis Version
  */
-define( 'MANTIS_VERSION', '2.25.2' );
+define( 'MANTIS_VERSION', '2.25.3' );
 define( 'FILTER_VERSION', 'v9' );
 
 # --- constants -------------------
@@ -295,6 +295,7 @@ define( 'ERROR_FILE_INVALID_UPLOAD_PATH', 503 );
 define( 'ERROR_FILE_NO_UPLOAD_FAILURE', 504 );
 define( 'ERROR_FILE_MOVE_FAILED', 505 );
 define( 'ERROR_FILE_NOT_FOUND', 506 );
+define( 'ERROR_FILE_NAME_TOO_LONG', 507 );
 
 # ERROR_BUGNOTE_*
 define( 'ERROR_BUGNOTE_NOT_FOUND', 600 );
@@ -625,6 +626,7 @@ define( 'DB_FIELD_SIZE_REALNAME', 255 );
 define( 'DB_FIELD_SIZE_PASSWORD', 64 );
 define( 'DB_FIELD_SIZE_API_TOKEN_NAME', 128 );
 define( 'DB_FIELD_SIZE_HISTORY_VALUE', 255 );
+define( 'DB_FIELD_SIZE_FILENAME', 250 );
 
 # Maximum size for the user's password when storing it as a hash
 define( 'PASSWORD_MAX_SIZE_BEFORE_HASH', 1024 );
@@ -662,8 +664,8 @@ define( 'FONT_AWESOME_VERSION', '4.7.0' );
 define( 'FONT_AWESOME_HASH', 'sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN' );
 
 # Moment & DateTimePicker
-define( 'MOMENT_VERSION', '2.24.0' );
-define( 'MOMENT_HASH', 'sha256-AdQN98MVZs44Eq2yTwtoKufhnU+uZ7v2kXnD5vqzZVo=' );
+define( 'MOMENT_VERSION', '2.29.2' );
+define( 'MOMENT_HASH', 'sha512-obTnSkZuHrqmdoKZQokLadsYkQ4HX0HQ1tc0xEr/37kjnKhgZpSS9PYWp93SgPBPDdNBzwkRPElAc6nPXN+g7g==' );
 define( 'DATETIME_PICKER_VERSION', '4.17.47' );
 define( 'DATETIME_PICKER_HASH_JS', 'sha256-5YmaxAwMjIpMrVlK84Y/+NjCpKnFYa8bWWBbUHSBGfU=' );
 define( 'DATETIME_PICKER_HASH_CSS', 'sha256-yMjaV542P+q1RnH6XByCPDfUFhmOafWbeLPmqKh11zo=' );
