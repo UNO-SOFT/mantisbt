@@ -98,7 +98,7 @@ if( SYS_COMPANY === 'unosoft' ) {
 
     $g_status_enum_workflow[U_NEW] = '20:feedback,25:ask_proposal,50:assigned,90:closed';
     $g_status_enum_workflow[U_FEEDBACK] = '25:ask_proposal,50:assigned,90:closed';
-    $g_status_enum_workflow[U_ASK_PROPOSAL] = '30:proposal,27:proposal_feedback,90:closed';
+    $g_status_enum_workflow[U_ASK_PROPOSAL] = '30:proposal,27:proposal_feedback,20:feedback,90:closed';
     $g_status_enum_workflow[U_PROPOSAL_FEEDBACK] = '30:proposal,25:ask_proposal,90:closed';
     $g_status_enum_workflow[U_PROPOSAL] = '40:acknowledged,25:ask_proposal,90:closed';
     $g_status_enum_workflow[U_ACKNOWLEDGED] = '50:assigned,90:closed';
