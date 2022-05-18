@@ -347,6 +347,10 @@ for( $i = 0; $i < $t_count; $i++ ) {
 	# choose color based on status
 	$t_status_label = html_get_status_css_class( $t_bug->status, auth_get_current_user_id(), $t_bug->project_id );
 
+	$t_show_due_date = access_has_bug_level( config_get( 'due_date_view_threshold' ), $t_bug->id ) && in_array( 'due_date', columns_filter_disabled( config_get( 'bug_update_page_fields' ) ) );
+	$t_due_level = bug_overdue_level( $t_bug->id );
+	$t_due_date = $t_bug->due_date;
+
 	# Check for attachments
 	$t_attachment_count = 0;
 	# TODO: factor in the allow_view_own_attachments configuration option
@@ -359,7 +363,7 @@ for( $i = 0; $i < $t_count; $i++ ) {
 	$project_name = project_get_field( $t_bug->project_id, 'name' );
 
 	if( VS_PRIVATE == $t_bug->view_state ) {
-	    $t_bug_class = 'my-buglist-private';
+		$t_bug_class = 'my-buglist-private';
 	} else {
 		$t_bug_class = '';
 	}
@@ -435,6 +439,10 @@ for( $i = 0; $i < $t_count; $i++ ) {
 		echo $t_last_updated . $t_lr;
 	}
 	echo '</span>';
+
+	if( !date_is_null( $t_due_date ) ) {
+		echo ' - <span class="due-' . $t_due_level . '">' . date( config_get( 'short_date_format' ), $t_due_date );
+	}
 	?>
 	</td>
 </tr>
