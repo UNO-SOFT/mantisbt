@@ -440,8 +440,8 @@ for( $i = 0; $i < $t_count; $i++ ) {
 	}
 	echo '</span>';
 
-	if( !date_is_null( $t_due_date ) ) {
-		echo ' - <span class="due-' . $t_due_level . '">' . date( config_get( 'short_date_format' ), $t_due_date );
+	if( $t_show_due_date && !date_is_null( $t_due_date ) ) {
+		echo '<div style="text-align: end; float: right;" class="small"><span class="due-' . $t_due_level . '">' . date( config_get( 'short_date_format' ), $t_due_date ) . '</span></div>';
 	}
 	?>
 	</td>
