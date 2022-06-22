@@ -267,7 +267,7 @@ if( SYS_COMPANY === 'unosoft' ) {
     //$g_projection_enum_string = '10:none,30:tweak,50:minor fix,70:major rework,90:redesign';
     //$s_projection_enum_string = '10:támogatás,20:hiba,50:megrendelés,51:SPL-Fejlesztés,52:Lekérdezés,54:oktatás,55:konzultáció';
     if( SYS_COMPANY === 'aegon' ) {
-        $g_projection_enum_string = '10:support,20:error,50:order,51:SPOOLSYS,52:query,55:consulting';
+        $g_projection_enum_string = '10:support,20:error,50:order,55:consulting';
     } elseif( SYS_COMPANY === 'cig' ) {
         $g_projection_enum_string = '10:support,20:error,50:order,54:education';
     } else {
