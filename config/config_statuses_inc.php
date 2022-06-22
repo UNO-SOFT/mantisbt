@@ -265,7 +265,13 @@ if( SYS_COMPANY === 'unosoft' ) {
 
     $g_enable_projection = ON;
     //$g_projection_enum_string = '10:none,30:tweak,50:minor fix,70:major rework,90:redesign';
-    $g_projection_enum_string = '10:support,20:error,50:order';
+    if( SYS_COMPANY === 'aegon' ) {
+        $g_projection_enum_string = '10:support,20:error,50:order,52:consulting';
+    } elseif( SYS_COMPANY === 'cig' ) {
+        $g_projection_enum_string = '10:support,20:error,50:order,54:education';
+    } else {
+        $g_projection_enum_string = '10:support,20:error,50:order';
+    }
 
     //$g_resolution_enum_string = '10:open,20:fixed,30:reopened,40:unable to duplicate,50:not fixable,60:duplicate,70:not a bug,80:suspended,90:wont fix';
     $g_resolution_enum_string = '10:open,20:fixed,21:storno,29:executed,30:reopened,40:unable to duplicate,50:not fixable,60:duplicate,70:not a bug,80:suspended,90:wont fix';

@@ -21,7 +21,7 @@ if( SYS_COMPANY == 'unosoft' ) {
     $s_resolution_enum_string = '10:nyitott,20:kijavítva,21:storno,29:végrehajtva,30:újranyitva,40:reprodukálhatatlan,50:javíthatatlan,60:másolat,70:nem&nbsp;kell változtatni,80:felfüggesztve,90:nem lesz kijavítva';
     $s_severity_enum_string = '10:kérés,50:hiba';
     $s_projection = 'Besorolás';
-    $s_projection_enum_string = '10:támogatás,20:hiba,50:megrendelés';
+    $s_projection_enum_string = '10:támogatás,20:hiba,50:megrendelés,52:konzultáció,54:oktatás';
 }
 
 $s_steps_to_reproduce = 'Feladat';
