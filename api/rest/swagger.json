@@ -107,6 +107,200 @@
         }
       }
     },
+    "/issues/:id/notes": {
+      "get": {
+        "summary": "Get note details",
+        "tags": [
+          "Issues",
+          "Notes"
+        ],
+        "operationId": "issueNoteGet",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "The issue id.",
+            "required": true,
+            "type": "number",
+            "format": "int64"
+          },
+          {
+            "name": "note_id",
+            "in": "query",
+            "description": "The note id.",
+            "required": true,
+            "type": "number",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success with note details",
+            "schema": {
+              "$ref": "#/definitions/Note"
+            }
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "503": {
+            "description": "Mantis Offline"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a note",
+        "tags": [
+          "Issues",
+          "Notes"
+        ],
+        "operationId": "issueNoteDelete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "The issue id.",
+            "required": true,
+            "type": "number",
+            "format": "int64"
+          },
+          {
+            "name": "note_id",
+            "in": "query",
+            "description": "The note id.",
+            "required": true,
+            "type": "number",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Note deleted successfully"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Issue or note doesn't exist"
+          },
+          "503": {
+            "description": "Mantis Offline"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a note",
+        "tags": [
+          "Issues",
+          "Notes"
+        ],
+        "operationId": "issueNoteAdd",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "The note to add.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateNoteResponse"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Note successfully created"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "503": {
+            "description": "Mantis Offline"
+          }
+        }
+      }
+    },
+    "/issues/:id/files": {
+      "get": {
+        "summary": "Get file details",
+        "tags": [
+          "Issues",
+          "Files"
+        ],
+        "operationId": "issueFileGet",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "The issue id.",
+            "required": true,
+            "type": "number",
+            "format": "int64"
+          },
+          {
+            "name": "file_id",
+            "in": "query",
+            "description": "The file id.",
+            "required": true,
+            "type": "number",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success with file details",
+            "schema": {
+              "$ref": "#/definitions/FileRef"
+            }
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "503": {
+            "description": "Mantis Offline"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a file",
+        "tags": [
+          "Issues",
+          "Files"
+        ],
+        "operationId": "issueFileDelete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "The issue id.",
+            "required": true,
+            "type": "number",
+            "format": "int64"
+          },
+          {
+            "name": "file_id",
+            "in": "query",
+            "description": "The file id.",
+            "required": true,
+            "type": "number",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "File deleted successfully"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "404": {
+            "description": "Issue or file doesn't exist"
+          },
+          "503": {
+            "description": "Mantis Offline"
+          }
+        }
+      }
+    },
     "/config": {
       "get": {
         "summary": "Get config options",
@@ -282,6 +476,82 @@
         }
       }
     },
+    "Note": {
+      "type": "object",
+      "required": [
+        "text"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "reporter": {
+          "$ref": "#/definitions/AccountRef"
+        },
+        "text": {
+          "type": "string"
+        },
+        "view_state": {
+          "$ref": "#/definitions/ViewStateRef"
+        },
+        "time_tracking": {
+          "$ref": "#/definitions/TimeTrackingRef"
+        },
+        "attachments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/FileRef"
+          }
+        },
+        "type": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "dateTime"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "dateTime"
+        }
+      }
+    },
+    "FileRef": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "TimeTrackingRef": {
+      "type": "object",
+      "properties": {
+        "duration": {
+          "type": "string"
+        }
+      }
+    },
+    "ViewStateRef": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        }
+      }
+    },
     "AccountRef": {
       "type": "object",
       "properties": {
@@ -410,6 +680,17 @@
       "properties": {
         "issues": {
           "$ref": "#/definitions/Issue"
+        }
+      }
+    },
+    "CreateNoteResponse": {
+      "type": "object",
+      "properties": {
+        "issue": {
+          "$ref": "#/definitions/Issue"
+        },
+        "note": {
+          "$ref": "#/definitions/Note"
         }
       }
     }
