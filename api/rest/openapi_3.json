@@ -1,0 +1,846 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "MantisBT REST API",
+    "description": "For the sandbox to work, MantisBT must be hosted at the root folder of the host. For example: http://mantishost/ rather http://host/mantisbt.  If that is not the case, then create a host alias to map it as such or edit swagger.json to change basePath to include the mantisbt folder name.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/api/rest"
+    }
+  ],
+  "security": [
+    {
+      "Authorization": []
+    }
+  ],
+  "paths": {
+    "/issues": {
+      "get": {
+        "tags": [
+          "Issues"
+        ],
+        "summary": "Get issue details",
+        "operationId": "issueGet",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "The issue id.",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success with issue details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateIssueResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access denied",
+            "content": {}
+          },
+          "503": {
+            "description": "Mantis Offline",
+            "content": {}
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Issues"
+        ],
+        "summary": "Create an issue",
+        "operationId": "issueAdd",
+        "requestBody": {
+          "description": "The issue to add.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Issue"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Issue successfully created",
+            "content": {}
+          },
+          "403": {
+            "description": "Access denied",
+            "content": {}
+          },
+          "503": {
+            "description": "Mantis Offline",
+            "content": {}
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      },
+      "delete": {
+        "tags": [
+          "Issues"
+        ],
+        "summary": "Delete an issue",
+        "operationId": "issueDelete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "The issue id.",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Issue deleted successfully",
+            "content": {}
+          },
+          "403": {
+            "description": "Access denied",
+            "content": {}
+          },
+          "404": {
+            "description": "Issue doesn't exist",
+            "content": {}
+          },
+          "503": {
+            "description": "Mantis Offline",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/issues/:id/notes": {
+      "get": {
+        "tags": [
+          "Issues",
+          "Notes"
+        ],
+        "summary": "Get note details",
+        "operationId": "issueNoteGet",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "The issue id.",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "note_id",
+            "in": "query",
+            "description": "The note id.",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success with note details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Note"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access denied",
+            "content": {}
+          },
+          "503": {
+            "description": "Mantis Offline",
+            "content": {}
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Issues",
+          "Notes"
+        ],
+        "summary": "Create a note",
+        "operationId": "issueNoteAdd",
+        "requestBody": {
+          "description": "The note to add.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNoteResponse"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Note successfully created",
+            "content": {}
+          },
+          "403": {
+            "description": "Access denied",
+            "content": {}
+          },
+          "503": {
+            "description": "Mantis Offline",
+            "content": {}
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      },
+      "delete": {
+        "tags": [
+          "Issues",
+          "Notes"
+        ],
+        "summary": "Delete a note",
+        "operationId": "issueNoteDelete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "The issue id.",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "note_id",
+            "in": "query",
+            "description": "The note id.",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Note deleted successfully",
+            "content": {}
+          },
+          "403": {
+            "description": "Access denied",
+            "content": {}
+          },
+          "404": {
+            "description": "Issue or note doesn't exist",
+            "content": {}
+          },
+          "503": {
+            "description": "Mantis Offline",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/issues/:id/files": {
+      "get": {
+        "tags": [
+          "Issues",
+          "Files"
+        ],
+        "summary": "Get file details",
+        "operationId": "issueFileGet",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "The issue id.",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "file_id",
+            "in": "query",
+            "description": "The file id.",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success with file details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileRef"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access denied",
+            "content": {}
+          },
+          "503": {
+            "description": "Mantis Offline",
+            "content": {}
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Issues",
+          "Files"
+        ],
+        "summary": "Attach a file to an issue",
+        "operationId": "issueAddFile",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "The issue to attach to.",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddFileRequest"
+                }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "File successfully attached",
+            "content": {}
+          },
+          "403": {
+            "description": "Access denied",
+            "content": {}
+          },
+          "503": {
+            "description": "Mantis Offline",
+            "content": {}
+          }
+        },
+        "x-codegen-request-body-name": "files"
+      },
+      "delete": {
+        "tags": [
+          "Issues",
+          "Files"
+        ],
+        "summary": "Delete a file",
+        "operationId": "issueFileDelete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "The issue id.",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "file_id",
+            "in": "query",
+            "description": "The file id.",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "File deleted successfully",
+            "content": {}
+          },
+          "403": {
+            "description": "Access denied",
+            "content": {}
+          },
+          "404": {
+            "description": "Issue or file doesn't exist",
+            "content": {}
+          },
+          "503": {
+            "description": "Mantis Offline",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/config": {
+      "get": {
+        "tags": [
+          "Config"
+        ],
+        "summary": "Get config options",
+        "description": "Get the value for a set of configuration options given a user and project context.  If a configuration option is invalid or is marked as private, then they will be filtered out, but request will still succeed.",
+        "operationId": "configGet",
+        "parameters": [
+          {
+            "name": "option",
+            "in": "query",
+            "description": "An array of configuration options.",
+            "required": true,
+            "style": "form",
+            "explode": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "project_id",
+            "in": "query",
+            "description": "The project id (default All Projects).",
+            "schema": {
+              "type": "number",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "user_id",
+            "in": "query",
+            "description": "The user id (default is logged in user).  This can only be set by users with access level ADMINISTRATOR.",
+            "schema": {
+              "type": "number",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigGetResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access denied",
+            "content": {}
+          },
+          "404": {
+            "description": "User or Project not found",
+            "content": {}
+          },
+          "503": {
+            "description": "Mantis Offline",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/lang": {
+      "get": {
+        "tags": [
+          "Localization"
+        ],
+        "summary": "Get localized strings",
+        "description": "Gets a set of localized strings in context of the logged in user's language.  If a localized string is not defined, then it will be filtered out.",
+        "operationId": "langGet",
+        "parameters": [
+          {
+            "name": "string",
+            "in": "query",
+            "description": "An array of localized labels given their name string lang/strings_english.txt folder in MantisBT.  The name doesn't include $s_ prefix.",
+            "required": true,
+            "style": "form",
+            "explode": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LangGetResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access denied",
+            "content": {}
+          },
+          "503": {
+            "description": "Mantis Offline",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/users/me": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get information about logged in user",
+        "description": "Gets information about logged in user.",
+        "operationId": "userGetMe",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserMeResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access denied",
+            "content": {}
+          },
+          "503": {
+            "description": "Mantis Offline",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/users/reset": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Reset user's password",
+        "description": "Reset the user's password",
+        "operationId": "userResetPassword",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {}
+          },
+          "403": {
+            "description": "Access denied",
+            "content": {}
+          },
+          "503": {
+            "description": "Mantis Offline",
+            "content": {}
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Issue": {
+        "required": [
+          "description",
+          "summary"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "reporter": {
+            "$ref": "#/components/schemas/AccountRef"
+          },
+          "handler": {
+            "$ref": "#/components/schemas/AccountRef"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "Note": {
+        "required": [
+          "text"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "reporter": {
+            "$ref": "#/components/schemas/AccountRef"
+          },
+          "text": {
+            "type": "string"
+          },
+          "view_state": {
+            "$ref": "#/components/schemas/ViewStateRef"
+          },
+          "time_tracking": {
+            "$ref": "#/components/schemas/TimeTrackingRef"
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FileRef"
+            }
+          },
+          "type": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "dateTime"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "dateTime"
+          }
+        }
+      },
+      "FileRef": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "content": {
+            "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$",
+            "type": "string",
+            "format": "byte"
+          }
+        }
+      },
+      "TimeTrackingRef": {
+        "type": "object",
+        "properties": {
+          "duration": {
+            "type": "string"
+          }
+        }
+      },
+      "ViewStateRef": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          }
+        }
+      },
+      "AccountRef": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "realname": {
+            "type": "string"
+          }
+        }
+      },
+      "ProjectRef": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean"
+          }
+        }
+      },
+      "EnumRef": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "UserMeResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string"
+          },
+          "timezone": {
+            "type": "string"
+          },
+          "access_level": {
+            "$ref": "#/components/schemas/EnumRef"
+          },
+          "projects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectRef"
+            }
+          }
+        }
+      },
+      "ConfigGetResponse": {
+        "type": "object",
+        "properties": {
+          "configs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ConfigOption"
+            }
+          }
+        }
+      },
+      "ConfigOption": {
+        "type": "object",
+        "properties": {
+          "option": {
+            "type": "string"
+          },
+          "value": {
+            "type": "object"
+          }
+        }
+      },
+      "LangGetResponse": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string"
+          },
+          "strings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LocalizedString"
+            }
+          }
+        }
+      },
+      "LocalizedString": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "localized": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateIssueResponse": {
+        "type": "object",
+        "properties": {
+          "issues": {
+            "$ref": "#/components/schemas/Issue"
+          }
+        }
+      },
+      "CreateNoteResponse": {
+        "type": "object",
+        "properties": {
+          "issue": {
+            "$ref": "#/components/schemas/Issue"
+          },
+          "note": {
+            "$ref": "#/components/schemas/Note"
+          }
+        }
+      },
+      "AddFileRequest": {
+        "type": "object",
+        "properties": {
+          "files": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FileRef"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "Authorization": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header"
+      }
+    }
+  }
+}
