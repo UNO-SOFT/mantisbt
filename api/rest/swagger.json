@@ -280,9 +280,11 @@
               "name": "files",
               "in": "body",
               "required": true,
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/FileRef"
+              "schema": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/definitions/FileRef"
+                }
               }
           }
         ],
