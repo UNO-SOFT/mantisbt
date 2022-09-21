@@ -163,7 +163,7 @@ if( SYS_COMPANY == 'unosoft' ) {
 
     $g_view_issues_page_columns = array(
         'selection', 'edit', 
-        //'priority', 
+        'priority', 
         'id', 
         //'sponsorship_total',
         'bugnotes_count',
@@ -176,7 +176,7 @@ if( SYS_COMPANY == 'unosoft' ) {
 
     $g_print_issues_page_columns = array(
         'selection', 
-        //'priority', 
+        'priority', 
         'id', 'sponsorship_total', 'bugnotes_count',
         //'attachment_count', 'category_id', 
         'severity', 'status', 'last_updated',
@@ -189,7 +189,7 @@ if( SYS_COMPANY == 'unosoft' ) {
         //'category_id',
         'due_date',
         'handler',
-        //'priority',
+        'priority',
         //'product_version',
         //'reproducibility',
         'severity',
@@ -210,7 +210,7 @@ if( SYS_COMPANY == 'unosoft' ) {
         'handler',
         'id',
         'last_updated',
-        //'priority',
+        'priority',
         //'product_version',
         'project',
         //'projection',
@@ -237,7 +237,7 @@ if( SYS_COMPANY == 'unosoft' ) {
         'handler',
         'id',
         'last_updated',
-        //'priority',
+        'priority',
         //'product_version',
         'project',
         //'projection',
