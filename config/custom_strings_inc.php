@@ -7,7 +7,6 @@ if( SYS_COMPANY == 'unosoft' ) {
     $s_status_enum_string = '10:új,20:esedékes,50:folyamatban,80:nyugvó,90:lezárt';
 
     $s_resolution_enum_string = '10:nyitott';
-    $s_severity = 'Besorolás';
     $s_severity_enum_string = '10:eseti,50:ismétlődő';
     $s_projection_enum_string = '';
 } else {
