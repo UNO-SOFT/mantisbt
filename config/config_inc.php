@@ -339,6 +339,7 @@ if( SYS_COMPANY == 'unosoft' ) {
     $g_time_tracking_edit_threshold = UPDATER;
     $g_time_tracking_reporting_threshold = MANAGER;
     $g_time_tracking_without_note = ON;
+    $g_time_tracking_required = ON;
 
 }
 

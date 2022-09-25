@@ -130,7 +130,11 @@ require_api( 'lang_api.php' );
 				</th>
 				<td>
 					<?php if( config_get( 'time_tracking_stopwatch' ) ) { ?>
+					<?php if( ON == config_get( 'time_tracking_required', OFF ) ) { ?>
+					<span class="required"><input type="text" required="true" name="time_tracking" class="stopwatch_time input-sm" size="8" placeholder="hh:mm:ss" /></span>
+					<?php } else { ?>
 					<input type="text" name="time_tracking" class="stopwatch_time input-sm" size="8" placeholder="hh:mm:ss" />
+					<?php } ?>
 					<input type="button" name="time_tracking_toggle" class="stopwatch_toggle btn btn-sm btn-white btn-round" value="<?php echo lang_get( 'time_tracking_stopwatch_start' ) ?>" />
 					<input type="button" name="time_tracking_reset" class="stopwatch_reset btn btn-sm btn-white btn-round" value="<?php echo lang_get( 'time_tracking_stopwatch_reset' ) ?>" />
 					<?php } else { ?>
