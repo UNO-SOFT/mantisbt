@@ -1,10 +1,10 @@
-ï»¿SELECT A.id AS "mantisjegy_szÃ¡m", 
+SELECT A.id AS "mantisjegy_szám", 
        A.summary, 
-       CASE priority WHEN 30 THEN  'NormÃ¡l' WHEN 40 THEN 'SÃ¼rgÅ‘s' ELSE 'Kritikus' END AS "prioritÃ¡s", 
-	   A.date_submitted AS "bejelentÃ©s_ideje", 
-       munkaoraban(A.date_submitted, A.atadas) AS "Unosoft_Ã¡tadÃ¡s",
-       A.sla AS "SLA_SzerzÅ‘dÃ©s",
-       (A.sla > munkaoraban(A.date_submitted, A.atadas)) AS "SLA_kiÃ©rtÃ©kelÃ©s"
+       CASE priority WHEN 30 THEN  'Normál' WHEN 40 THEN 'Sürgõs' ELSE 'Kritikus' END AS "prioritás", 
+	   A.date_submitted AS "bejelentés", 
+       munkaoraban(A.date_submitted, A.atadas) AS "átadás",
+       A.sla AS "SLA",
+       (A.sla >ó munkaoraban(A.date_submitted, A.atadas)) AS "megfelelés"
   FROM (SELECT A.id, A.priority, A.summary, 
                to_timestamp(A.date_submitted) AT TIME ZONE 'UTC' AS date_submitted,
                uno_atadas(A.id) AS atadas,
