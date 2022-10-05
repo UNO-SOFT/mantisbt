@@ -2,7 +2,7 @@
        CASE A.priority WHEN 30 THEN 'Normál' WHEN 40 THEN 'Sürgős' ELSE 'Kritikus' END AS "prioritás", 
        A.date_submitted AS "bejelentés", 
        A.reakcio AS "válasz",
-       munkaoraban(A.date_submitted, A.reakcio) AS "reakcióidő",
+       munkaoraban(A.date_submitted, COALESCE(A.reakcio, localtimestamp)) AS "reakcióidő",
        A.sla, 
        (A.sla > munkaoraban(A.date_submitted, A.reakcio)) AS "kiértékelés"
   FROM (SELECT A.id, A.priority, A.summary, 
