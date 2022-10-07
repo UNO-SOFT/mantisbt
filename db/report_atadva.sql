@@ -1,11 +1,10 @@
-SELECT A.id AS "mantisjegy_szám", 
-       A.summary, 
-       CASE priority WHEN 30 THEN  'Normál' WHEN 40 THEN 'Sürgős' ELSE 'Kritikus' END AS "prioritás", 
-	   A.date_submitted AS "bejelentés", 
+SELECT A.id AS "mantis", A.summary AS "leírás",
+       CASE priority WHEN 30 THEN 'Normál' WHEN 40 THEN 'Közepesen magas' when 50 then 'Sürgős' ELSE 'Kritikus' END AS "prioritás",
+       A.date_submitted AS "bejelentés",
        fejlesztonel_munkaora(A.id, A.date_submitted, COALESCE(A.atadas, localtimestamp)) AS "átadás",
        A.sla AS "SLA",
-       (A.sla > fejlesztonel_munkaora(A.id, A.date_submitted, COALESCE(A.atadas, localtimestamp))) AS "megfelelés"
-  FROM (SELECT A.id, A.priority, A.summary, 
+       (A.sla > fejlesztonel_munkaora(A.id, A.date_submitted, COALESCE(A.atadas, localtimestamp))) AS "megfelelő"
+  FROM (SELECT A.id, A.priority, A.summary,
                to_timestamp(A.date_submitted) AS date_submitted,
                uno_atadas(A.id)  AS atadas,
                uno_sla(A.priority::smallint, 2::smallint) AS sla
