@@ -14,9 +14,9 @@ CREATE OR REPLACE
 FUNCTION munkaorak(p_begin IN TIMESTAMP WITH TIME ZONE, p_end IN TIMESTAMP WITH TIME ZONE)
 RETURNS setof tstzrange AS $$
   SELECT tstzrange(day + interval '8 hours', day + interval '18 hours') AS r --8:00-18:00
-    FROM (SELECT date_trunc('day', LEAST($1, COALESCE($2, localtimestamp))) + make_interval(days=>n) AS day
+    FROM (SELECT date_trunc('day', COALESCE(LEAST($1, $2), localtimestamp)) + make_interval(days=>n) AS day
             FROM generate_series(0,
-                                 GREATEST(2, CEIL(1 + extract('days' FROM (GREATEST($1, COALESCE($2, localtimestamp)) - LEAST($1, COALESCE($2, localtimestamp)))))::int)) AS n) d
+                                 GREATEST(2, CEIL(1 + extract('days' FROM (COALESCE(GREATEST($1, $2), localtimestamp) - COALESCE(LEAST($1, $2), localtimestamp))))::int)) AS n) d
     WHERE extract(dow from d.day) NOT IN (0, 6)
 $$ LANGUAGE sql LEAKPROOF;
 
@@ -24,7 +24,7 @@ $$ LANGUAGE sql LEAKPROOF;
 CREATE OR REPLACE
 FUNCTION munkaoraban(p_begin IN TIMESTAMP WITH TIME ZONE, p_end IN TIMESTAMP WITH TIME ZONE) RETURNS double precision AS $$
   SELECT COALESCE(extract(hours FROM SUM(UPPER(A.r * B.r) - LOWER(A.r * B.r))), 0) AS orak
-    FROM (SELECT tstzrange AS r FROM tstzrange($1, COALESCE($2, localtimestamp), '[)')) A JOIN (SELECT munkaorak AS r FROM munkaorak($1, $2)) B ON A.r && B.r
+    FROM (SELECT tstzrange AS r FROM tstzrange(COALESCE(LEAST($1, $2), localtimestamp), COALESCE(GREATEST($1, $2), localtimestamp), '[)')) A JOIN (SELECT munkaorak AS r FROM munkaorak($1, $2)) B ON A.r && B.r
 $$ LANGUAGE sql LEAKPROOF;
 
 --mikorkinel: mikor kinel volt F a fejleszto, B a biztosito
@@ -111,6 +111,7 @@ $$ LANGUAGE plpgsql LEAKPROOF;
 
 CREATE MATERIALIZED VIEW mw_bug AS 
   SELECT A.*, 
+         munkaoraban(A.bekuldes, COALESCE(A.reakcio, localtimestamp)) AS reakcio_munkaora,
          fejlesztonel_munkaora(A.id, A.bekuldes, COALESCE(GREATEST(A.atadas, A.due_date), localtimestamp)) AS fejlesztonel_munkaora
     FROM (SELECT X.id, 
                  to_timestamp(X.date_submitted) AS bekuldes,
@@ -118,4 +119,6 @@ CREATE MATERIALIZED VIEW mw_bug AS
                  uno_reakcio(X.id) AS reakcio,
                  to_timestamp(X.due_date) AS due_date
     FROM mantis_bug_table X) A;
+
+CREATE UNIQUE INDEX U_mw_bug ON mw_bug(id);
 
