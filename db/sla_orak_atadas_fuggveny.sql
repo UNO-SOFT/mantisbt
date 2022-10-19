@@ -98,10 +98,10 @@ CREATE OR REPLACE
 FUNCTION uno_sla(priority IN smallint, p_tipus IN smallint) RETURNS int AS $$
 BEGIN
   RETURN(CASE p_tipus
-    --g_priority_enum_string    = '30:normal,40:high,50:urgent,60:immediate';
-    WHEN 0 THEN CASE priority WHEN 60 THEN  4 when 50 then 4  WHEN 40 THEN  10 ELSE  50 END
+    --g_priority_enum_string  = '30:normal,40:high,50:urgent,60:immediate';
+    WHEN 0 THEN CASE priority WHEN 60 THEN  4 when 50 then 8  WHEN 40 THEN  10 ELSE  50 END
     WHEN 1 THEN CASE priority WHEN 60 THEN 12 when 50 then 12 WHEN 40 THEN  50 ELSE 200 END
-    WHEN 2 THEN CASE priority WHEN 60 THEN 50 when 50 then 50 WHEN 40 THEN 200 ELSE 400 END
+    WHEN 2 THEN CASE priority WHEN 60 THEN 50 when 50 then 50 WHEN 40 THEN 100 ELSE 200 END
     ELSE NULL
   END);
 END;
