@@ -1,5 +1,15 @@
 --munkaorak: munkaorak tstzrange
+DROP MATERIALIZED VIEW mw_bug;
+DROP FUNCTION fejlesztonel_munkaora;
+DROP FUNCTION fejlesztonel;
+DROP FUNCTION mikorkinel;
+DROP FUNCTION munkaoraban;
 DROP FUNCTION munkaorak;
+DROP FUNCTION uno_bekuldes;
+DROP FUNCTION uno_reakcio;
+DROP FUNCTION uno_atadas;
+DROP FUNCTION uno_sla;
+
 CREATE OR REPLACE
 FUNCTION munkaorak(p_begin IN TIMESTAMP WITH TIME ZONE, p_end IN TIMESTAMP WITH TIME ZONE)
 RETURNS setof tstzrange AS $$
@@ -11,7 +21,6 @@ RETURNS setof tstzrange AS $$
 $$ LANGUAGE sql LEAKPROOF;
 
 --munkaoraban: a ket idopont kozott mennyi munkaora volt
-DROP FUNCTION munkaoraban;
 CREATE OR REPLACE
 FUNCTION munkaoraban(p_begin IN TIMESTAMP WITH TIME ZONE, p_end IN TIMESTAMP WITH TIME ZONE) RETURNS double precision AS $$
   SELECT COALESCE(extract(hours FROM SUM(UPPER(A.r * B.r) - LOWER(A.r * B.r))), 0) AS orak
@@ -19,7 +28,6 @@ FUNCTION munkaoraban(p_begin IN TIMESTAMP WITH TIME ZONE, p_end IN TIMESTAMP WIT
 $$ LANGUAGE sql LEAKPROOF;
 
 --mikorkinel: mikor kinel volt F a fejleszto, B a biztosito
-DROP FUNCTION mikorkinel;
 CREATE OR REPLACE
 FUNCTION mikorkinel(p_bug_id IN INTEGER, p_begin IN TIMESTAMP WITH TIME ZONE, p_end IN TIMESTAMP WITH TIME ZONE,
                     mikor OUT TIMESTAMP WITH TIME ZONE, kinel OUT CHAR) RETURNS setof record AS $$
@@ -36,7 +44,6 @@ FUNCTION mikorkinel(p_bug_id IN INTEGER, p_begin IN TIMESTAMP WITH TIME ZONE, p_
 $$ LANGUAGE sql LEAKPROOF;
 
 --fejlesztonel: mikor volt a fejlesztonel
-DROP FUNCTION fejlesztonel;
 CREATE OR REPLACE
 FUNCTION fejlesztonel(p_bug_id IN INTEGER, p_begin IN TIMESTAMP WITH TIME ZONE, p_end IN TIMESTAMP WITH TIME ZONE) RETURNS tstzrange AS $$
   SELECT tstzrange(A.mikor,
@@ -47,16 +54,14 @@ FUNCTION fejlesztonel(p_bug_id IN INTEGER, p_begin IN TIMESTAMP WITH TIME ZONE, 
 $$ LANGUAGE sql LEAKPROOF;
 
 --fejlesztonel_munkaora: mennyit volt a fejlesztonel
-DROP FUNCTION fejlesztonel_munkaora;
 CREATE OR REPLACE
 FUNCTION fejlesztonel_munkaora(p_bug_id IN INTEGER, p_begin IN TIMESTAMP WITH TIME ZONE, p_end IN TIMESTAMP WITH TIME ZONE) RETURNS double precision AS $$
   SELECT COALESCE(extract(hours FROM SUM(UPPER(A.r * B.r) - LOWER(A.r * B.r))), 0) AS orak
     FROM (SELECT fejlesztonel AS r FROM fejlesztonel($1, $2, $3)) A
-    JOIN (SELECT munkaorak AS r FROM munkaorak(COALESCE($2, uno_bekuldes($1)), COALESCE($3, uno_atadas($1)))) B ON A.r && B.r
+    JOIN (SELECT munkaorak AS r FROM munkaorak($2, $3)) B ON A.r && B.r
 $$ LANGUAGE sql LEAKPROOF;
 
 --bekuldes: bekuldes ideje
-DROP FUNCTION uno_bekuldes;
 CREATE OR REPLACE
 FUNCTION uno_bekuldes(p_bug_id IN INTEGER) RETURNS TIMESTAMP WITH TIME ZONE AS $$
   SELECT to_timestamp(date_submitted)
@@ -65,7 +70,6 @@ FUNCTION uno_bekuldes(p_bug_id IN INTEGER) RETURNS TIMESTAMP WITH TIME ZONE AS $
 $$ LANGUAGE sql LEAKPROOF;
 
 --reakcio: elso reakcio ideje
-DROP FUNCTION uno_reakcio;
 CREATE OR REPLACE
 FUNCTION uno_reakcio(p_bug_id IN INTEGER) RETURNS TIMESTAMP WITH TIME ZONE AS $$
   SELECT to_timestamp(LEAST((--elso statusz valtas
@@ -83,7 +87,6 @@ FUNCTION uno_reakcio(p_bug_id IN INTEGER) RETURNS TIMESTAMP WITH TIME ZONE AS $$
 $$ LANGUAGE sql LEAKPROOF;
 
 --atadva: atadas ideje
-DROP FUNCTION uno_atadas;
 CREATE OR REPLACE
 FUNCTION uno_atadas(p_bug_id IN INTEGER) RETURNS TIMESTAMP WITH TIME ZONE AS $$
   SELECT to_timestamp(MIN(A.date_modified))
@@ -93,7 +96,6 @@ FUNCTION uno_atadas(p_bug_id IN INTEGER) RETURNS TIMESTAMP WITH TIME ZONE AS $$
           A.bug_id = $1
 $$ LANGUAGE sql LEAKPROOF;
 
-DROP FUNCTION uno_sla;
 CREATE OR REPLACE
 FUNCTION uno_sla(priority IN smallint, p_tipus IN smallint) RETURNS int AS $$
 BEGIN
@@ -106,4 +108,14 @@ BEGIN
   END);
 END;
 $$ LANGUAGE plpgsql LEAKPROOF;
+
+CREATE MATERIALIZED VIEW mw_bug AS 
+  SELECT A.*, 
+         fejlesztonel_munkaora(A.id, A.bekuldes, COALESCE(GREATEST(A.atadas, A.due_date), localtimestamp)) AS fejlesztonel_munkaora
+    FROM (SELECT X.id, 
+                 to_timestamp(X.date_submitted) AS bekuldes,
+                 uno_atadas(X.id) AS atadas,
+                 uno_reakcio(X.id) AS reakcio,
+                 to_timestamp(X.due_date) AS due_date
+    FROM mantis_bug_table X) A;
 
