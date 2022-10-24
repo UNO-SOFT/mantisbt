@@ -206,6 +206,8 @@ function file_bug_has_attachments( $p_bug_id ) {
 	}
 }
 
+$g_file_can = array();
+
 /**
  * Check if the current user can view or download attachments.
  *
@@ -225,6 +227,14 @@ function file_bug_has_attachments( $p_bug_id ) {
  * @internal Should not be used outside of File API.
  */
 function file_can_view_or_download( $p_action, $p_bug_id, $p_uploader_user_id, $p_bugnote_id = null ) {
+	global $g_file_can;
+	$t_key = "$p_action;$p_bug_id;$p_uploader_user_id;$p_bugnote_id";
+	if( array_key_exists( $t_key, $g_file_can ) ) {
+		return $g_file_can[$t_key];
+	} 
+	if( count( $g_file_can ) > 10000 ) {
+		$g_file_can = array();
+	}
 	switch( $p_action ) {
 		case 'view':
 			$t_threshold_global = 'view_attachments_threshold';
@@ -247,12 +257,15 @@ function file_can_view_or_download( $p_action, $p_bug_id, $p_uploader_user_id, $
 		$t_can_access = access_has_bugnote_level( $t_access_global, $p_bugnote_id );
 	}
 	if( $t_can_access ) {
+		$g_file_can[$t_key] = true;
 		return true;
 	}
 
 	$t_uploaded_by_me = auth_get_current_user_id() == $p_uploader_user_id;
 	$t_view_own = config_get( $t_threshold_own, null, null, $t_project_id );
-	return $t_uploaded_by_me && $t_view_own;
+	$t_can_access = $t_uploaded_by_me && $t_view_own;
+	$g_file_can[$t_key] = $t_can_access;
+	return $t_can_access;
 }
 
 /**
