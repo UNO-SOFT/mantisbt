@@ -277,7 +277,12 @@ if( helper_get_current_project() == 0 ) {
 
 bug_cache_columns_data( $t_rows , array( 'attachment_count' ) );
 
-$t_filter = array_merge( $c_filter[$t_box_title], $t_filter );
+if( is_array( $c_filter[$t_box_title] ) ) {
+	if( !$t_filter ) {
+		$t_filter = array();
+	}
+	$t_filter = array_merge( $c_filter[$t_box_title], $t_filter );
+}
 
 $t_box_title_label = lang_get( 'my_view_title_' . $t_box_title );
 if( $t_box_title == 'recent_mod' ) {
