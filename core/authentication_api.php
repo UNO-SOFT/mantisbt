@@ -821,7 +821,7 @@ function auth_process_plain_password( $p_password, $p_salt = null, $p_method = n
 
 	$t_msg = auth_check_password_policy( $p_password );
 	if( $t_msg !== "" ) {
-		trigger_error( $t_msg, ERROR_USER_PASSWORD_POLICY );
+		trigger_error( $t_msg, E_USER_ERROR );
 	}
 
 	switch( $t_login_method ) {
