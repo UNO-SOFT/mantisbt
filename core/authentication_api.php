@@ -100,7 +100,7 @@ function auth_flags( $p_user_id = null, $p_username = '' ) {
 
 	if( !$t_user_id && is_blank( $p_username ) ) {
 		# If user is not in db, must supply the name.
-		trigger_error( ERROR_GENERIC, ERROR );
+		trigger_error( ERROR_GENERIC, E_USER_ERROR );
 	}
 
 	if( $t_user_id ) {
@@ -821,7 +821,7 @@ function auth_process_plain_password( $p_password, $p_salt = null, $p_method = n
 
 	$t_msg = auth_check_password_policy( $p_password );
 	if( $t_msg !== "" ) {
-		trigger_error( ERROR_USER_PASSWORD_POLICY, $t_msg );
+		trigger_error( $t_msg, ERROR_USER_PASSWORD_POLICY );
 	}
 
 	switch( $t_login_method ) {
