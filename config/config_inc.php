@@ -169,7 +169,7 @@ if( SYS_COMPANY == 'unosoft' ) {
         'bugnotes_count',
         //'attachment_count',
         //'category_id', 
-        //'severity', 
+        'severity', 
         'status',
         'last_updated', 'summary'
     );
@@ -179,7 +179,7 @@ if( SYS_COMPANY == 'unosoft' ) {
         'priority', 
         'id', 'sponsorship_total', 'bugnotes_count',
         //'attachment_count', 'category_id', 
-        //'severity', 
+        'severity', 
         'status', 'last_updated',
         'summary'
     );
@@ -193,7 +193,7 @@ if( SYS_COMPANY == 'unosoft' ) {
         'priority',
         //'product_version',
         //'reproducibility',
-        //'severity',
+        'severity',
         #'steps_to_reproduce',
         'tags',
         //'view_state',
@@ -218,7 +218,7 @@ if( SYS_COMPANY == 'unosoft' ) {
         'reporter',
         //'reproducibility',
         //'resolution',
-        //'severity',
+        'severity',
         'status',
         'steps_to_reproduce',
         'summary',
@@ -245,7 +245,7 @@ if( SYS_COMPANY == 'unosoft' ) {
         'reporter',
         //'reproducibility',
         //'resolution',
-        //'severity',
+        'severity',
         'status',
         //'steps_to_reproduce',
         'summary',
