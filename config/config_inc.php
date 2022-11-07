@@ -91,10 +91,10 @@ $g_email_send_using_cronjob = ON;
 $g_bug_reminder_threshold = 20;
 
 
-$g_max_file_size = 20000000;
+$g_max_file_size = 32 * 1024 * 1024;
 $g_disallowed_files = trim($g_disallowed_files . ','
 						   . 'mht,msg,php,php3,phtml,html,class,java,exe,pl', ',');
-$g_preview_attachments_inline_max_size = 10240;
+$g_preview_attachments_inline_max_size = 32 * 1024;
 
 
 $g_default_language = 'hungarian';
