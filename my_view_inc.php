@@ -62,7 +62,7 @@ require_api( 'bug_last_reporter_api.php' );
 require_api( 'plugin_api.php' );
 $t_print_sla = plugin_is_installed( 'SLA' ) && plugin_is_registered( 'SLA' ) && access_has_global_level( UPDATER );
 if( $t_print_sla ) {
-    plugin_require_api( 'core/sla_api.php', 'SLA' );
+	plugin_require_api( 'core/sla_api.php', 'SLA' );
 }
 
 $t_filter = current_user_get_bug_filter();
@@ -424,6 +424,9 @@ for( $i = 0; $i < $t_count; $i++ ) {
 				echo ' ';
 				print_icon( 'fa-lock', 'fa-lg light-grey', lang_get( 'private' ) );
 			}
+			if( $t_print_sla && function_exists( 'sla_print' ) ) {
+				sla_print( $t_bug->id );
+			}
 			?>
 	</td>
 
@@ -458,10 +461,6 @@ for( $i = 0; $i < $t_count; $i++ ) {
 
 		echo '<div style="text-align: end; float: right;" class="small"><span class="due-' . $t_due_level . '">' . date( $t_short_date_format, $t_due_date ) . '</span></div>';
 	}
-    if( $t_print_sla && function_exists( 'sla_print' ) ) {
-        sla_print( $t_bug->id, 'valasz' );
-        sla_print( $t_bug->id, 'atadas' );
-    }
 	?>
 	</td>
 </tr>
