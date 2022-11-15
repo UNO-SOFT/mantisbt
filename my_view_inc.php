@@ -59,6 +59,12 @@ require_api( 'project_api.php' );
 require_api( 'string_api.php' );
 require_api( 'bug_last_reporter_api.php' );
 
+require_api( 'plugin_api.php' );
+$t_print_sla = plugin_is_installed( 'SLA' ) && plugin_is_registered( 'SLA' ) && access_has_global_level( UPDATER );
+if( $t_print_sla ) {
+    plugin_require_api( 'core/sla_api.php', 'SLA' );
+}
+
 $t_filter = current_user_get_bug_filter();
 if( $t_filter === false ) {
 	$t_filter = filter_get_default();
@@ -295,6 +301,8 @@ $t_block_icon = $t_collapse_block ? 'fa-chevron-down' : 'fa-chevron-up';
 
 $t_bug_string = $t_bug_count == 1 ? 'bug' : 'bugs';
 
+$t_short_date_format = config_get( 'short_date_format' );
+
 # -- ====================== BUG LIST ========================= --
 ?>
 <div id="<?php echo $t_box_title ?>" class="widget-box widget-color-blue2 <?php echo $t_block_css ?>">
@@ -445,9 +453,15 @@ for( $i = 0; $i < $t_count; $i++ ) {
 	}
 	echo '</span>';
 
+
 	if( $t_show_due_date && !date_is_null( $t_due_date ) ) {
-		echo '<div style="text-align: end; float: right;" class="small"><span class="due-' . $t_due_level . '">' . date( config_get( 'short_date_format' ), $t_due_date ) . '</span></div>';
+
+		echo '<div style="text-align: end; float: right;" class="small"><span class="due-' . $t_due_level . '">' . date( $t_short_date_format, $t_due_date ) . '</span></div>';
 	}
+    if( $t_print_sla && function_exists( 'sla_print' ) ) {
+        sla_print( $t_bug->id, 'valasz' );
+        sla_print( $t_bug->id, 'atadas' );
+    }
 	?>
 	</td>
 </tr>
