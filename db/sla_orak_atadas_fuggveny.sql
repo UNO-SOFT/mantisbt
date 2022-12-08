@@ -72,18 +72,29 @@ $$ LANGUAGE sql LEAKPROOF;
 --reakcio: elso reakcio ideje
 CREATE OR REPLACE
 FUNCTION uno_reakcio(p_bug_id IN INTEGER) RETURNS TIMESTAMP WITH TIME ZONE AS $$
-  SELECT to_timestamp(LEAST((--elso statusz valtas
-                SELECT MIN(date_modified)
-                  FROM mantis_user_table B, mantis_bug_history_table A
-                  WHERE B.access_level > 25 AND B.id = A.user_id AND A.field_name = 'status' AND
-                        A.bug_id = $1
-               ),
-               (--vagy az elso lathato bejegyzes
-                SELECT MIN(date_submitted)
-                  FROM mantis_user_table B, mantis_bugnote_table A
-                  WHERE B.access_level > 25 AND B.id = A.reporter_id AND A.view_state < 50 AND
-                        A.bug_id = $1
-               )))
+  SELECT to_timestamp(LEAST(
+        (--elso statusz valtas
+         SELECT MIN(date_modified)
+           FROM mantis_user_table B, mantis_bug_history_table A
+           WHERE B.access_level > 25 AND B.id = A.user_id AND 
+                 A.field_name = 'status' AND A.type = 0 AND
+                 A.bug_id = $1
+        ),
+        (--vagy az elso lathato bejegyzes
+         SELECT MIN(date_submitted)
+           FROM mantis_user_table B, mantis_bugnote_table A
+           WHERE B.access_level > 25 AND B.id = A.reporter_id AND 
+                 A.view_state < 50 AND A.bug_id = $1
+        ),
+        (--vagy ?trendel?s
+         SELECT MIN(date_modified)
+           FROM mantis_user_table C, mantis_user_table B, mantis_bug_history_table A
+           WHERE C.access_level > 25 AND C.id = A.new_value::int AND
+                 B.access_level > 25 AND B.id = A.user_id AND 
+                 A.field_name = 'handler_id' AND A.type = 0 AND
+                 A.bug_id = $1
+        )
+    ))
 $$ LANGUAGE sql LEAKPROOF;
 
 --atadva: atadas ideje
@@ -103,7 +114,6 @@ BEGIN
   --g_priority_enum_string  = '30:normal,40:high,50:urgent,60:immediate';
   RETURN(CASE SUBSTRING(current_catalog, '^[^_]*_(.*)_[^_]*$')
   WHEN 'cig' THEN
-    --Reakció idő: 4,24,72 óra (kritikus,magas, normál),ha nincs határidő megadva, akkor a reakció időn belül meg kell oldani hibát/javítást
     CASE p_tipus
       WHEN 0 THEN CASE priority WHEN 60 THEN  4 when 50 then 24 WHEN 40 THEN  24 ELSE  72 END
       WHEN 1 THEN CASE priority WHEN 60 THEN 12 when 50 then 12 WHEN 40 THEN  50 ELSE 200 END
@@ -111,7 +121,6 @@ BEGIN
       ELSE NULL
     END
   ELSE
-    --Kritikus, magas, közepes, alacsony (reakció idő: 4,8,10,50, megoldás default idő: 50,50,100,200 vagy határidő)
     CASE p_tipus
       WHEN 0 THEN CASE priority WHEN 60 THEN  4 when 50 then 8  WHEN 40 THEN  10 ELSE  50 END
       WHEN 1 THEN CASE priority WHEN 60 THEN 12 when 50 then 12 WHEN 40 THEN  50 ELSE 200 END
@@ -135,3 +144,4 @@ CREATE MATERIALIZED VIEW mw_bug AS
 
 CREATE UNIQUE INDEX U_mw_bug ON mw_bug(id);
 
+GRANT SELECT ON mw_bug TO PUBLIC;
