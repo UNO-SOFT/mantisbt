@@ -272,8 +272,10 @@ if( SYS_COMPANY === 'unosoft' ) {
 		$g_projection_enum_string = '10:support,20:error,50:order,55:consulting';
 	} elseif( SYS_COMPANY === 'cig' ) {
 		$g_projection_enum_string = '10:support,20:error,50:order,53:data_modification,54:education,55:consulting';
+	} elseif( SYS_COMPANY === 'kobe' ) {
+		$g_projection_enum_string = '10:support,20:error,50:order,54:education';
 	} else {
-		$g_projection_enum_string = '10:support,20:error,50:order';
+		$g_projection_enum_string = '10:support,20:error,50:order,54:education,55:consulting';
 	}
 
 	//$g_resolution_enum_string = '10:open,20:fixed,30:reopened,40:unable to duplicate,50:not fixable,60:duplicate,70:not a bug,80:suspended,90:wont fix';
