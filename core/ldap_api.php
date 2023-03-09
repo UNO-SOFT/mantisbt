@@ -57,11 +57,6 @@ function ldap_log_error( $p_ds ) {
  * @return resource|false
  */
 function ldap_connect_bind( $p_binddn = '', $p_password = '' ) {
-	if( !extension_loaded( 'ldap' ) ) {
-		log_event( LOG_LDAP, 'Error: LDAP extension missing in php' );
-		trigger_error( ERROR_LDAP_EXTENSION_NOT_LOADED, ERROR );
-	}
-
 	$t_ldap_server = config_get_global( 'ldap_server' );
 
 	log_event( LOG_LDAP, 'Checking syntax of LDAP server URI \'' . $t_ldap_server . '\'.' );
@@ -280,7 +275,7 @@ function ldap_cache_user_data( $p_username ) {
 		return false;
 	}
 
-	$t_data = false;
+	$t_data = array();
 	foreach( $t_search_attrs as $t_attr ) {
 		# Suppress error to avoid Warning in case an invalid attribute was specified
 		$t_value = @ldap_get_values( $t_ds, $t_entry, $t_attr );
@@ -289,6 +284,9 @@ function ldap_cache_user_data( $p_username ) {
 			continue;
 		}
 		$t_data[$t_attr] = $t_value[0];
+	}
+	if( empty( $t_data ) ) {
+		$t_data = false;
 	}
 
 	# Store data in the cache
