@@ -393,8 +393,8 @@ $g_forward_year_count = 1;
 
 $g_path = preg_replace('/^http:/', 'https:', $g_path);
 
-$g_min_refresh_delay	= 1;
-$g_default_refresh_delay				= 10;
+#$g_min_refresh_delay	= 1;
+#$g_default_refresh_delay				= 10;
 $g_default_redirect_delay			   = 1;
 
 $g_logo_image = 'config/mantis_logo.png';
