@@ -89,6 +89,7 @@ if( SYS_COMPANY === 'unosoft' ) {
 	define('U_PROPOSAL', 30);  // ajanlat
 	define('U_ACKNOWLEDGED', 40);  // elfogadva
 	define('U_ASSIGNED', 50);  // folyamatban
+	define('U_ASSIGNED_FEEDBACK', 55);  // kerdes2
 	define('U_TEST', 60);  // belso teszt
 	define('U_TEST_OK', 70);  // belso teszt ok
 	define('U_RESOLVED', 80);  // atadva
@@ -104,14 +105,15 @@ if( SYS_COMPANY === 'unosoft' ) {
 	$g_status_enum_workflow[U_PROPOSAL_FEEDBACK] = '30:proposal,25:ask_proposal,90:closed,20:feedback';
 	$g_status_enum_workflow[U_PROPOSAL] = '40:acknowledged,25:ask_proposal,90:closed';
 	$g_status_enum_workflow[U_ACKNOWLEDGED] = '50:assigned,90:closed';
-	$g_status_enum_workflow[U_ASSIGNED] = '20:feedback,60:test,80:resolved';
+	$g_status_enum_workflow[U_ASSIGNED] = '55:assigned_feedback,60:test,80:resolved';
+	$g_status_enum_workflow[U_ASSIGNED_FEEDBACK] = '50:assigned,60:test,80:resolved';
 	$g_status_enum_workflow[U_TEST] = '50:assigned,70:test_ok';
 	$g_status_enum_workflow[U_TEST_OK] = '80:resolved';
 	$g_status_enum_workflow[U_RESOLVED] = '50:assigned,90:closed';
 	$g_status_enum_workflow[U_CLOSED] = '99:joker';
 	$g_status_enum_workflow[U_JOKER] = '50:assigned,80:resolved,90:closed';
 
-	$g_status_enum_string = '10:new,20:feedback,25:ask_proposal,27:proposal_feedback,30:proposal,40:acknowledged,50:assigned,60:test,70:test_ok,80:resolved,90:closed,99:joker';
+	$g_status_enum_string = '10:new,20:feedback,25:ask_proposal,27:proposal_feedback,30:proposal,40:acknowledged,50:assigned,55:assigned_feedback,60:test,70:test_ok,80:resolved,90:closed,99:joker';
 
 	$g_set_status_threshold = array (
 		U_NEW => REPORTER,
@@ -121,6 +123,7 @@ if( SYS_COMPANY === 'unosoft' ) {
 		U_PROPOSAL => MANAGER,
 		U_ACKNOWLEDGED => REPORTER,
 		U_ASSIGNED => REPORTER,
+		U_ASSIGNED_FEEDBACK => UPDATER,
 		U_TEST => DEVELOPER,
 		U_TEST_OK => UPDATER,
 		U_RESOLVED => DEVELOPER,
@@ -136,6 +139,7 @@ if( SYS_COMPANY === 'unosoft' ) {
 		'proposal' => '#F9FFA7',
 		'acknowledged' => '#ABEDEC',
 		'assigned' => '#ABEDEC',
+		'assigned_feedback' => '#FDA7FF',
 		'test' => '#CAFD8A',
 		'test_ok' => '#9CE964',
 		'resolved' => '#D9D9D9',
