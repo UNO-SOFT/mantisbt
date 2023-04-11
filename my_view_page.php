@@ -104,6 +104,19 @@ if( $t_current_project_id == ALL_PROJECTS ) {
 # - remove boxes that do not make sense in the user's context (access level)
 $t_boxes = array_filter( config_get( 'my_view_boxes' ) );
 $t_anonymous_user = current_user_is_anonymous();
+
+$t_owned_field_id = custom_field_get_id_from_name( 'gazda' );
+$t_owned_project_ids = array();
+if( $t_owned_field_id ) {
+	$t_current_user_name = user_get_name( $t_current_user_id );
+	$t_owned_project_ids = custom_field_get_project_ids( $t_owned_field_id );
+	$t_pids = $t_project_ids_to_check;
+	if( $t_pids === null ) {
+		$t_pids = user_get_all_accessible_projects( $t_current_user_id );
+	}
+	$t_owned_project_ids = array_intersect( $t_owned_project_ids, $t_pids );
+}
+
 foreach( $t_boxes as $t_box_title => $t_box_display ) {
 	if( # Remove "Assigned to Me" box for users that can't handle issues
 		(  $t_box_title == 'assigned'
@@ -123,6 +136,10 @@ foreach( $t_boxes as $t_box_title => $t_box_display ) {
 		&& (  $t_anonymous_user
 		   || !access_has_any_project_level( 'report_bug_threshold', $t_project_ids_to_check, $t_current_user_id )
 		   )
+		) ||
+		# Remove display of "Owned" for users that can't Own
+		( $t_box_title == 'owned'
+		&& ( count( $t_owned_project_ids ) == 0 )
 		)
 	) {
 		unset( $t_boxes[$t_box_title] );

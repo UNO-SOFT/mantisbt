@@ -131,13 +131,14 @@ $g_my_view_boxes = array(
 	'assigned'      => '2',
 	'unassigned'    => '1',
 	'reported'      => '3',
-	'resolved'      => '7',
-	'recent_mod'    => '5',
-	'monitored'     => '6',
-	'feedback'      => '8',
+	'resolved'      => '8',
+	'recent_mod'    => '4',
+	'monitored'     => '7',
+	'feedback'      => '9',
 	'verify'        => '0',
 	'my_comments'   => '0',
-	'vv'            => '5'
+	'vv'            => '5',
+	'owned'         => '6'
 );
 
 # Toggle whether 'My View' boxes are shown in a fixed position (i.e. adjacent boxes start at the same vertical position)

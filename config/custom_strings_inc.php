@@ -2,6 +2,8 @@
 require_once('config_statuses_inc.php');
 
 $s_my_view_title_vv = 'Verzióváltók';
+$s_my_view_title_owned = 'Saját ügyek';
+
 $s_time_tracking = 'Időráfordítás';
 $s_time_tracking_get_info_button = 'Időráfordítási információk megtekintése';
 $s_time_tracking_billing_link = 'Időráfordítás';

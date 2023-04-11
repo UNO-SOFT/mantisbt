@@ -2885,3 +2885,14 @@ function filter_verziovaltok( ) {
 	$g_verziovaltok = $t_bug_ids;
 	return $t_bug_ids;
 }
+
+function filter_custom_field_value( $p_field_id, $p_field_value ) {
+	$t_query = "SELECT B.id FROM {bug} B, {custom_field_string} A WHERE B.status < 90 AND B.id = A.bug_id AND A.field_id = " . db_param() . " AND A.value = " . db_param();
+	$t_result = db_query( $t_query, array( $p_field_id, $p_field_value ) );
+
+	$t_bug_ids = array();
+	while( $t_row = db_fetch_array( $t_result ) ) {
+		$t_bug_ids[] = (int)$t_row['id'];
+	}
+	return $t_bug_ids;
+}

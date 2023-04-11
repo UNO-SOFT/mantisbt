@@ -258,10 +258,19 @@ $t_url_link_parameters['my_comments'] = FILTER_PROPERTY_NOTE_USER_ID. '=' . META
 
 $t_rows = array();
 
-if( $t_box_title === 'vv' ) {
-	$t_developers = users_with_access_level( DEVELOPER, true );
-	$t_url_link_parameters['vv'] = 'view_type=advanced&' . filter_encode_field_and_value( FILTER_PROPERTY_SEARCH, 'Verzióváltó') . '&' . filter_encode_field_and_value( FILTER_PROPERTY_REPORTER_ID, $t_developers, FILTER_TYPE_MULTI_STRING );
-	foreach( filter_verziovaltok() as $t_bug_id ) {
+if( $t_box_title === 'vv' || $t_box_title === 'owned' ) {
+	$t_bug_ids = array();
+	if( $t_box_title === 'vv' ) {
+		$t_developers = users_with_access_level( DEVELOPER, true );
+		$t_url_link_parameters['vv'] = 'view_type=advanced&' . filter_encode_field_and_value( FILTER_PROPERTY_SEARCH, 'Verzióváltó') . '&' . filter_encode_field_and_value( FILTER_PROPERTY_REPORTER_ID, $t_developers, FILTER_TYPE_MULTI_STRING );
+		$t_bug_ids = filter_verziovaltok(); 
+	} elseif( $t_box_title == 'owned' && $t_owned_field_id ) {
+		$t_url_link_parameters['owned'] = 'view_type=advanced&' .
+			FILTER_PROPERTY_HIDE_STATUS . '=' . $t_bug_resolved_status_threshold . '&' .
+			filter_encode_field_and_value( 'custom_field_' . $t_owned_field_id, $t_current_user_name );
+		$t_bug_ids = filter_custom_field_value( $t_owned_field_id, $t_current_user_name );
+	}
+	foreach( $t_bug_ids as $t_bug_id ) {
 		if( !bug_is_closed( $t_bug_id ) ) {
 			$t_rows[] = bug_get( $t_bug_id, false );
 		}
