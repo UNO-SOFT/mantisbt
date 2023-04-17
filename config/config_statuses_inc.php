@@ -283,13 +283,17 @@ if( SYS_COMPANY === 'unosoft' ) {
 	}
 
 	//$g_resolution_enum_string = '10:open,20:fixed,30:reopened,40:unable to duplicate,50:not fixable,60:duplicate,70:not a bug,80:suspended,90:wont fix';
-	$g_resolution_enum_string = '10:open,20:fixed,21:storno,29:executed,30:reopened,40:unable to duplicate,50:not fixable,60:duplicate,70:not a bug,80:suspended,90:wont fix';
+	$g_resolution_enum_string = '10:open,20:fixed,21:storno,29:executed,30:reopened,40:unable 3to duplicate,50:not fixable,60:duplicate,70:not a bug,80:suspended,90:wont fix';
 
 	//$g_severity_enum_string = '10:feature,20:trivial,30:text,40:tweak,50:minor,60:major,70:crash,80:block';
 	$g_severity_enum_string	= '10:feature,50:error';
 
-	//$g_priority_enum_string = '10:none,20:low,30:normal,40:high,50:urgent,60:immediate';
-	$g_priority_enum_string	= '30:normal,40:high,60:immediate';
+	if( SYS_COMPANY == 'aegon' ) {
+		$g_priority_enum_string	= '29:CD3-100,30:normal,35:CD3-200,40:high,41:CD3-300,51:CD3-400,60:immediate,61:CD3-500,65:CD3-600+';
+	} else {
+		//$g_priority_enum_string = '10:none,20:low,30:normal,40:high,50:urgent,60:immediate';
+		$g_priority_enum_string	= '30:normal,40:high,60:immediate';
+	}
 
 
 	$g_default_notify_flags = array(
