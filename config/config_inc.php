@@ -257,7 +257,12 @@ if( SYS_COMPANY == 'unosoft' ) {
     $g_time_tracking_stopwatch = OFF;
 
 } else {
-    $g_view_issues_page_columns[] = 'target_version';
+	if( SYS_COMPANY == 'aegon' ) {
+	    $g_view_issues_page_columns[] = 'custom_CD3'; 
+	    $g_print_issues_page_columns[] = 'custom_CD3';
+	}
+
+	$g_view_issues_page_columns[] = 'target_version';
     $g_view_issues_page_columns[] = 'fixed_in_version';
     $g_print_issues_page_columns[] = 'target_version';
     $g_print_issues_page_columns[] = 'fixed_in_version';
