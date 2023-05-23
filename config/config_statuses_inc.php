@@ -83,7 +83,7 @@ if( SYS_COMPANY === 'unosoft' ) {
 } else {
 
 	define('U_NEW', 10);  // uj
-	define('U_FEEDBACK', 20);  // kerdes
+	//define('U_FEEDBACK', 20);  // tajokozodas
 	define('U_ASK_PROPOSAL', 25);  // ajanlat keres
 	define('U_PROPOSAL_FEEDBACK', 27); // tisztazas
 	define('U_PROPOSAL', 30);  // ajanlat
@@ -99,10 +99,12 @@ if( SYS_COMPANY === 'unosoft' ) {
 
 	require_once(dirname(__FILE__) . '/../config_defaults_inc.php');
 
-	$g_status_enum_workflow[U_NEW] = '20:feedback,25:ask_proposal,50:assigned,90:closed';
-	$g_status_enum_workflow[U_FEEDBACK] = '25:ask_proposal,50:assigned,90:closed';
+	//$g_status_enum_workflow[U_NEW] = '20:feedback,25:ask_proposal,50:assigned,90:closed';
+	$g_status_enum_workflow[U_NEW] = '25:ask_proposal,50:assigned,90:closed';
+	//$g_status_enum_workflow[U_FEEDBACK] = '25:ask_proposal,50:assigned,90:closed';
 	$g_status_enum_workflow[U_ASK_PROPOSAL] = '30:proposal,27:proposal_feedback,90:closed';
-	$g_status_enum_workflow[U_PROPOSAL_FEEDBACK] = '30:proposal,25:ask_proposal,90:closed,20:feedback';
+	//$g_status_enum_workflow[U_PROPOSAL_FEEDBACK] = '30:proposal,25:ask_proposal,90:closed,20:feedback';
+	$g_status_enum_workflow[U_PROPOSAL_FEEDBACK] = '30:proposal,25:ask_proposal,90:closed';
 	$g_status_enum_workflow[U_PROPOSAL] = '40:acknowledged,25:ask_proposal,90:closed';
 	$g_status_enum_workflow[U_ACKNOWLEDGED] = '50:assigned,90:closed';
 	$g_status_enum_workflow[U_ASSIGNED] = '55:assigned_feedback,60:test,80:resolved';
@@ -111,13 +113,15 @@ if( SYS_COMPANY === 'unosoft' ) {
 	$g_status_enum_workflow[U_TEST_OK] = '80:resolved';
 	$g_status_enum_workflow[U_RESOLVED] = '50:assigned,90:closed';
 	$g_status_enum_workflow[U_CLOSED] = '99:joker';
-	$g_status_enum_workflow[U_JOKER] = '10:new,20:feedback,25:ask_proposal,50:assigned,55:assigned_feedback,80:resolved,90:closed';
+	//$g_status_enum_workflow[U_JOKER] = '10:new,20:feedback,25:ask_proposal,50:assigned,55:assigned_feedback,80:resolved,90:closed';
+	$g_status_enum_workflow[U_JOKER] = '10:new,25:ask_proposal,50:assigned,55:assigned_feedback,80:resolved,90:closed';
 
-	$g_status_enum_string = '10:new,20:feedback,25:ask_proposal,27:proposal_feedback,30:proposal,40:acknowledged,50:assigned,55:assigned_feedback,60:test,70:test_ok,80:resolved,90:closed,99:joker';
+	//$g_status_enum_string = '10:new,20:feedback,25:ask_proposal,27:proposal_feedback,30:proposal,40:acknowledged,50:assigned,55:assigned_feedback,60:test,70:test_ok,80:resolved,90:closed,99:joker';
+	$g_status_enum_string = '10:new,25:ask_proposal,27:proposal_feedback,30:proposal,40:acknowledged,50:assigned,55:assigned_feedback,60:test,70:test_ok,80:resolved,90:closed,99:joker';
 
 	$g_set_status_threshold = array (
 		U_NEW => REPORTER,
-		U_FEEDBACK => UPDATER,
+		//U_FEEDBACK => UPDATER,
 		U_ASK_PROPOSAL => REPORTER,
 		U_PROPOSAL_FEEDBACK => UPDATER,
 		U_PROPOSAL => MANAGER,
