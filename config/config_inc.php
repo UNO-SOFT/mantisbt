@@ -276,6 +276,7 @@ if( SYS_COMPANY == 'unosoft' ) {
 		'platform',
         'priority',
         'product_version',
+		'projection',
         'reproducibility',
         //'severity',
         #'steps_to_reproduce',
