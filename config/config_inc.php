@@ -262,8 +262,21 @@ if( SYS_COMPANY == 'unosoft' ) {
 	    $g_print_issues_page_columns[] = 'custom_CD3';
 	}
 
+	$t_idx = array_search( 'severity', $g_view_issues_page_columns );
+	if( $t_idx >= 0 ) {
+		array_splice( $g_view_issues_page_columns, $t_idx, 1, array( 'projection' ) );
+	} else {
+	    $g_view_issues_page_columns[] = 'projection';
+	}
 	$g_view_issues_page_columns[] = 'target_version';
     $g_view_issues_page_columns[] = 'fixed_in_version';
+	$t_idx = array_search( 'severity', $g_print_issues_page_columns );
+	if( $t_idx >= 0 ) {
+		array_splice( $g_print_issues_page_columns, $t_idx, 1, array( 'projection' ) );
+	} else {
+	    $g_print_issues_page_columns[] = 'projection';
+	}
+    $g_print_issues_page_columns[] = 'projection';
     $g_print_issues_page_columns[] = 'target_version';
     $g_print_issues_page_columns[] = 'fixed_in_version';
 
