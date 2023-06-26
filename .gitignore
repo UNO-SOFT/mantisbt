@@ -9,6 +9,9 @@ docbook/*/*/install
 docbook/*/tmp
 !docbook/Admin_Guide/*/config
 
+# Local docbook from release tarballs
+doc/en-US
+
 # Untracked plugins
 plugins/*
 !plugins/Markdown
@@ -32,11 +35,12 @@ plugins/*
 *.kdev4
 nbproject/
 
+# Python bytecode
+__pycache__/
+*.py[cod]
+
 # MacOS
 .DS_Store
-
-# IIS7
-web.config
 
 # Libraries (outdated or installed via Composer)
 library/FirePHPCore

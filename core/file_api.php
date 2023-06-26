@@ -285,14 +285,21 @@ function file_can_view_bug_attachments( $p_bug_id, $p_uploader_user_id = null ) 
  *
  * @param integer $p_bugnote_id       A bugnote identifier.
  * @param integer $p_uploader_user_id The user who uploaded the attachment.
+ * @param integer $p_bug_id           The bug id, if null, will be retrieved from bugnote record.
  *
  * @return boolean
  */
-function file_can_view_bugnote_attachments( $p_bugnote_id, $p_uploader_user_id = null ) {
+function file_can_view_bugnote_attachments( $p_bugnote_id, $p_uploader_user_id = null, $p_bug_id = null ) {
 	if( $p_bugnote_id == 0 ) {
 		return true;
 	}
-	$t_bug_id = bugnote_get_field( $p_bugnote_id, 'bug_id' );
+
+	if( $p_bug_id === null ) {
+		$t_bug_id = bugnote_get_field( $p_bugnote_id, 'bug_id' );
+	} else {
+		$t_bug_id = (int)$p_bug_id;
+	}
+
 	return file_can_view_or_download( 'view', $t_bug_id, $p_uploader_user_id );
 }
 
@@ -475,7 +482,7 @@ function file_get_visible_attachments( $p_bug_id ) {
 		$t_attachment_note_id = (int)$t_row['bugnote_id'];
 
 		if( !file_can_view_bug_attachments( $p_bug_id, $t_user_id )
-		|| !file_can_view_bugnote_attachments( $t_attachment_note_id, $t_user_id )
+		|| !file_can_view_bugnote_attachments( $t_attachment_note_id, $t_user_id, $p_bug_id )
 		) {
 			continue;
 		}
@@ -734,7 +741,7 @@ function file_type_check( $p_file_name ) {
 		}
 	}
 
-	# if the allowed list is note populated then the file must be allowed
+	# if the allowed list is not populated then the file must be allowed
 	if( is_blank( $t_allowed_files ) ) {
 		return true;
 	}
@@ -1329,7 +1336,11 @@ function file_move_bug_attachments( $p_bug_id, $p_project_id_to ) {
 			}
 			chmod( $t_disk_file_name_to, config_get( 'attachments_file_permissions' ) );
 			# Don't pop the parameters after query execution since we're in a loop
-			db_query( $t_query_disk_attachment_update, array( db_prepare_string( $t_path_to ), $c_bug_id, (int)$t_row['id'] ), -1, -1, false );
+			db_query( $t_query_disk_attachment_update,
+				array( $t_path_to, $c_bug_id, (int)$t_row['id'] ),
+				-1, -1,
+				false
+			);
 		} else {
 			trigger_error( ERROR_FILE_DUPLICATE, ERROR );
 		}
