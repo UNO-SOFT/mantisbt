@@ -2793,15 +2793,13 @@ function filter_form_draw_inputs( $p_filter, $p_for_screen = true, $p_static = f
 			null /* class */,
 			'do_filter_by_due_date_filter_target' /* content id */
 			));
-	if( FILTER_VIEW_TYPE_ADVANCED == $t_view_type ) {
-		$t_row2->add_item( new TableFieldsItem(
-				$get_field_header( 'project_id_filter', lang_get( 'email_project' ) ),
-				filter_form_get_input( $t_filter, 'project_id', $t_show_inputs ),
-				1 /* colspan */,
-				null /* class */,
-				'project_id_filter_target' /* content id */
-				));
-	}
+	$t_row2->add_item( new TableFieldsItem(
+			$get_field_header( 'project_id_filter', lang_get( 'email_project' ) ),
+			filter_form_get_input( $t_filter, 'project_id', $t_show_inputs ),
+			1 /* colspan */,
+			null /* class */,
+			'project_id_filter_target' /* content id */
+			));
 
 	$t_row3 = new FilterBoxGridLayout( $t_filter_cols , FilterBoxGridLayout::ORIENTATION_VERTICAL );
 
