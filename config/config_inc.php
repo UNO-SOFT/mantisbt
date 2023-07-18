@@ -483,9 +483,7 @@ $g_wiki_engine = 'dokuwiki';
 $g_wiki_root_namespace = SYS_COMPANY;
 $g_wiki_engine_url = 'https://wiki.unosoft.hu/';
 
-if(file_exists('config_statuses_inc.php')) {
-	require_once(dirname(__FILE__) . '/config_statuses_inc.php');
-}
-if(file_exists('config_local.php')) {
-	include("config_local.php");
+$t_fn = dirname(__FILE__) . '/config_statuses_inc.php';
+if( file_exists( $t_fn ) ) {
+	require_once( $t_fn );
 }
