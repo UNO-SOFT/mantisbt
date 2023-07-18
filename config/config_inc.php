@@ -61,6 +61,16 @@ $g_file_upload_method = DISK;
 $g_log_destination = 'file://var/log/mantis/'.SYS_COMPANY.'-'.SYS_FLAVOR.'.log';
 $g_absolute_path_default_upload_folder = '/home/' . SYS_COMPANY . '/' . SYS_FLAVOR . '/attachments/';
 
+$g_max_file_size = 32 * 1024 * 1024;
+$g_disallowed_files = trim($g_disallowed_files . ','
+   . 'mht,msg,php,php3,phtml,html,class,java,exe,pl', ',');
+$g_preview_attachments_inline_max_size = 256 * 1024;
+$g_preview_image_extensions = trim($g_preview_image_extensions . ','
+	. 'png,jpg,jpeg,gif', ',');
+$g_preview_text_extensions = trim($g_preview_text_extensions . ','
+	. 'txt,log,json,sql', ',');
+
+
 define('SYS_COMPANY_NAME',
 	SYS_COMPANY == 'kobe' ? 'KÖBE'
 	: (SYS_COMPANY == 'waberer' ? 'Wáberer'
@@ -89,12 +99,6 @@ $g_phpMailer_method = 0; //0 - mail(), 1 - sendmail 2 - SMTP
 $g_email_send_using_cronjob = ON;
 
 $g_bug_reminder_threshold = 20;
-
-
-$g_max_file_size = 32 * 1024 * 1024;
-$g_disallowed_files = trim($g_disallowed_files . ','
-						   . 'mht,msg,php,php3,phtml,html,class,java,exe,pl', ',');
-$g_preview_attachments_inline_max_size = 32 * 1024;
 
 
 $g_default_language = 'hungarian';
@@ -472,6 +476,11 @@ $g_impersonate_user_threshold = ADMINISTRATOR;
 
 $g_filter_views = SIMPLE_DEFAULT;
 $g_action_button_position = POSITION_BOTH;
+
+$g_wiki_enable = ON;
+$g_wiki_engine = 'dokuwiki';
+$g_wiki_root_namespace = SYS_COMPANY;
+$g_wiki_engine_url = 'https://wiki.unosoft.hu/'
 
 //if(file_exists('config_statuses_inc.php'))
 	require_once(dirname(__FILE__) . '/config_statuses_inc.php');
