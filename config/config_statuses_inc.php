@@ -304,7 +304,7 @@ if( SYS_COMPANY === 'unosoft' ) {
 		//'threshold_min' => REPORTER,
 		//'threshold_max' => REPORTER,
 	);
-	if( !$g_notify_flags ) {
+	if( ! isset( $g_notify_flags ) ) {
 		$g_notify_flags = $g_default_notify_flags;
 	}
 	$g_notify_flags = array_merge_recursive( $g_notify_flags, array (

@@ -65,10 +65,8 @@ $g_max_file_size = 32 * 1024 * 1024;
 $g_disallowed_files = trim($g_disallowed_files . ','
    . 'mht,msg,php,php3,phtml,html,class,java,exe,pl', ',');
 $g_preview_attachments_inline_max_size = 256 * 1024;
-$g_preview_image_extensions = trim($g_preview_image_extensions . ','
-	. 'png,jpg,jpeg,gif', ',');
-$g_preview_text_extensions = trim($g_preview_text_extensions . ','
-	. 'txt,log,json,sql', ',');
+$g_preview_image_extensions = array_merge( $g_preview_image_extensions,	array( 'png', 'jpg', 'jpeg', 'gif' ) );
+$g_preview_text_extensions = array_merge( $g_preview_text_extensions, array( 'txt', 'log', 'json', 'sql' ) );
 
 
 define('SYS_COMPANY_NAME',
@@ -408,6 +406,9 @@ $g_default_email_bugnote_limit = 3;
 
 // minden új ügynél minden fejlesztő kapjon emailt
 if( SYS_COMPANY == 'pcs' || SYS_COMPANY == 'pp' ) {
+	if( ! $g_notify_flags ) {
+		$g_notify_flags = $g_default_notify_flags;
+	}
 	$g_notify_flags['new']['threshold_min'] = DEVELOPER;
 	$g_notify_flags['new']['threshold_max'] = ADMINISTRATOR;
 }
@@ -480,10 +481,11 @@ $g_action_button_position = POSITION_BOTH;
 $g_wiki_enable = ON;
 $g_wiki_engine = 'dokuwiki';
 $g_wiki_root_namespace = SYS_COMPANY;
-$g_wiki_engine_url = 'https://wiki.unosoft.hu/'
+$g_wiki_engine_url = 'https://wiki.unosoft.hu/';
 
-//if(file_exists('config_statuses_inc.php'))
+if(file_exists('config_statuses_inc.php')) {
 	require_once(dirname(__FILE__) . '/config_statuses_inc.php');
+}
 if(file_exists('config_local.php')) {
 	include("config_local.php");
 }
