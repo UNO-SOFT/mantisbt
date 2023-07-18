@@ -399,7 +399,15 @@ function mci_issue_set_custom_fields( $p_issue_id, array &$p_custom_fields = nul
 
 			# Verify validity of custom field specification
 			$t_msg = 'Invalid Custom field specification';
-			$t_valid_cf = isset( $t_custom_field['field'] ) && isset( $t_custom_field['value'] );
+			$t_valid_cf = TRUE;
+			if( ! isset( $t_custom_field['field'] ) ) {
+				$t_msg .= ", 'field' is not set";
+				$t_valid_cf = FALSE;
+			}
+			if( ! isset( $t_custom_field['value'] ) ) {
+				$t_msg .= ", 'value' is not set";
+				$t_valid_cf = FALSE;
+			}
 			if( $t_valid_cf ) {
 				$t_field = ApiObjectFactory::objectToArray( $t_custom_field['field'] );
 				if( ( !isset( $t_field['id'] ) || $t_field['id'] == 0 ) && !isset( $t_field['name'] ) ) {
