@@ -438,6 +438,9 @@ $g_path = preg_replace('/^http:/', 'https:', $g_path);
 $g_default_redirect_delay			   = 1;
 
 $g_logo_image = 'config/mantis_logo.png';
+if( is_link( $g_logo_image) ) {
+	$g_logo_image = 'config/' . readlink( $g_logo_image );
+}
 
 $g_allow_signup = OFF;
 $g_max_failed_login_count = 5;
