@@ -36,9 +36,12 @@ if ( substr(dirname(__FILE__), 0, 5) === '/home' ) {
 	if ( $t_chunks[2] === 'tgulacsi' ) {
 		define('SYS_COMPANY', 'unosoft');
 		define('SYS_FLAVOR', 'dev');
+	} else if ( $t_chunks[2] === 'aegon' ) {
+		define('SYS_COMPANY', 'alfa' );
+		define('SYS_FLAVOR', $t_chunks[3] );
 	} else {
-		define('SYS_COMPANY', $t_chunks[2]);
-		define('SYS_FLAVOR', $t_chunks[3]);
+		define('SYS_COMPANY', $t_chunks[2] );
+		define('SYS_FLAVOR', $t_chunks[3] );
 	}
 } else if ( substr(dirname(__FILE__), 0, 8) === '/var/www' ) {
 	$t_chunks = array_slice(explode('/', dirname(__FILE__)), 3);
@@ -46,10 +49,18 @@ if ( substr(dirname(__FILE__), 0, 5) === '/home' ) {
 	//echo '<!--t_chunks='.print_r($t_chunks, true)."-->";
 ///var/www/www.unosoft.hu/mantis/kobe/config/config_inc.php -> "www.unosoft.hu", "mantis", "kobe", "config"
 	if ( substr_compare( $t_chunks[2], "_dev", -4 ) === 0 ) {
-		define('SYS_COMPANY', substr($t_chunks[2], 0, -4) );
+		if( substr($t_chunks[2], 0, -4) === 'aegon' ) {
+			define('SYS_COMPANY', 'alfa' );
+		} else { 
+			define('SYS_COMPANY', substr($t_chunks[2], 0, -4) );
+		}
 		define('SYS_FLAVOR', 'dev');
 	} else {
-		define('SYS_COMPANY', $t_chunks[2]);
+		if( $t_chunks[2] == 'aegon' ) {
+			define('SYS_COMPANY', 'aegon' );
+		} else {
+			define('SYS_COMPANY', $t_chunks[2]);
+		}
 		define('SYS_FLAVOR', 'prd');
 	}
 //echo "<!-- co=".SYS_COMPANY." fl=".SYS_FLAVOR. "-->";
@@ -259,7 +270,7 @@ if( SYS_COMPANY == 'unosoft' ) {
     $g_time_tracking_stopwatch = OFF;
 
 } else {
-	if( SYS_COMPANY == 'aegon' ) {
+	if( SYS_COMPANY == 'aegon' || SYS_COMPANY == 'alfa' ) {
 	    $g_view_issues_page_columns[] = 'custom_CD3'; 
 	    $g_print_issues_page_columns[] = 'custom_CD3';
 	}
@@ -382,7 +393,11 @@ if( SYS_COMPANY == 'tir' ) {
   $g_update_bug_relationship_threshold = REPORTER;
 }
 
-$g_session_key = 'MantisBT-'.SYS_COMPANY.'-'.SYS_FLAVOR;
+if( SYS_COMPANY === 'alfa' ) {
+	$g_session_key = 'MantisBT-aegon-'.SYS_FLAVOR;
+} else {
+	$g_session_key = 'MantisBT-'.SYS_COMPANY.'-'.SYS_FLAVOR;
+}
 $g_cookie_prefix = $g_session_key;
 
 $g_monitor_add_others_bug_threshold = REPORTER;
@@ -483,9 +498,7 @@ $g_wiki_engine = 'dokuwiki';
 $g_wiki_root_namespace = SYS_COMPANY;
 $g_wiki_engine_url = 'https://wiki.unosoft.hu/';
 
-if(file_exists('config_statuses_inc.php')) {
-	require_once(dirname(__FILE__) . '/config_statuses_inc.php');
-}
-if(file_exists('config_local.php')) {
-	include("config_local.php");
+$t_fn = dirname(__FILE__) . '/config_statuses_inc.php';
+if( file_exists( $t_fn ) ) {
+	require_once( $t_fn );
 }
