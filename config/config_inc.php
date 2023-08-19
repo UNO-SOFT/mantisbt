@@ -406,7 +406,6 @@ $g_bug_reminder_threshold = REPORTER;
 $g_show_monitor_list_threshold = REPORTER;
 $g_reminder_receive_threshold = REPORTER;
 $g_view_summary_threshold = UPDATER;
-$g_filter_remember_last = false;
 
 $g_hidden_reporters = array(); //array( 'mail_watcher' );
 $g_create_permalink_threshold = REPORTER;
@@ -415,7 +414,6 @@ $g_bugnote_allow_user_edit_delete = OFF;
 $g_set_bug_sticky_threshold = DEVELOPER;
 
 $g_attachment_print_uploader = ON;
-$g_filter_use_last = OFF;
 $g_email_from_is_last_updater = ON;
 $g_default_email_bugnote_limit = 3;
 
