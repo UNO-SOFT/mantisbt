@@ -105,7 +105,7 @@ if( $t_current_project_id == ALL_PROJECTS ) {
 $t_boxes = array_filter( config_get( 'my_view_boxes' ) );
 $t_anonymous_user = current_user_is_anonymous();
 
-$t_owned_field_id = custom_field_get_id_from_name( 'gazda' );
+$t_owned_field_id = custom_field_get_id_from_name( 'szervező' );
 $t_owned_project_ids = array();
 if( $t_owned_field_id ) {
 	$t_current_user_name = user_get_name( $t_current_user_id );
