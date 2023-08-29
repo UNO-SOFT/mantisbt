@@ -785,7 +785,7 @@ function layout_print_sidebar( $p_active_sidebar_page = null ) {
 			$t_sidebar_items[] = array(
 				'url' => 'wiki.php?type=project&amp;id=' . $t_current_project,
 				'title' => 'wiki',
-				'icon' => 'fa-book'
+				'icon' => 'fa-wikipedia-w'
 			);
 		}
 
