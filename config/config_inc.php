@@ -499,6 +499,8 @@ $g_wiki_engine = 'dokuwiki';
 $g_wiki_root_namespace = SYS_COMPANY;
 $g_wiki_engine_url = 'https://wiki.unosoft.hu/';
 
+$g_enable_project_documentation = ON;
+
 $t_fn = dirname(__FILE__) . '/config_statuses_inc.php';
 if( file_exists( $t_fn ) ) {
 	require_once( $t_fn );
