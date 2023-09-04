@@ -150,7 +150,7 @@ class IssueViewPageCommand extends Command {
 
 		$t_issue_view['form_title'] = lang_get( 'bug_view_title' );
 
-		if( config_get_global( 'wiki_enable' ) == ON ) {
+		if( ON == config_get_global( 'wiki_enable' ) && access_has_project_level( config_get( 'wiki_show_threshold', $t_current_project, UPDATER ) ) ) {
 			$t_issue_view['wiki_link'] = 'wiki.php?id=' . $t_issue_id;
 		}
 

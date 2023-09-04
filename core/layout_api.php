@@ -781,7 +781,7 @@ function layout_print_sidebar( $p_active_sidebar_page = null ) {
 		}
 
 		# Project Wiki
-		if( ON == config_get_global( 'wiki_enable' )  ) {
+		if( ON == config_get_global( 'wiki_enable' ) && access_has_project_level( config_get( 'wiki_show_threshold', $t_current_project, UPDATER ) ) ) {
 			$t_sidebar_items[] = array(
 				'url' => 'wiki.php?type=project&amp;id=' . $t_current_project,
 				'title' => 'wiki',
