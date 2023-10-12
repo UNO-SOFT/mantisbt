@@ -64,5 +64,8 @@ $s_joker_bug_title = 'joker';
 $s_joker_bug_button = 'Joker';
 
 $s_priority_enum_string	= '30:normál,40:magas,60:azonnali';
+if( SYS_COMPANY == 'kobe' ) {
+    $s_priority_enum_string	= '20:alacsony,30:normál,40:magas,60:azonnali';
+}
 
 ?>

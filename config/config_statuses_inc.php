@@ -294,6 +294,9 @@ if( SYS_COMPANY === 'unosoft' ) {
 
 	//$g_priority_enum_string = '10:none,20:low,30:normal,40:high,50:urgent,60:immediate';
 	$g_priority_enum_string	= '30:normal,40:high,60:immediate';
+	if( SYS_COMPANY === 'kobe' ) {
+		$g_priority_enum_string	= '20:low,30:normal,40:high,60:immediate';
+	}
 
 
 	$g_default_notify_flags = array(
