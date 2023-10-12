@@ -57,7 +57,7 @@ if ( substr(dirname(__FILE__), 0, 5) === '/home' ) {
 		define('SYS_FLAVOR', 'dev');
 	} else {
 		if( $t_chunks[2] == 'aegon' ) {
-			define('SYS_COMPANY', 'aegon' );
+			define('SYS_COMPANY', 'alfa' );
 		} else {
 			define('SYS_COMPANY', $t_chunks[2]);
 		}
