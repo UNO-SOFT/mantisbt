@@ -281,7 +281,7 @@ if( SYS_COMPANY === 'unosoft' ) {
 	} elseif( SYS_COMPANY === 'cig' ) {
 		$g_projection_enum_string = '10:support,20:error,50:order,53:data_modification,54:education,55:consulting';
 	} elseif( SYS_COMPANY === 'kobe' ) {
-		$g_projection_enum_string = '10:support,20:error,50:order,54:education';
+		$g_projection_enum_string = '10:support,20:error,50:order,54:education,55:consulting';
 	} else {
 		$g_projection_enum_string = '10:support,20:error,50:order,54:education,55:consulting';
 	}
