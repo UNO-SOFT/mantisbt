@@ -43,6 +43,7 @@
  * @author Atrol
  * @author Ayonik
  * @author Campmaster
+ * @author Cupkake4Yoshi
  * @author Das Schäfchen
  * @author Diebuche
  * @author Erdemaslancan
@@ -773,6 +774,7 @@ $s_reset_password_msg2 = 'Passwort zurücksetzen setzt ein leeres Passwort.';
 $s_show_all_users = 'ALLE';
 $s_users_unused = 'UNBENUTZT';
 $s_users_new = 'NEU';
+$s_email_not_unique = 'E-Mail-Adresse ist mindestens mit einem weiteren Benutzer-Account assoziiert';
 $s_account_reset_msg = 'Bestätigungsnachricht wurde an Ihre E-Mail-Adresse geschickt …';
 $s_account_reset_msg2 = 'Leeres Passwort wurde gesetzt …';
 $s_account_unlock_msg = 'Das Benutzerkonto wurde entsperrt';
@@ -1406,7 +1408,6 @@ $MANTIS_ERROR[ERROR_SESSION_VAR_NOT_FOUND] = 'Session-Variable „%1$s“ wurde 
 $MANTIS_ERROR[ERROR_SESSION_NOT_VALID] = 'Ihre Sitzung ist ungültig geworden.';
 $MANTIS_ERROR[ERROR_FORM_TOKEN_INVALID] = 'Ungültiges Sicherheitstoken zum Formular. Dies kann durch einen Sitzungsablauf oder durch versehentliches doppeltes Speichern des Formulars verursacht worden sein.';
 $MANTIS_ERROR[ERROR_CRYPTO_MASTER_SALT_INVALID] = 'Aus Sicherheitsgründen steht MantisBT nicht zur Verfügung, wenn $g_crypto_master_salt in config_inc.php nicht korrekt gesetzt oder kürzer als 16 Zeichen lang ist.';
-$MANTIS_ERROR[ERROR_CRYPTO_CAN_NOT_GENERATE_STRONG_RANDOMNESS] = 'Es konnte kein Treiber / Quelle für sichere Zufallszahlen zur Verschlüsselung gefunden werden.';
 $MANTIS_ERROR[ERROR_INVALID_REQUEST_METHOD] = 'Auf diese Seite kann nicht mit dieser Methode zugegriffen werden.';
 $MANTIS_ERROR[ERROR_INVALID_SORT_FIELD] = 'Ungültiges Sortierfeld.';
 $MANTIS_ERROR[ERROR_INVALID_DATE_FORMAT] = 'Ungültiges Datumsformat';

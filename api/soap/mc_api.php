@@ -522,7 +522,7 @@ function mci_project_get( $p_project_id, $p_lang, $p_detail ) {
  * @return true: offline, false: online
  */
 function mci_is_mantis_offline() {
-	$t_offline_file = dirname( dirname( __FILE__ ) ) . DIRECTORY_SEPARATOR . 'mantis_offline.php';
+	$t_offline_file = dirname( __FILE__, 3 ) . DIRECTORY_SEPARATOR . 'mantis_offline.php';
 	return file_exists( $t_offline_file );
 }
 
@@ -1108,7 +1108,7 @@ function mci_project_version_as_array( array $p_version ) {
  * @param integer $p_issue_id The id of the issue.
  * @param array   $p_note     A note as passed to the soap api methods.
  *
- * @return String the string time entry to be added to the bugnote, in 'HH:mm' format
+ * @return string the string time entry to be added to the bugnote, in 'HH:mm' format
  */
 function mci_get_time_tracking_from_note( $p_issue_id, array $p_note ) {
 	if( !access_has_bug_level( config_get( 'time_tracking_view_threshold' ), $p_issue_id ) ) {

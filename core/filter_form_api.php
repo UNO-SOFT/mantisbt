@@ -2436,7 +2436,7 @@ function print_filter_project_id( array $p_filter = null ) {
  * @param array $p_filter	Filter array
  * @return void
  */
-function print_filter_values_show_projection( array $p_filter ) {
+function print_filter_values_projection( array $p_filter ) {
 	$t_filter = $p_filter;
 	$t_output = '';
 	$t_any_found = false;
@@ -2473,7 +2473,7 @@ function print_filter_values_show_projection( array $p_filter ) {
  * @param array $p_filter Filter array
  * @return void
  */
-function print_filter_show_projection( array $p_filter = null ) {
+function print_filter_projection( array $p_filter = null ) {
 	global $g_filter;
 	if( null === $p_filter ) {
 		$p_filter = $g_filter;
@@ -2765,6 +2765,15 @@ function filter_form_draw_inputs( $p_filter, $p_for_screen = true, $p_static = f
 			null /* class */,
 			'show_resolution_filter_target' /* content id */
 			));
+	if( ON == config_get( 'enable_projection' ) ) {
+		$t_row2->add_item( new TableFieldsItem(
+				$get_field_header( 'projection_filter', lang_get( 'projection' ) ),
+				filter_form_get_input( $t_filter, 'projection', $t_show_inputs ),
+				1 /* colspan */,
+				null /* class */,
+				'projection_filter_target' /* content id */
+				));
+	}
 	$t_row2->add_item( new TableFieldsItem(
 			$get_field_header( 'show_projection_filter', lang_get( 'projection' ) ),
 			filter_form_get_input( $t_filter, 'show_projection', $t_show_inputs ),

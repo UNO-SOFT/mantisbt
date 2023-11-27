@@ -31,7 +31,7 @@ error_reporting( E_ALL );
 # and plugins will not be loaded.
 define( 'MANTIS_MAINTENANCE_MODE', true );
 
-require_once( dirname( dirname( __FILE__ ) ) . '/core.php' );
+require_once( dirname( __FILE__, 2 ) . '/core.php' );
 require_api( 'install_helper_functions_api.php' );
 require_api( 'crypto_api.php' );
 $g_error_send_page_header = false; # bypass page headers in error handler
@@ -317,7 +317,7 @@ print_test( 'Checking if safe mode is enabled for install script',
 	);
 
 	foreach( $t_config_files as $t_file => $t_action ) {
-		$t_dir = dirname( dirname( __FILE__ ) ) . '/';
+		$t_dir = dirname( __FILE__, 2 ) . '/';
 		if( substr( $t_file, 0, 3 ) == 'mc_' ) {
 			$t_dir .= 'api/soap/';
 		}
@@ -1228,13 +1228,8 @@ if( 5 == $t_install_state ) {
 	# Generating the config_inc.php file
 
 	# Automatically generate a strong master salt/nonce for MantisBT
-	# cryptographic purposes. If a strong source of randomness is not
-	# available the user will have to manually set this value post
-	# installation.
-	$t_crypto_master_salt = crypto_generate_random_string( 32 );
-	if( $t_crypto_master_salt !== null ) {
-		$t_crypto_master_salt = base64_encode( $t_crypto_master_salt );
-	}
+	# cryptographic purposes.
+	$t_crypto_master_salt = base64_encode( random_bytes( 32 ) );
 
 	$t_config = '<?php' . PHP_EOL
 		. '$g_hostname               = \'' . addslashes( $f_hostname ) . '\';' . PHP_EOL
@@ -1296,12 +1291,6 @@ if( 5 == $t_install_state ) {
 	?>
 </tr>
 <?php
-	if( $t_crypto_master_salt === null ) {
-		print_test( 'Setting Cryptographic salt in config file', false, false,
-					'Unable to find a random number source for cryptographic purposes. You will need to edit ' .
-					$t_config_filename . ' and set a value for $g_crypto_master_salt manually' );
-	}
-
 	if( true == $t_write_failed ) {
 ?>
 <tr>

@@ -25,7 +25,7 @@
  */
 
 
-$t_root_path = dirname( dirname( dirname( __FILE__ ) ) ) . DIRECTORY_SEPARATOR;
+$t_root_path = dirname( __FILE__, 3 ) . DIRECTORY_SEPARATOR;
 
 # MantisBT constants
 require_once ( $t_root_path . DIRECTORY_SEPARATOR . 'core/constant_inc.php' );
@@ -99,16 +99,13 @@ class SoapBase extends PHPUnit\Framework\TestCase {
 	/**
 	 * @var array Soap Client Options Array
 	 */
-	private   $defaultSoapClientOptions = array(  'trace'      => true,
-												  'exceptions' => true,
-												  'cache_wsdl' => WSDL_CACHE_NONE
-											   );
+	private $defaultSoapClientOptions;
 
 	/**
 	 * setUp
 	 * @return void
 	 */
-	protected function setUp() {
+	protected function setUp(): void {
 		if( empty( $GLOBALS['MANTIS_TESTSUITE_SOAP_ENABLED'] ) ) {
 			$this->markTestSkipped( 'The Soap tests are disabled.' );
 		}
@@ -116,6 +113,12 @@ class SoapBase extends PHPUnit\Framework\TestCase {
 		$t_wsdl = $GLOBALS['MANTIS_TESTSUITE_SOAP_HOST'] ?? '';
 		$this->assertTrue( !empty( $t_wsdl ),
 			"You must define 'MANTIS_TESTSUITE_SOAP_HOST' in your bootstrap file"
+		);
+
+		$this->defaultSoapClientOptions = array(
+			'trace'      => true,
+			'exceptions' => true,
+			'cache_wsdl' => WSDL_CACHE_NONE,
 		);
 
 		$this->client = new SoapClient( $t_wsdl,
@@ -143,7 +146,7 @@ class SoapBase extends PHPUnit\Framework\TestCase {
 	 * tearDown
 	 * @return void
 	 */
-	protected function tearDown() {
+	protected function tearDown(): void {
 		foreach ( $this->versionIdsToDelete as $t_version_id_to_delete ) {
 			$this->client->mc_project_version_delete( $this->userName, $this->password, $t_version_id_to_delete );
 		}
