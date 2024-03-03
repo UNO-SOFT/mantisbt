@@ -39,6 +39,9 @@ if ( substr(dirname(__FILE__), 0, 5) === '/home' ) {
 	} else if ( $t_chunks[2] === 'aegon' ) {
 		define('SYS_COMPANY', 'alfa' );
 		define('SYS_FLAVOR', $t_chunks[3] );
+	} else if ( $t_chunks[2] === 'waberer' ) {
+		define('SYS_COMPANY', 'granit' );
+		define('SYS_FLAVOR', $t_chunks[3] );
 	} else {
 		define('SYS_COMPANY', $t_chunks[2] );
 		define('SYS_FLAVOR', $t_chunks[3] );
@@ -51,6 +54,8 @@ if ( substr(dirname(__FILE__), 0, 5) === '/home' ) {
 	if ( substr_compare( $t_chunks[2], "_dev", -4 ) === 0 ) {
 		if( substr($t_chunks[2], 0, -4) === 'aegon' ) {
 			define('SYS_COMPANY', 'alfa' );
+		} else if( substr($t_chunks[2], 0, -4) === 'waberer' ) {
+			define('SYS_COMPANY', 'granit' );
 		} else { 
 			define('SYS_COMPANY', substr($t_chunks[2], 0, -4) );
 		}
@@ -58,6 +63,8 @@ if ( substr(dirname(__FILE__), 0, 5) === '/home' ) {
 	} else {
 		if( $t_chunks[2] == 'aegon' ) {
 			define('SYS_COMPANY', 'alfa' );
+		} else if( $t_chunks[2] == 'aegon' ) {
+			define('SYS_COMPANY', 'granit' );
 		} else {
 			define('SYS_COMPANY', $t_chunks[2]);
 		}
@@ -82,7 +89,7 @@ $g_preview_text_extensions = array_merge( $g_preview_text_extensions, array( 'tx
 
 define('SYS_COMPANY_NAME',
 	SYS_COMPANY == 'kobe' ? 'KÖBE'
-	: (SYS_COMPANY == 'waberer' ? 'Wáberer'
+	: (SYS_COMPANY == 'waberer' || SYS_COMPANY == 'granit' ? 'Gránit'
 	: strtoupper(SYS_COMPANY)));
 //echo SYS_FLAVOR.'%'.SYS_COMPANY;
 
@@ -395,6 +402,8 @@ if( SYS_COMPANY == 'tir' ) {
 
 if( SYS_COMPANY === 'alfa' ) {
 	$g_session_key = 'MantisBT-aegon-'.SYS_FLAVOR;
+} else if( SYS_COMPANY === 'granit' ) {
+	$g_session_key = 'MantisBT-waberer-'.SYS_FLAVOR;
 } else {
 	$g_session_key = 'MantisBT-'.SYS_COMPANY.'-'.SYS_FLAVOR;
 }
