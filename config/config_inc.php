@@ -438,7 +438,15 @@ if( SYS_COMPANY == 'pcs' || SYS_COMPANY == 'pp' ) {
 $g_backward_year_count = 1;
 $g_forward_year_count = 1;
 
-$g_path = preg_replace('/^http:/', 'https:', $g_path);
+// * Full URL to your installation as seen from the web browser.
+if( $g_path ) {
+	$g_path = preg_replace('/^http:/', 'https:', $g_path);
+} else {
+	$g_path = 'https://www.unosoft.hu/mantis/' . 
+		SYS_COMPANY . 
+		( SYS_FLAVOR == 'dev' ? '_dev' : '' ) .
+		'/';
+}
 
 #$g_min_refresh_delay	= 1;
 #$g_default_refresh_delay				= 10;
