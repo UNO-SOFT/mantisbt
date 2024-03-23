@@ -140,12 +140,12 @@ if ( strcmp(SYS_FLAVOR, 'prd') != 0 ) { //nem PRD
 }
 
 $g_log_level = LOG_NONE | LOG_EMAIL | LOG_EMAIL_RECIPIENT | LOG_AJAX | LOG_LDAP;
-//$g_log_destination = 'page:';
-$g_show_timer = OFF;
-$g_show_version = OFF;
+// $g_log_destination = 'page:';
+// $g_show_timer = OFF;
+// $g_show_version = OFF;
 
 define( 'MAX_EVENTS', 5 );
-$g_my_view_bug_count = 30;
+$g_my_view_bug_count = 40;
 
 $g_my_view_boxes = array(
 	'assigned'      => '2',
