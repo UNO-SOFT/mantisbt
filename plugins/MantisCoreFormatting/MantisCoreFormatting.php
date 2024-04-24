@@ -170,6 +170,9 @@ class MantisCoreFormattingPlugin extends MantisFormattingPlugin {
 		if( null === $s_markdown ) {
 			$s_markdown = plugin_config_get( 'process_markdown' );
 		}
+		if( ON == $s_markdown && substr( $t_string, 0, 4 ) == '#MD#' ) {
+			$t_string = substr( $t_string, 4 );
+		}
 
 		if( ON == $s_text ) {
 			$t_string = $this->processText( $t_string );
