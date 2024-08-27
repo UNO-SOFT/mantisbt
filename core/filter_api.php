@@ -84,6 +84,8 @@ require_api( 'utility_api.php' );
 require_api( 'version_api.php' );
 require_api( 'filter_form_api.php' );
 
+use Mantis\Exceptions\ClientException;
+
 /**
  * Filter array for the filter in use through view_all_bug_page.
  *
@@ -2377,8 +2379,13 @@ function filter_gpc_get( array $p_filter = null ) {
 function filter_get_visible_sort_properties_array( array $p_filter, $p_columns_target = COLUMNS_TARGET_VIEW_PAGE ) {
 	# get visible columns
 	$t_visible_columns = helper_get_columns_to_view( $p_columns_target );
-	# filter out those that ar not sortable
+	# filter out those that are not sortable
 	$t_visible_columns = array_filter( $t_visible_columns, 'column_is_sortable' );
+
+	# Special handling for overdue column, which is equivalent to sorting by due_date
+	if( in_array( 'overdue', $t_visible_columns ) & !in_array( 'due_date', $t_visible_columns ) ) {
+		$t_visible_columns[] = 'due_date';
+	}
 
 	$t_sort_fields = explode( ',', $p_filter[FILTER_PROPERTY_SORT_FIELD_NAME] );
 	$t_dir_fields = explode( ',', $p_filter[FILTER_PROPERTY_SORT_DIRECTION] );
@@ -2573,17 +2580,20 @@ function filter_get_included_projects( array $p_filter, $p_project_id = null, $p
 }
 
 /**
- * Returns a filter array structure for the given filter_id
+ * Returns a filter array structure for the given filter_id.
+ *
  * A default value can be provided to be used when the filter_id doesn't exists
- * or is not accessible
+ * or is not accessible.
  *
- *  You may pass in any array as a default (including null) but if
- *  you pass in *no* default then an error will be triggered if the filter
- *  cannot be found
+ * You may pass in any array as a default (including null) but if
+ * you pass in *no* default then an error will be triggered if the filter
+ * cannot be found.
  *
- * @param integer $p_filter_id Filter id
- * @param array $p_default     A filter array to return when id is not found
- * @return array	A filter array
+ * @param integer $p_filter_id Filter id.
+ * @param array   $p_default   A filter array to return when id is not found.
+ *
+ * @return array A filter array
+ * @throws ClientException
  */
 function filter_get( $p_filter_id, array $p_default = null ) {
 	# if no default was provided, we will trigger an error if not found
@@ -2594,14 +2604,17 @@ function filter_get( $p_filter_id, array $p_default = null ) {
 	# If value is false, it either doesn't exists or is not accessible
 	if( !$t_filter_string ) {
 		if( $t_trigger_error ) {
-			error_parameters( $p_filter_id );
-			trigger_error( ERROR_FILTER_NOT_FOUND, ERROR );
+			throw new ClientException(
+				"Filter id '$p_filter_id' not found",
+				ERROR_FILTER_NOT_FOUND,
+				[$p_filter_id]
+			);
 		} else {
 			return $p_default;
 		}
 	}
 	$t_filter = filter_deserialize( $t_filter_string );
-	# If the unserialez data is not an array, the some error happened, eg, invalid format
+	# If the unserialized data is not an array, then some error happened, eg, invalid format
 	if( !is_array( $t_filter ) ) {
 		# Don't throw error, otherwise the user could not recover navigation easily
 		return filter_get_default();
