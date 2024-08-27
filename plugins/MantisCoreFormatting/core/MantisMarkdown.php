@@ -104,6 +104,8 @@ class MantisMarkdown extends Parsedown
 		# Text processing converts special character to entity name
 		# Make sure to restore "&gt;" entity name to its characted result ">"
 		$p_text = str_replace( "&gt;", ">", $p_text );
+		# and >, too
+		$p_text = str_replace( "&lt;", "<", $p_text );
 
 		return self::$mantis_markdown->text( $p_text );
 	}
