@@ -277,14 +277,16 @@ if( SYS_COMPANY == 'unosoft' ) {
     $g_time_tracking_stopwatch = OFF;
 
 } else {
-	if( SYS_COMPANY == 'aegon' || SYS_COMPANY == 'alfa' ) {
+	if( SYS_COMPANY == 'alfa' ) {
 	    $g_view_issues_page_columns[] = 'custom_CD3'; 
 	    $g_print_issues_page_columns[] = 'custom_CD3';
 	}
 
 	$t_idx = array_search( 'severity', $g_view_issues_page_columns );
 	if( $t_idx >= 0 ) {
-		array_splice( $g_view_issues_page_columns, $t_idx, 1, array( 'projection' ) );
+		array_splice( $g_view_issues_page_columns, $t_idx, 
+			( SYS_COMPANY == 'alfa' ? 0 : 1 ), 
+			array( 'projection' ) );
 	} else {
 	    $g_view_issues_page_columns[] = 'projection';
 	}
@@ -316,6 +318,9 @@ if( SYS_COMPANY == 'unosoft' ) {
         'tags',
         'view_state',
     );
+    if( SYS_COMPANY == 'alfa' ) {
+	    $g_bug_report_page_fields[] = 'severity';
+    }
 
     $g_bug_view_page_fields = array(
         'additional_info',
@@ -345,6 +350,9 @@ if( SYS_COMPANY == 'unosoft' ) {
         'target_version',
         'view_state',
     );
+    if( SYS_COMPANY == 'alfa' ) {
+	    $g_bug_view_page_fields[] = 'severity';
+    }
 
     $g_bug_update_page_fields = array(
         'additional_info',
@@ -372,6 +380,9 @@ if( SYS_COMPANY == 'unosoft' ) {
         'target_version',
         'view_state',
     );
+    if( SYS_COMPANY == 'alfa' ) {
+	    $g_bug_update_page_fields[] = 'severity';
+    }
 
     $g_time_tracking_enabled = ON;
     $g_time_tracking_stopwatch = ON;
