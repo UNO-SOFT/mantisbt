@@ -25,7 +25,8 @@ if( SYS_COMPANY == 'unosoft' ) {
         $s_status_enum_string = '10:új,25:ajánlat kérés,27:tisztázás,30:ajánlat,40:elfogadva,50:folyamatban,55:kérdés,60:teszt,70:teszt&nbsp;ok,80:átadva,85:élesre tehető,90:lezárva,99:joker';
     }
     $s_resolution_enum_string = '10:nyitott,20:kijavítva,21:storno,29:végrehajtva,30:újranyitva,40:reprodukálhatatlan,50:javíthatatlan,60:másolat,70:nem&nbsp;kell változtatni,80:felfüggesztve,90:nem lesz kijavítva';
-    $s_severity_enum_string = '10:kérés,50:hiba';
+// $s_severity_enum_string = '10:kérés,20:triviális,30:szöveghiba,40:zavar,50:apró hiba,60:nagyobb hiba,70:összeomlás,80:akadály';
+    // $s_severity_enum_string = '10:kérés,50:hiba';
     $s_projection = 'Besorolás';
     $s_projection_enum_string = '10:támogatás,20:hiba,50:megrendelés,51:SPL-Fejlesztés,52:Lekérdezés,53:adatmódosítás,54:oktatás,55:tanácsadás';
 }

@@ -383,6 +383,7 @@ if( SYS_COMPANY == 'unosoft' ) {
     if( SYS_COMPANY == 'alfa' ) {
 	    $g_bug_update_page_fields[] = 'severity';
     }
+	$g_default_bug_severity = 10;
 
     $g_time_tracking_enabled = ON;
     $g_time_tracking_stopwatch = ON;
