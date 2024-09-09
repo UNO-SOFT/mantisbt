@@ -177,6 +177,8 @@ $g_delete_bug_threshold = MANAGER;
 $g_bugnote_user_edit_threshold = UPDATER;
 $g_bugnote_user_delete_threshold = DEVELOPER;
 
+$g_bug_revision_view_threshold = REPORTER;
+
 $g_show_product_version = ON;
 $g_show_version_dates_threshold = REPORTER;
 
