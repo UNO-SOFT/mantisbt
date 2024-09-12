@@ -169,7 +169,7 @@ $g_handle_bug_threshold = REPORTER;
 # de csak priv. rendelgethessen
 $g_update_bug_assign_threshold = UPDATER;
 $g_update_bug_status_threshold = REPORTER;
-$g_update_bug_threshold = UPDATER;
+$g_update_bug_threshold = REPORTER;
 $g_roadmap_update_threshold = DEVELOPER;
 
 $g_delete_attachments_threshold = UPDATER;
