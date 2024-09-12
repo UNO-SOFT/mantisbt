@@ -166,10 +166,10 @@ $g_my_view_boxes_fixed_position = OFF;
 
 # bejelentőnek is lehessen ügye
 $g_handle_bug_threshold = REPORTER;
+$g_update_bug_threshold = REPORTER;
 # de csak priv. rendelgethessen
 $g_update_bug_assign_threshold = UPDATER;
-$g_update_bug_status_threshold = REPORTER;
-$g_update_bug_threshold = REPORTER;
+$g_update_bug_status_threshold = UPDATER;
 $g_roadmap_update_threshold = DEVELOPER;
 
 $g_delete_attachments_threshold = UPDATER;
@@ -181,6 +181,7 @@ $g_bug_revision_view_threshold = REPORTER;
 
 $g_show_product_version = ON;
 $g_show_version_dates_threshold = REPORTER;
+$g_auto_set_status_to_assigned = OFF;
 
 if( SYS_COMPANY == 'unosoft' ) {
 
@@ -410,10 +411,6 @@ $g_accel_redirect = ON;
 
 $g_relationship_graph_enable = ON;
 
-if( SYS_COMPANY == 'tir' ) {
-  $g_update_bug_relationship_threshold = REPORTER;
-}
-
 if( SYS_COMPANY === 'alfa' ) {
 	$g_session_key = 'MantisBT-aegon-'.SYS_FLAVOR;
 } else if( SYS_COMPANY === 'granit' ) {
@@ -439,15 +436,6 @@ $g_set_bug_sticky_threshold = DEVELOPER;
 $g_attachment_print_uploader = ON;
 $g_email_from_is_last_updater = ON;
 $g_default_email_bugnote_limit = 3;
-
-// minden új ügynél minden fejlesztő kapjon emailt
-if( SYS_COMPANY == 'pcs' || SYS_COMPANY == 'pp' ) {
-	if( ! $g_notify_flags ) {
-		$g_notify_flags = $g_default_notify_flags;
-	}
-	$g_notify_flags['new']['threshold_min'] = DEVELOPER;
-	$g_notify_flags['new']['threshold_max'] = ADMINISTRATOR;
-}
 
 $g_backward_year_count = 1;
 $g_forward_year_count = 1;

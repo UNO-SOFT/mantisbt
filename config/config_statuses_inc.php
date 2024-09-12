@@ -78,8 +78,6 @@ if( SYS_COMPANY === 'unosoft' ) {
 		),
 	) );
 
-	$g_auto_set_status_to_assigned = OFF;
-
 } else {
 
 	define('U_NEW', 10);  // uj
@@ -328,9 +326,17 @@ if( SYS_COMPANY === 'unosoft' ) {
 			//'threshold_max' => REPORTER,
 		),
 	) );
-
-	$g_auto_set_status_to_assigned = OFF;
 }
+
+// minden új ügynél minden fejlesztő kapjon emailt
+if( SYS_COMPANY == 'pcs' || SYS_COMPANY == 'pp' ) {
+	if( ! $g_notify_flags ) {
+		$g_notify_flags = $g_default_notify_flags;
+	}
+	$g_notify_flags['new']['threshold_min'] = DEVELOPER;
+	$g_notify_flags['new']['threshold_max'] = ADMINISTRATOR;
+}
+
 
 $g_bug_reopen_status = U_ASSIGNED;
 
@@ -338,10 +344,6 @@ $g_bug_reopen_resolution = REOPENED;
 $g_reopen_bug_threshold = DEVELOPER;
 $g_allow_reporter_reopen = OFF;
 $g_allow_reporter_close = ON;
-
-$g_use_persistent_connections = ON;
-
-$g_relationship_graph_enable = ON;
 
 $g_default_email_on_new = OFF;
 $g_default_email_on_assigned = OFF;
@@ -358,7 +360,6 @@ $g_bug_readonly_status_threshold = U_CLOSED;
 $g_update_readonly_bug_threshold = DEVELOPER;
 $g_private_bug_threshold = UPDATER;
 $g_private_bugnote_threshold = UPDATER;
-$g_update_bug_status_threshold = REPORTER;
 $g_set_view_status_threshold = UPDATER;
 $g_change_view_status_threshold = UPDATER;
 
