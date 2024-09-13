@@ -119,7 +119,7 @@ if( SYS_COMPANY === 'unosoft' ) {
 
 	$g_set_status_threshold = array (
 		U_NEW => REPORTER,
-		U_FEEDBACK => UPDATER,  // ilyen nincs
+		// U_FEEDBACK => UPDATER,  // ilyen nincs
 		U_ASK_PROPOSAL => REPORTER,
 		U_PROPOSAL_FEEDBACK => UPDATER,
 		U_PROPOSAL => MANAGER,
