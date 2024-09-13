@@ -167,9 +167,10 @@ $g_my_view_boxes_fixed_position = OFF;
 # bejelentőnek is lehessen ügye
 $g_handle_bug_threshold = REPORTER;
 $g_update_bug_threshold = REPORTER;
+$g_update_bug_status_threshold = REPORTER;  // tisztázás -> ajánlat kérés miatt kell
+
 # de csak priv. rendelgethessen
 $g_update_bug_assign_threshold = UPDATER;
-$g_update_bug_status_threshold = UPDATER;
 $g_roadmap_update_threshold = DEVELOPER;
 
 $g_delete_attachments_threshold = UPDATER;

@@ -81,7 +81,7 @@ if( SYS_COMPANY === 'unosoft' ) {
 } else {
 
 	define('U_NEW', 10);  // uj
-	//define('U_FEEDBACK', 20);  // tajokozodas
+	//define('U_FEEDBACK', 20);  // tajekozodas
 	define('U_ASK_PROPOSAL', 25);  // ajanlat keres
 	define('U_PROPOSAL_FEEDBACK', 27); // tisztazas
 	define('U_PROPOSAL', 30);  // ajanlat
@@ -119,7 +119,7 @@ if( SYS_COMPANY === 'unosoft' ) {
 
 	$g_set_status_threshold = array (
 		U_NEW => REPORTER,
-		//U_FEEDBACK => UPDATER,
+		U_FEEDBACK => UPDATER,  // ilyen nincs
 		U_ASK_PROPOSAL => REPORTER,
 		U_PROPOSAL_FEEDBACK => UPDATER,
 		U_PROPOSAL => MANAGER,
