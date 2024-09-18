@@ -2901,12 +2901,15 @@ function filter_user_can_use_persistent( $p_user_id = null ) {
 
 $g_verziovaltok = array();
 
-function filter_verziovaltok( ) {
+function filter_verziovaltok( $p_only_open = false ) {
 	global $g_verziovaltok;
 	if( count( $g_verziovaltok ) > 0 ) {
 		return $g_verziovaltok;
 	}
 	$t_query = "SELECT id FROM {bug} WHERE (summary LIKE '%erzi_v_lt_%' OR summary like '%erzi_ v_lt_%') AND summary ~ " . db_param();
+	if( $p_only_open ) {
+		$t_query .= " AND status < 90";
+	}
 	$t_result = db_query( $t_query, array( '[0-9]{1,2}[.][0-9]{2}' ) );
 	$t_bug_ids = array();
 	while( $t_row = db_fetch_array( $t_result ) ) {

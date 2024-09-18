@@ -402,6 +402,9 @@ function mc_filter_search_issue_headers( $p_username, $p_password, $p_filter_sea
 	}
 
 	$t_rows = mci_filter_search_get_rows( $t_user_id, $p_filter_search, $p_page_number, $p_per_page);
+	if( ApiObjectFactory::isFault( $t_rows ) ) {
+		return $t_rows;
+	}
 
 	$t_result = array();
 	foreach( $t_rows as $t_issue_data ) {
