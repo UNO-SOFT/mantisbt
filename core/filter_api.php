@@ -2930,7 +2930,10 @@ function filter_custom_field_value( $p_field_id, $p_field_value ) {
 	return $t_bug_ids;
 }
 
+$g_szervezo = null;
+
 function filter_assigned_or_contributor( $p_user_id = null, $p_project_id = null ) {
+	global $g_szervezo;
 	$t_bug_resolved_status_threshold = config_get( 'bug_resolved_status_threshold', null, $p_user_id, $p_project_id );
 
 	$t_user_id = $p_user_id;
@@ -2938,6 +2941,19 @@ function filter_assigned_or_contributor( $p_user_id = null, $p_project_id = null
 		$t_user_id = auth_get_current_user_id();
 	}
 
+	if( !$g_szervezo && $g_szervezo !== 0 ) {
+		db_param_push();
+		$t_query = "SELECT id FROM {custom_field} WHERE name = " . db_param();
+		$t_result = db_query( $t_query, array( 'szervező' ) );
+		while( $t_row = db_fetch_array( $t_result ) ) {
+			if( $t_row && $t_row['id'] ) {
+				 $g_szervezo = (int)$t_row['id'];
+				 break;
+			}
+		}
+	}
+
+	db_param_push();
 	// megrendelés (projection>=50) esetén 
 	//   * árajánlat előtt (status<30) azokat kell mutatni ahol figyelő (monitor);
 	//   * árajánlat elfogadás utáni (status>=40) állapotban azokat akik contributor-ok
@@ -2945,6 +2961,9 @@ function filter_assigned_or_contributor( $p_user_id = null, $p_project_id = null
 		"SELECT A.id, A.last_updated FROM {bug} A WHERE A.status < 90 AND A.status < $t_bug_resolved_status_threshold AND A.handler_id = ",
 		"SELECT A.id, A.last_updated FROM {bug} A JOIN {bug_monitor} B ON B.bug_id = A.id WHERE A.projection >= 50 AND A.status < 30 AND A.status <> 27 AND B.user_id = ",
 	);
+	if( $g_szervezo ) {
+		$t_parts[] = "SELECT A.id, A.last_updated FROM {bug} A JOIN {custom_field_string} B ON B.bug_id = A.id JOIN {user} C ON B.value = C.username WHERE B.field_id = $g_szervezo AND C.id = ";
+	}
 	if( plugin_is_installed( 'Contributors' ) ) {
 		$t_parts[] = "SELECT A.id, A.last_updated FROM {bug} A JOIN ". plugin_table( 'current', 'contributors' ) . " B ON B.bug_id = A.id WHERE A.status < $t_bug_resolved_status_threshold AND A.projection >= 50 AND A.status >= 40 AND A.status <> 55 AND A.status < 80 AND B.user_id = ";
 	} else {
