@@ -2942,13 +2942,13 @@ function filter_assigned_or_contributor( $p_user_id = null, $p_project_id = null
 	//   * árajánlat előtt (status<30) azokat kell mutatni ahol figyelő (monitor);
 	//   * árajánlat elfogadás utáni (status>=40) állapotban azokat akik contributor-ok
 	$t_parts = array(
-		"SELECT A.id FROM {bug} A WHERE A.status < 90 AND A.status < $t_bug_resolved_status_threshold AND A.handler_id = ",
-		"SELECT A.id FROM {bug} A JOIN {bug_monitor} B ON B.bug_id = A.id WHERE A.projection >= 50 AND A.status < 30 AND B.user_id = ",
+		"SELECT A.id, A.last_updated FROM {bug} A WHERE A.status < 90 AND A.status < $t_bug_resolved_status_threshold AND A.handler_id = ",
+		"SELECT A.id, A.last_updated FROM {bug} A JOIN {bug_monitor} B ON B.bug_id = A.id WHERE A.projection >= 50 AND A.status < 30 AND B.user_id = ",
 	);
 	if( plugin_is_installed( 'Contributors' ) ) {
-		$t_parts[] = "SELECT A.id FROM {bug} A JOIN ". plugin_table( 'current', 'contributors' ) . " B ON B.bug_id = A.id WHERE A.status < $t_bug_resolved_status_threshold AND A.projection >= 50 AND A.status >= 40 AND B.user_id = ";
+		$t_parts[] = "SELECT A.id, A.last_updated FROM {bug} A JOIN ". plugin_table( 'current', 'contributors' ) . " B ON B.bug_id = A.id WHERE A.status < $t_bug_resolved_status_threshold AND A.projection >= 50 AND A.projection <> 55 AND A.status >= 40 AND B.user_id = ";
 	} else {
-		$t_parts[] = "SELECT A.id FROM {bug} A JOIN {bug_monitor} B ON B.bug_id = A.id WHERE A.projection >= 50 AND A.status >= 40 AND B.user_id = ";
+		$t_parts[] = "SELECT A.id, A.last_updated FROM {bug} A JOIN {bug_monitor} B ON B.bug_id = A.id WHERE A.projection >= 50 AND A.status >= 40 AND B.user_id = ";
 	}
 	$t_params = array();
 	$t_query = '';
@@ -2963,6 +2963,7 @@ function filter_assigned_or_contributor( $p_user_id = null, $p_project_id = null
 			$t_params[] = $p_project_id;
 		}
 	}
+	$t_query .= "\nORDER BY last_updated DESC";
 	log_event( LOG_FILTERING, 'filter_assigned_or_contributor: ' . $t_query );
 	$t_result = db_query( $t_query, $t_params );
 	$t_bug_ids = array();
