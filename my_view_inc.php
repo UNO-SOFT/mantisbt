@@ -269,7 +269,7 @@ if( $t_box_title === 'vv' || $t_box_title === 'owned' ) {
 			FILTER_PROPERTY_HIDE_STATUS . '=' . $t_bug_resolved_status_threshold . '&' .
 			filter_encode_field_and_value( 'custom_field_' . $t_owned_field_id, $t_current_user_name );
 		// $t_bug_ids = filter_custom_field_value( $t_owned_field_id, $t_current_user_name );
-		$t_bug_ids = filter_assigned_or_contributor( $t_current_user_id, helper_get_current_project() );
+		$t_bug_ids = filter_owned( $t_current_user_id, helper_get_current_project() );
 	}
 	foreach( $t_bug_ids as $t_bug_id ) {
 		if( !bug_is_closed( $t_bug_id ) ) {

@@ -2932,7 +2932,7 @@ function filter_custom_field_value( $p_field_id, $p_field_value ) {
 
 $g_szervezo = null;
 
-function filter_assigned_or_contributor( $p_user_id = null, $p_project_id = null ) {
+function filter_owned( $p_user_id = null, $p_project_id = null ) {
 	global $g_szervezo;
 	$t_bug_resolved_status_threshold = config_get( 'bug_resolved_status_threshold', null, $p_user_id, $p_project_id );
 
@@ -2958,7 +2958,7 @@ function filter_assigned_or_contributor( $p_user_id = null, $p_project_id = null
 	//   * árajánlat előtt (status<30) azokat kell mutatni ahol figyelő (monitor);
 	//   * árajánlat elfogadás utáni (status>=40) állapotban azokat akik contributor-ok
 	$t_parts = array(
-		"SELECT A.id, A.last_updated FROM {bug} A WHERE A.status < 90 AND A.status < $t_bug_resolved_status_threshold AND A.handler_id = ",
+		// "SELECT A.id, A.last_updated FROM {bug} A WHERE A.status < 90 AND A.status < $t_bug_resolved_status_threshold AND A.handler_id = ",
 		"SELECT A.id, A.last_updated FROM {bug} A JOIN {bug_monitor} B ON B.bug_id = A.id WHERE A.projection >= 50 AND A.status < 30 AND A.status <> 27 AND B.user_id = ",
 	);
 	if( $g_szervezo ) {
