@@ -2946,7 +2946,7 @@ function filter_assigned_or_contributor( $p_user_id = null, $p_project_id = null
 		"SELECT A.id, A.last_updated FROM {bug} A JOIN {bug_monitor} B ON B.bug_id = A.id WHERE A.projection >= 50 AND A.status < 30 AND A.status <> 27 AND B.user_id = ",
 	);
 	if( plugin_is_installed( 'Contributors' ) ) {
-		$t_parts[] = "SELECT A.id, A.last_updated FROM {bug} A JOIN ". plugin_table( 'current', 'contributors' ) . " B ON B.bug_id = A.id WHERE A.status < $t_bug_resolved_status_threshold AND A.projection >= 50 AND A.status >= 40 A.status <> 55 AND A.status < 80 AND AND B.user_id = ";
+		$t_parts[] = "SELECT A.id, A.last_updated FROM {bug} A JOIN ". plugin_table( 'current', 'contributors' ) . " B ON B.bug_id = A.id WHERE A.status < $t_bug_resolved_status_threshold AND A.projection >= 50 AND A.status >= 40 A.status <> 55 AND A.status < 80 AND B.user_id = ";
 	} else {
 		$t_parts[] = "SELECT A.id, A.last_updated FROM {bug} A JOIN {bug_monitor} B ON B.bug_id = A.id WHERE A.projection >= 50 AND A.status >= 40 AND A.status <> 55 AND A.status < 80 AND B.user_id = ";
 	}
