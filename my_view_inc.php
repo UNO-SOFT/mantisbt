@@ -275,6 +275,11 @@ if( $t_box_title === 'vv' || $t_box_title === 'owned' ) {
 			$t_rows[] = bug_get( $t_bug_id, false );
 		}
 	}
+} elseif( $t_box_title === 'assigned' ) {
+	$t_bug_ids = filter_assigned_or_contributor( $t_current_user_id, helper_get_current_project() );
+	foreach( $t_bug_ids as $t_bug_id ) {
+		$t_rows[] = bug_get( $t_bug_id, false );
+	}
 } else {
 	$t_rows = filter_get_bug_rows( $f_page_number, $t_per_page, $t_page_count, $t_bug_count, $c_filter[$t_box_title] );
 }
