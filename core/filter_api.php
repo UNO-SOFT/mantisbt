@@ -2930,45 +2930,77 @@ function filter_custom_field_value( $p_field_id, $p_field_value ) {
 	return $t_bug_ids;
 }
 
-$g_szervezo = null;
+$g_szervezo_custom_field_id = null;
+$g_owned_monitor_opt_out = array( 'vkubik' );
+$g_owned_monitor_opt_out_ids = null;
 
 function filter_owned( $p_user_id = null, $p_project_id = null ) {
-	global $g_szervezo;
+	global $g_szervezo_custom_field_id;
 	$t_bug_resolved_status_threshold = config_get( 'bug_resolved_status_threshold', null, $p_user_id, $p_project_id );
 
 	$t_user_id = $p_user_id;
 	if( null === $t_user_id ) {
 		$t_user_id = auth_get_current_user_id();
 	}
+	// $t_access_level = access_get_global_level( $p_user_id );
+	// if( $p_project_id ) {
+	// 	$t_access_level = access_get_project_level( $p_project_id, $t_user_id );
+	// }
+	global $g_owned_monitor_opt_out, $g_owned_monitor_opt_out_ids;
+	if( $g_owned_monitor_opt_out && !$g_owned_monitor_opt_out_ids ) {
+		$g_owned_monior_opt_out_ids = array();
+		foreach( $g_owned_monitor_opt_out as $t_name ) {
+			if( ( $t_id = user_get_id_by_name( $t_name ) ) ) {
+				$g_owned_monitor_opt_out_ids[$t_id] = $t_name;
+			}
+		}
+	}
 
-	if( !$g_szervezo && $g_szervezo !== 0 ) {
+	if( !$g_szervezo_custom_field_id && $g_szervezo_custom_field_id !== 0 ) {
 		db_param_push();
 		$t_query = "SELECT id FROM {custom_field} WHERE name = " . db_param();
 		$t_result = db_query( $t_query, array( 'szervező' ) );
 		while( $t_row = db_fetch_array( $t_result ) ) {
 			if( $t_row && $t_row['id'] ) {
-				 $g_szervezo = (int)$t_row['id'];
+				 $g_szervezo_custom_field_id = (int)$t_row['id'];
 				 break;
 			}
 		}
 	}
 
-	db_param_push();
 	// megrendelés (projection>=50) esetén 
 	//   * árajánlat előtt (status<30) azokat kell mutatni ahol figyelő (monitor);
 	//   * árajánlat elfogadás utáni (status>=40) állapotban azokat akik contributor-ok
-	$t_parts = array(
-		// "SELECT A.id, A.last_updated FROM {bug} A WHERE A.status < 90 AND A.status < $t_bug_resolved_status_threshold AND A.handler_id = ",
-		"SELECT A.id, A.last_updated FROM {bug} A JOIN {bug_monitor} B ON B.bug_id = A.id WHERE A.projection >= 50 AND A.status < 30 AND A.status <> 27 AND B.user_id = ",
-	);
-	if( $g_szervezo ) {
-		$t_parts[] = "SELECT A.id, A.last_updated FROM {bug} A JOIN {custom_field_string} B ON B.bug_id = A.id JOIN {user} C ON B.value = C.username WHERE B.field_id = $g_szervezo AND C.id = ";
+	$t_parts = array();
+	if( !$g_owned_monitor_opt_out_ids || !array_key_exists( $t_user_id, $g_owned_monitor_opt_out_ids ) ) {
+		$t_parts[] = "SELECT A.id, A.last_updated 
+		  FROM {bug} A JOIN {bug_monitor} B ON B.bug_id = A.id 
+		  WHERE NOT EXISTS (SELECT 1 FROM {user} X WHERE X.id = B.user_id AND X.username = 'vkubik') AND
+		        A.projection >= 50 AND 
+		        A.status < 30 AND A.status <> 27 AND 
+		        B.user_id = ";
+	}
+	if( $g_szervezo_custom_field_id ) {
+		$t_parts[] = "SELECT A.id, A.last_updated 
+		 FROM {bug} A JOIN {custom_field_string} B ON B.bug_id = A.id 
+		              JOIN {user} C ON B.value = C.username 
+		 WHERE B.field_id = $g_szervezo_custom_field_id AND 
+		       C.id = ";
 	}
 	if( plugin_is_installed( 'Contributors' ) ) {
-		$t_parts[] = "SELECT A.id, A.last_updated FROM {bug} A JOIN ". plugin_table( 'current', 'contributors' ) . " B ON B.bug_id = A.id WHERE A.status < $t_bug_resolved_status_threshold AND A.projection >= 50 AND A.status >= 40 AND A.status <> 55 AND A.status < 80 AND B.user_id = ";
+		$t_parts[] = "SELECT A.id, A.last_updated 
+		  FROM {bug} A JOIN ". plugin_table( 'current', 'contributors' ) . " B ON B.bug_id = A.id 
+		  WHERE A.projection >= 50 AND 
+		        A.status >= 40 AND A.status <> 55 AND A.status < 80 AND 
+		        B.user_id = ";
 	} else {
-		$t_parts[] = "SELECT A.id, A.last_updated FROM {bug} A JOIN {bug_monitor} B ON B.bug_id = A.id WHERE A.projection >= 50 AND A.status >= 40 AND A.status <> 55 AND A.status < 80 AND B.user_id = ";
+		$t_parts[] = "SELECT A.id, A.last_updated 
+		  FROM {bug} A JOIN {bug_monitor} B ON B.bug_id = A.id 
+		  WHERE A.projection >= 50 AND 
+		        A.status >= 40 AND A.status <> 55 AND A.status < 80 AND 
+		        B.user_id = ";
 	}
+	db_param_push();
 	$t_params = array();
 	$t_query = '';
 	foreach( $t_parts as $t_part ) {
