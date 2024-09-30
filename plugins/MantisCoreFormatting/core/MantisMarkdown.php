@@ -163,35 +163,6 @@ class MantisMarkdown extends Parsedown
 	}
 
 	/**
-	 * Convert a field that supports multiple lines form markdown to html.
-	 * @param string $p_text The text to convert.
-	 * @return string  The html text.
-	 */
-	public static function convert_text( $p_text ) {
-		self::init();
-
-		# Enabled quote conversion
-		# Text processing converts special character to entity name
-		# Make sure to restore "&gt;" entity name to its characted result ">"
-		$p_text = str_replace( "&gt;", ">", $p_text );
-		# and >, too
-		$p_text = str_replace( "&lt;", "<", $p_text );
-
-		return self::$mantis_markdown->text( $p_text );
-	}
-
-	/**
-	 * Convert a field that supports a single line only form markdown to html.
-	 * @param string $p_text The text to convert.
-	 * @return string  The html text.
-	 */
-	public static function convert_line( $p_text ) {
-		self::init();
-		return self::$mantis_markdown->line( $p_text );
-	}
-
-	/**
-	 * Customize the blockHeader markdown
 	 * Convert an email addresses in unmarked text into a link.
 	 *
 	 * Unlike unmarked URLs, unmarked email addresses are not
