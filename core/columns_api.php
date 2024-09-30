@@ -72,14 +72,28 @@ require_api( 'string_api.php' );
  */
 function columns_filter_disabled( array $p_columns ) {
 	$t_columns = array();
-	$t_enable_profiles = ( config_get( 'enable_profiles' ) == ON );
+	$t_enable_profiles = null;
+	$t_enable_due_date = null;
 
 	foreach ( $p_columns as $t_column ) {
 		switch( $t_column ) {
 			case 'os':
 			case 'os_build':
 			case 'platform':
+				if( $t_enable_profiles == null ) {
+					$t_enable_profiles = config_get( 'enable_profiles' ) == ON;
+				}
 				if( ! $t_enable_profiles ) {
+					continue 2;
+				}
+				break;
+
+			case 'due_date':
+			case 'overdue':
+				if ( $t_enable_due_date == null ) {
+					$t_enable_due_date = access_has_project_level( config_get( 'due_date_view_threshold' ) );
+				}
+				if( ! $t_enable_due_date ) {
 					continue 2;
 				}
 				break;
@@ -189,7 +203,7 @@ function columns_get_plugin_columns() {
 
 /**
  * Get all columns for existing custom_fields
- * @return string Array of column names
+ * @return array Array of column names
  */
 function columns_get_custom_fields() {
 	static $t_col_names = null;
@@ -970,7 +984,7 @@ function print_column_title_summary( $p_sort, $p_dir, $p_columns_target = COLUMN
  */
 function print_column_title_bugnotes_count( $p_sort, $p_dir, $p_columns_target = COLUMNS_TARGET_VIEW_PAGE ) {
 	echo '<th class="column-bugnotes-count">';
-	print_icon( 'fa-comments', 'blue' );
+	print_icon( 'fa-comments', 'blue', lang_get( 'bugnotes_count' ) );
 	echo '</th>';
 }
 

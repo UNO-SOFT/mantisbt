@@ -286,7 +286,7 @@ function string_sanitize_url( $p_url, $p_return_absolute = false ) {
 		foreach( $t_pairs as $t_key => $t_value ) {
 			if( is_array( $t_value ) ) {
 				foreach( $t_value as $t_value_each ) {
-					$t_clean_pairs[] .= rawurlencode( $t_key ) . '[]=' . rawurlencode( $t_value_each );
+					$t_clean_pairs[] = rawurlencode( $t_key ) . '[]=' . rawurlencode( $t_value_each );
 				}
 			} else {
 				$t_clean_pairs[] = rawurlencode( $t_key ) . '=' . rawurlencode( $t_value );
@@ -707,7 +707,7 @@ function string_get_bugnote_view_link( $p_bug_id, $p_bugnote_id, $p_detail_info 
 
 		$t_link .= '>' . bug_format_id( $t_bug_id ) . ':' . bugnote_format_id( $p_bugnote_id ) . '</a>';
 	} else {
-		$t_link = bugnote_format_id( $t_bug_id ) . ':' . bugnote_format_id( $p_bugnote_id );
+		$t_link = bug_format_id( $t_bug_id ) . ':' . bugnote_format_id( $p_bugnote_id );
 	}
 
 	return $t_link;
