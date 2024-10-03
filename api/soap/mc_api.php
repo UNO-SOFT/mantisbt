@@ -935,7 +935,7 @@ function mci_get_category_id( $p_category, $p_project_id ) {
 	$t_category_id = $fn_get_category_id_internal( $p_category, $p_project_id );
 	if( $t_category_id == 0 ) {
 		# Category not found or unspecified
-		if( !isset( $p_category ) ) {
+		if( !isset( $p_category ) || $p_category == '' ) {
 			if( !config_get( 'allow_no_category' ) ) {
 				throw new ClientException(
 					'Category field must be supplied.',

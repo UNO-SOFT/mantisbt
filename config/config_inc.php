@@ -309,7 +309,7 @@ if( SYS_COMPANY == 'unosoft' ) {
     $g_bug_report_page_fields = array(
         'additional_info',
         'attachments',
-        'category_id',
+        //'category_id',
         'due_date',
         'handler',
 		'platform',
@@ -329,7 +329,7 @@ if( SYS_COMPANY == 'unosoft' ) {
     $g_bug_view_page_fields = array(
         'additional_info',
         'attachments',
-        'category_id',
+        //'category_id',
         'date_submitted',
         'description',
         'due_date',
@@ -360,7 +360,7 @@ if( SYS_COMPANY == 'unosoft' ) {
 
     $g_bug_update_page_fields = array(
         'additional_info',
-        'category_id',
+        //'category_id',
         'date_submitted',
         'description',
         'due_date',
