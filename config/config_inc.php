@@ -521,6 +521,11 @@ $g_wiki_engine_url = 'https://wiki.unosoft.hu/';
 
 $g_enable_project_documentation = ON;
 
+$g_font_family = 'Atkinson Hyperlegible';
+$g_font_family_choices[] = 'Atkinson Hyperlegible';
+$g_font_family_choices[] = 'Go';
+$g_font_family_choices[] = 'Intel One Mono';
+
 $t_fn = dirname(__FILE__) . '/config_statuses_inc.php';
 if( file_exists( $t_fn ) ) {
 	require_once( $t_fn );
