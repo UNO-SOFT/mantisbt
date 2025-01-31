@@ -586,7 +586,16 @@ if( $t_flags['description_show'] && isset( $t_issue['description'] ) ) {
 if( $t_flags['steps_to_reproduce_show'] && isset( $t_issue['steps_to_reproduce'] ) ) {
 	echo '<tr>';
 	echo '<th class="bug-steps-to-reproduce category">', lang_get( 'steps_to_reproduce' ), '</th>';
-	echo '<td class="bug-steps-to-reproduce" colspan="5">', string_display_links( $t_issue['steps_to_reproduce'] ), '</td>';
+	echo '<td class="bug-steps-to-reproduce" colspan="5">';
+	$t_text = string_display_links( $t_issue['steps_to_reproduce'] );
+	$i = strpos( $t_text, ' ', 1000 );
+	if( $i >= 1000 ) {
+		echo "<details><summary>" . substr( $t_text, 0, $i ) .
+			"\n\u{2326}\n</summary>" . substr( $t_text, $i ) . "</details>";
+	} else {
+		echo $t_text;
+	}
+	echo '</td>';
 	echo '</tr>';
 }
 
