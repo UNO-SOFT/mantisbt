@@ -311,13 +311,15 @@ function print_user_option_list( $p_user_id, $p_project_id = null, $p_access = A
 		$t_users[$p_user_id] = $t_row;
 	}
 
-	$t_lkardos = user_get_id_by_name( 'lkardos' );
-	if( $t_lkardos ) {
-		$t_users[$t_lkardos] = array(
-			'id' => $t_lkardos,
-			'username' => 'lkardos',
-			'realname' => 'lkardos',
-		);
+	if( time() < 1743705327 ) {  // 2025-04-03
+		$t_lkardos = user_get_id_by_name( 'lkardos' );
+		if( $t_lkardos ) {
+			$t_users[$t_lkardos] = array(
+				'id' => $t_lkardos,
+				'username' => 'lkardos',
+				'realname' => 'lkardos',
+			);
+		}
 	}
 
 	$t_display = array();
