@@ -15,6 +15,37 @@
   "basePath": "/api/rest",
   "paths": {
     "/issues": {
+      "post": {
+        "summary": "Create an issue",
+        "tags": [
+          "Issues"
+        ],
+        "operationId": "issueAdd",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "The issue to add.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Issue"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Issue successfully created"
+          },
+          "403": {
+            "description": "Access denied"
+          },
+          "503": {
+            "description": "Mantis Offline"
+          }
+        }
+      }
+    },
+	 "/issues/:id": {
       "get": {
         "summary": "Get issue details",
         "tags": [
@@ -37,35 +68,6 @@
             "schema": {
               "$ref": "#/definitions/CreateIssueResponse"
             }
-          },
-          "403": {
-            "description": "Access denied"
-          },
-          "503": {
-            "description": "Mantis Offline"
-          }
-        }
-      },
-      "post": {
-        "summary": "Create an issue",
-        "tags": [
-          "Issues"
-        ],
-        "operationId": "issueAdd",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "description": "The issue to add.",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/Issue"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Issue successfully created"
           },
           "403": {
             "description": "Access denied"
@@ -136,6 +138,7 @@
         }
       }
     },
+	
     "/issues/:id/notes": {
       "get": {
         "summary": "Get note details",
@@ -248,6 +251,7 @@
         }
       }
     },
+	
     "/issues/:id/files": {
       "get": {
         "summary": "Get file details",
