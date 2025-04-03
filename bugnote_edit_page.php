@@ -68,6 +68,9 @@ require_api( 'lang_api.php' );
 require_api( 'print_api.php' );
 require_api( 'string_api.php' );
 
+require_js( 'marked.min.js' );
+require_js( 'note_edit.js' );
+
 $f_bugnote_id = gpc_get_int( 'bugnote_id' );
 $t_bug_id = bugnote_get_field( $f_bugnote_id, 'bug_id' );
 
@@ -132,6 +135,7 @@ $t_bugnote_class = bugnote_get_field( $f_bugnote_id, 'view_state' ) == VS_PUBLIC
 	<td colspan="2">
 		<textarea class="form-control <?php echo $t_bugnote_class; ?>" cols="80" rows="10" name="bugnote_text"
 		id="bugnote_text"><?php echo $t_bugnote_text ?></textarea>
+		<div name="bugnote_text_md" id="bugnote_text_md"></div>
 	</td>
 </tr>
 <?php if( config_get( 'time_tracking_enabled' ) ) { ?>

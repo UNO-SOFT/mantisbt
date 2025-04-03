@@ -71,6 +71,9 @@ require_api( 'version_api.php' );
 
 require_css( 'status_config.php' );
 
+require_js( 'marked.min.js' );
+require_js( 'note_edit.js' );
+
 $f_bug_id = gpc_get_int( 'bug_id' );
 $f_reporter_edit = gpc_get_bool( 'reporter_edit' );
 
@@ -667,6 +670,7 @@ if( $t_show_description ) {
 	echo '<textarea class="form-control" required ', helper_get_tab_index(),
 		' cols="80" rows="10" id="description" name="description">', "\n",
 		$t_description_textarea, '</textarea>';
+	echo '<div id="description_md"></div>', "\n";
 	echo '</td></tr>';
 }
 
@@ -678,6 +682,7 @@ if( $t_show_steps_to_reproduce ) {
 	echo '<textarea class="form-control" ', helper_get_tab_index(),
 		' cols="80" rows="10" id="steps_to_reproduce" name="steps_to_reproduce">', "\n",
 		$t_steps_to_reproduce_textarea, '</textarea>';
+	echo '<div id="steps_to_reproduce_md"></div>', "\n";
 	echo '</td></tr>';
 }
 
