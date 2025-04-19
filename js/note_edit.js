@@ -7,12 +7,12 @@ $(document).ready(function(){
 		return "";
   }
   ["bugnote_text", "description", "steps_to_reproduce"].forEach(function(name) {
-    let text_src = $('#'+name);
-    let text_dest = $('#'+name+'_md');
-    if( text_src && text_dest ) {
-      text_dest.html( render( text_src.val() ) );
-    	text_src.on('input', function (event) {
-    	  text_dest.html( render( text_src.val() ) );
+    const ta = document.getElementById(name);
+    if( ta.value == '#MD#' || ta.value.startsWith( '#MD#\n' ) ) {
+      const easyMDE = new EasyMDE({
+        element: ta,
+        hideIcons: ["image", "upload-image"],
+        spellChecker: false,
       });
     }
   });
