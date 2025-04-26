@@ -1066,6 +1066,12 @@ $g_language_choices_arr = array(
 /**
  * Browser language mapping for 'auto' language selection.
  *
+ * The mapping between a comma-separated list of BCP 47 language codes, usually
+ * ending with the most generic one (i.e. the primary language without extended
+ * subtag), and the corresponding MantisBT language code.
+ *
+ * @see lang_get_current_lang()
+ * @see lang_get_current_datetime_locale()
  * @global array $g_language_auto_map
  */
 $g_language_auto_map = array(
@@ -4855,11 +4861,13 @@ $g_manage_plugin_threshold = ADMINISTRATOR;
  */
 $g_plugin_mime_types = array(
 	'css' => 'text/css',
-	'js'  => 'text/javascript',
+	'js'  => 'application/javascript',
 	'gif' => 'image/gif',
 	'png' => 'image/png',
 	'jpg' => 'image/jpeg',
-	'jpeg' => 'image/jpeg'
+	'jpeg' => 'image/jpeg',
+	'svg' => 'image/svg+xml',
+	'webp' => 'image/webp'
 );
 
 /**

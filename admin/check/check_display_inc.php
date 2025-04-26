@@ -70,7 +70,7 @@ check_print_test_row(
 # Graphviz library
 if( config_get( 'relationship_graph_enable' ) ) {
 	# graphviz_path validity is checked in check_paths_inc.php
-	$t_graphviz_path = config_get_global( 'graphviz_path' );
+	$t_graphviz_path = Graph::graphviz_path();
 
 	# Get list of Graphviz tools from the Graph class constants
 	$t_reflect_graph = new ReflectionClass( Graph::class );
@@ -82,9 +82,10 @@ if( config_get( 'relationship_graph_enable' ) ) {
 	);
 
 	# Check each tool's availability
+	$t_extension = is_windows_server() ? '.exe' : '';
 	$t_unavailable = [];
 	foreach( $t_tools as $t_tool ) {
-		$t_tool_path = $t_graphviz_path . $t_tool;
+		$t_tool_path = $t_graphviz_path . $t_tool . $t_extension;
 		if( !is_executable( $t_tool_path ) ) {
 			$t_unavailable[] = $t_tool;
 		}
