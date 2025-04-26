@@ -1,4 +1,4 @@
-$(document).ready(function() {
+function hookInitMDE() {
   function mayInitMDE(ta) {
     if( ta.value == "#MD#" || ta.value.startsWith( '#MD#\n' ) ) {
       const easyMDE = new EasyMDE({
@@ -21,5 +21,11 @@ $(document).ready(function() {
       ta.addEventListener("keyup", mayInit);
     }
   });
-});
+}
+
+if (document.readyState !== 'loading') {
+  hookInitMDE();
+} else {
+  document.addEventListener('DOMContentLoaded', hookInitMDE);
+}
 
