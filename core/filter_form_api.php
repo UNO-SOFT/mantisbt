@@ -2181,34 +2181,38 @@ function print_filter_custom_field( $p_field_id, array $p_filter = null ) {
 			break;
 
 		default:
-			echo '<select class="input-xs" ' . filter_select_modifier( $p_filter ) . ' name="custom_field_' . $p_field_id . '[]">';
-			# Option META_FILTER_ANY
-			echo '<option value="' . META_FILTER_ANY . '"';
-			check_selected( $p_filter['custom_fields'][$p_field_id], META_FILTER_ANY, false );
-			echo '>[' . lang_get( 'any' ) . ']</option>';
-			# don't show META_FILTER_NONE for enumerated types as it's not possible for them to be blank
-			if( !in_array( $t_cfdef['type'], array( CUSTOM_FIELD_TYPE_ENUM, CUSTOM_FIELD_TYPE_LIST ) ) ) {
-				echo '<option value="' . META_FILTER_NONE . '"';
-				check_selected( $p_filter['custom_fields'][$p_field_id], META_FILTER_NONE, false );
-				echo '>[' . lang_get( 'none' ) . ']</option>';
-			}
-			# Print possible values
+			$t_max_length = config_get( 'max_dropdown_length' );
 			$t_included_projects = filter_get_included_projects( $p_filter );
 			$t_values = custom_field_distinct_values( $t_cfdef, $t_included_projects );
-			if( is_array( $t_values ) ){
-				$t_max_length = config_get( 'max_dropdown_length' );
-				foreach( $t_values as $t_val ) {
-					if( filter_field_is_any($t_val) || filter_field_is_none( $t_val ) ) {
-						continue;
-					}
-					echo '<option value="' . string_attribute( $t_val ) . '"';
-					if( isset( $p_filter['custom_fields'][$p_field_id] ) ) {
-						check_selected( $p_filter['custom_fields'][$p_field_id], $t_val, false );
-					}
-					echo '>' . string_attribute( string_shorten( $t_val, $t_max_length ) ) . '</option>';
+			if( is_array( $t_values ) && count( $t_values ) > $t_max_length ) {
+				echo '<input class="input-xs" type="text" name="custom_field_', $p_field_id, '" size="10" value="" >';
+			} else {
+				echo '<select class="input-xs" ' . filter_select_modifier( $p_filter ) . ' name="custom_field_' . $p_field_id . '[]">';
+				# Option META_FILTER_ANY
+				echo '<option value="' . META_FILTER_ANY . '"';
+				check_selected( $p_filter['custom_fields'][$p_field_id], META_FILTER_ANY, false );
+				echo '>[' . lang_get( 'any' ) . ']</option>';
+				# don't show META_FILTER_NONE for enumerated types as it's not possible for them to be blank
+				if( !in_array( $t_cfdef['type'], array( CUSTOM_FIELD_TYPE_ENUM, CUSTOM_FIELD_TYPE_LIST ) ) ) {
+					echo '<option value="' . META_FILTER_NONE . '"';
+					check_selected( $p_filter['custom_fields'][$p_field_id], META_FILTER_NONE, false );
+					echo '>[' . lang_get( 'none' ) . ']</option>';
 				}
+				# Print possible values
+				if( is_array( $t_values ) ) {
+					foreach( $t_values as $t_val ) {
+						if( filter_field_is_any($t_val) || filter_field_is_none( $t_val ) ) {
+							continue;
+						}
+						echo '<option value="' . string_attribute( $t_val ) . '"';
+						if( isset( $p_filter['custom_fields'][$p_field_id] ) ) {
+							check_selected( $p_filter['custom_fields'][$p_field_id], $t_val, false );
+						}
+						echo '>' . string_attribute( string_shorten( $t_val, $t_max_length ) ) . '</option>';
+					}
+				}
+				echo '</select>';
 			}
-			echo '</select>';
 			break;
 	}
 }
