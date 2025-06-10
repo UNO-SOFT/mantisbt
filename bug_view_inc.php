@@ -89,6 +89,10 @@ require_api( 'version_api.php' );
 
 require_css( 'status_config.php' );
 
+require_css( 'easymde.min.css' );
+require_js( 'easymde.min.js' );
+require_js( 'note_edit.js' );
+
 /**
  * Variables defined in parent script including this one.
  * @var string $t_mantis_dir
