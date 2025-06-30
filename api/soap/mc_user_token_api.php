@@ -43,7 +43,7 @@ function mc_user_token_create( $p_username, $p_password, $p_token_name ) {
 
 	$t_data = array(
 		'query' => array(
-			'user_id' => (int)$p_user_id
+			'user_id' => (int)$t_user_id
 		),
 		'payload' => array(
 			'name' => $p_token_name
