@@ -1054,6 +1054,7 @@ function mc_issue_update( $p_username, $p_password, $p_issue_id, stdClass $p_iss
 
 	# fields which we expect to always be set
 	$t_bug_data = bug_get( $p_issue_id, true );
+	$t_existing_bug = clone $t_bug_data;
 	$t_bug_data->project_id = $t_project_id;
 	$t_bug_data->reporter_id = $t_reporter_id;
 
@@ -1232,7 +1233,9 @@ function mc_issue_update( $p_username, $p_password, $p_issue_id, stdClass $p_iss
 
 	# submit the issue
 	log_event( LOG_WEBSERVICE, 'updating issue \'' . $p_issue_id . '\'' );
-	return $t_bug_data->update( /* update extended */ true, /* bypass email */ false );
+	$t_ret = $t_bug_data->update( /* update extended */ true, /* bypass email */ false );
+	event_signal( 'EVENT_UPDATE_BUG', array( $t_existing_bug, $t_bug_data) );
+	return $t_ret;
 }
 
 /**
