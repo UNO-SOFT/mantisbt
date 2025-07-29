@@ -1053,8 +1053,8 @@ function mc_issue_update( $p_username, $p_password, $p_issue_id, stdClass $p_iss
 	}
 
 	# fields which we expect to always be set
-	$t_bug_data = bug_get( $p_issue_id, true );
-	$t_existing_bug = clone $t_bug_data;
+	$t_existing_bug = bug_get( $p_issue_id, true );
+	$t_bug_data = clone $t_existing_bug;
 	$t_bug_data->project_id = $t_project_id;
 	$t_bug_data->reporter_id = $t_reporter_id;
 
@@ -1231,10 +1231,11 @@ function mc_issue_update( $p_username, $p_password, $p_issue_id, stdClass $p_iss
 		mci_tag_set_for_issue( $p_issue_id, $p_issue['tags'], $t_user_id );
 	}
 
+	$t_bug_data = event_signal( 'EVENT_UPDATE_BUG_DATA', $t_bug_data, $t_existing_bug );
 	# submit the issue
 	log_event( LOG_WEBSERVICE, 'updating issue \'' . $p_issue_id . '\'' );
 	$t_ret = $t_bug_data->update( /* update extended */ true, /* bypass email */ false );
-	event_signal( 'EVENT_UPDATE_BUG', array( $t_existing_bug, $t_bug_data) );
+	event_signal( 'EVENT_UPDATE_BUG', array( $t_existing_bug, $t_bug_data ) );
 	return $t_ret;
 }
 
