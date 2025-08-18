@@ -56,6 +56,9 @@ function bug_activity_get_all( $p_bug_id, $p_include_attachments = true ) {
 
 	$t_user_id = auth_get_current_user_id();
 	$t_bug_readonly = bug_is_readonly( $p_bug_id );
+	$t_bug_remote_synced = user_get_username(
+		bug_get_field( $p_bug_id, 'reporter_id' )
+	) == 'jira';
 
 	if ( $p_include_attachments ) {
 		$t_attachments = file_get_visible_attachments( $p_bug_id );
@@ -171,9 +174,9 @@ function bug_activity_get_all( $p_bug_id, $p_include_attachments = true ) {
 			}
 		}
 
-		$t_activity['can_edit'] = $t_can_edit_bugnote;
-		$t_activity['can_delete'] = $t_can_delete_bugnote;
-		$t_activity['can_change_view_state'] = $t_can_change_view_state;
+		$t_activity['can_edit'] = !$t_bug_remote_synced && $t_can_edit_bugnote;
+		$t_activity['can_delete'] = !$t_bug_remote_synced && $t_can_delete_bugnote;
+		$t_activity['can_change_view_state'] = !$t_bug_remote_synced && $t_can_change_view_state;
 
 		$t_activities[] = $t_activity;
 	}
