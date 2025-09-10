@@ -174,9 +174,10 @@ function bug_activity_get_all( $p_bug_id, $p_include_attachments = true ) {
 			}
 		}
 
-		$t_activity['can_edit'] = ($t_activity['private'] || !$t_bug_remote_synced) && $t_can_edit_bugnote;
-		$t_activity['can_delete'] = !$t_bug_remote_synced && $t_can_delete_bugnote;
-		$t_activity['can_change_view_state'] = !$t_bug_remote_synced && $t_can_change_view_state;
+		$t_allowed = (!$t_bug_remote_synced || $t_activity['private']);
+		$t_activity['can_edit'] = $t_can_edit_bugnote && $t_allowed;
+		$t_activity['can_delete'] =  $t_can_delete_bugnote && $t_allowed;
+		$t_activity['can_change_view_state'] = $t_can_change_view_state && $t_allowed;
 
 		$t_activities[] = $t_activity;
 	}
