@@ -171,7 +171,7 @@ $g_update_bug_status_threshold = REPORTER;  // tisztázás -> ajánlat kérés m
 
 # de csak priv. rendelgethessen
 $g_update_bug_assign_threshold = UPDATER;
-$g_roadmap_update_threshold = DEVELOPER;
+$g_roadmap_update_threshold = UPDATER;
 
 $g_delete_attachments_threshold = UPDATER;
 $g_delete_bug_threshold = MANAGER;
