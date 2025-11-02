@@ -126,9 +126,9 @@ if( SYS_COMPANY === 'unosoft' ) {
 		U_ACKNOWLEDGED => REPORTER,
 		U_ASSIGNED => REPORTER,
 		U_ASSIGNED_FEEDBACK => UPDATER,
-		U_TEST => DEVELOPER,
+		U_TEST => UPDATER,
 		U_TEST_OK => UPDATER,
-		U_RESOLVED => DEVELOPER,
+		U_RESOLVED => UPDATER,
 		U_CLOSED => UPDATER,
 		U_JOKER => MANAGER
 	);
@@ -333,7 +333,7 @@ if( SYS_COMPANY == 'pcs' || SYS_COMPANY == 'pp' ) {
 	if( ! $g_notify_flags ) {
 		$g_notify_flags = $g_default_notify_flags;
 	}
-	$g_notify_flags['new']['threshold_min'] = DEVELOPER;
+	$g_notify_flags['new']['threshold_min'] = UPDATER;
 	$g_notify_flags['new']['threshold_max'] = ADMINISTRATOR;
 }
 
@@ -357,7 +357,7 @@ $g_hide_status_default = CLOSED;
 $g_hide_status = CLOSED;
 $g_bug_resolved_status_threshold = U_CLOSED;
 $g_bug_readonly_status_threshold = U_CLOSED;
-$g_update_readonly_bug_threshold = DEVELOPER;
+$g_update_readonly_bug_threshold = UPDATER;
 $g_private_bug_threshold = UPDATER;
 $g_private_bugnote_threshold = UPDATER;
 $g_set_view_status_threshold = UPDATER;
