@@ -405,8 +405,7 @@ function mci_issue_set_custom_fields( $p_issue_id, array &$p_custom_fields = nul
 				$t_valid_cf = FALSE;
 			}
 			if( ! isset( $t_custom_field['value'] ) ) {
-				$t_msg .= ", 'value' is not set";
-				$t_valid_cf = FALSE;
+				$t_custom_field['value'] = '';
 			}
 			if( $t_valid_cf ) {
 				$t_field = ApiObjectFactory::objectToArray( $t_custom_field['field'] );
