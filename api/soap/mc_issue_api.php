@@ -1234,7 +1234,7 @@ function mc_issue_update( $p_username, $p_password, $p_issue_id, stdClass $p_iss
 	# submit the issue
 	log_event( LOG_WEBSERVICE, 'updating issue \'' . $p_issue_id . '\'' );
 	$t_ret = $t_bug_data->update( /* update extended */ true, /* bypass email */ false );
-	event_signal( 'EVENT_UPDATE_BUG', array( $t_existing_bug, $t_bug_data ) );
+	event_signal( 'EVENT_UPDATE_BUG', array( $t_existing_bug, &$t_bug_data ) );
 	return $t_ret;
 }
 
