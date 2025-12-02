@@ -59,7 +59,7 @@ function mci_file_read_local( $p_diskfile ) {
  */
 function mci_file_write_local( $p_diskfile, $p_content ) {
 	$t_handle = fopen( $p_diskfile, 'w' );
-	fwrite( $t_handle, $p_content );
+	fwrite( $t_handle, $p_content or '' );
 	fclose( $t_handle );
 }
 
@@ -84,7 +84,7 @@ function mci_file_add( $p_id, $p_name, $p_content, $p_file_type, $p_table, $p_ti
 		return ApiObjectFactory::faultConflict( 'Duplicate filename.' );
 	}
 
-	$t_file_size = strlen( $p_content );
+	$t_file_size = $p_content ? strlen( $p_content ) : 0;
 	$t_max_file_size = file_get_max_file_size();
 	if( $t_file_size > $t_max_file_size ) {
 		return ApiObjectFactory::faultBadRequest( 'File is too big. Max size is "' . $t_max_file_size . '" bytes.' );
