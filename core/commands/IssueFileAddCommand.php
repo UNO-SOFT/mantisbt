@@ -16,6 +16,7 @@
 
 require_api( 'authentication_api.php' );
 require_api( 'bug_api.php' );
+require_api( 'bugnote_api.php' );
 require_api( 'constant_inc.php' );
 require_api( 'config_api.php' );
 require_api( 'helper_api.php' );
@@ -46,7 +47,7 @@ use Mantis\Exceptions\ClientException;
  *         "size": 114
  *       }
  *     ]
- *   } 
+ *   }
  * }
  */
 
@@ -128,6 +129,10 @@ class IssueFileAddCommand extends Command {
 			if( !access_has_bug_level( $t_specify_reporter_access_level, $t_issue_id ) ) {
 				throw new ClientException( 'Access denied to override reporter', ERROR_ACCESS_DENIED );
 			}
+		}
+
+		if( user_get_username( $this->user_id ) == 'jira' && bugnote_get_latest_id( $this->issue->id ) ) {
+			throw new ClientException( 'Access denied for changing issue attachments', ERROR_ACCESS_DENIED );
 		}
 
 		# Can reporter attach files
