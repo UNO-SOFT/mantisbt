@@ -59,7 +59,9 @@ function mci_file_read_local( $p_diskfile ) {
  */
 function mci_file_write_local( $p_diskfile, $p_content ) {
 	$t_handle = fopen( $p_diskfile, 'w' );
-	fwrite( $t_handle, $p_content or '' );
+	if( $p_content ) {
+  	fwrite( $t_handle, $p_content );
+  }
 	fclose( $t_handle );
 }
 
