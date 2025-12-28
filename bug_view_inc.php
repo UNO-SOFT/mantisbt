@@ -594,12 +594,12 @@ if( $t_flags['steps_to_reproduce_show'] && isset( $t_issue['steps_to_reproduce']
 	$t_text = string_display_links( $t_issue['steps_to_reproduce'] );
 	$t_done = false;
 	if( strlen( $t_text ) > 1000 ) {
-		$i = strpos( $t_text, ' ', 1000 );
-		if( $i >= 1000 ) {
+		$i = strpos( $t_text, "\n", 10 );
+		if( $i >= 10 ) {
 			echo "<details><summary>" . substr( $t_text, 0, $i ) .
 				"\n\u{2326}\n</summary>" . substr( $t_text, $i ) . "</details>";
 			$t_done = true;
-		} 
+		}
 	}
 	if( !$t_done ) {
 		echo $t_text;
@@ -752,7 +752,7 @@ if( $t_flags['monitor_show'] ) {
 					}
 				 }
 			}
-	
+
 			if( $t_flags['monitor_can_add'] ) {
 	?>
 			<br /><br />
