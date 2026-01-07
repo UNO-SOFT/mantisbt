@@ -148,8 +148,10 @@ function filter_select_modifier( array $p_filter ) {
 }
 
 /**
- * Print the current value of this filter field, as visible string, and as a hidden form input.
+ * Print the filter field's current value as a visible string and a hidden form input.
+ *
  * @param array $p_filter Filter array
+ *
  * @return void
  */
 function print_filter_values_reporter_id( array $p_filter ) {
@@ -199,7 +201,7 @@ function print_filter_values_reporter_id( array $p_filter ) {
  * @return void
  * @global array     $g_filter
  */
-function print_filter_reporter_id( array $p_filter = null ) {
+function print_filter_reporter_id( ?array $p_filter = null ) {
 	global $g_filter;
 	if( null === $p_filter ) {
 		$p_filter = $g_filter;
@@ -229,8 +231,10 @@ function print_filter_reporter_id( array $p_filter = null ) {
 }
 
 /**
- * Print the current value of this filter field, as visible string, and as a hidden form input.
- * @param array $p_filter	Filter array
+ * Print the filter field's current value as a visible string and a hidden form input.
+ *
+ * @param array $p_filter Filter array
+ *
  * @return void
  */
 function print_filter_values_user_monitor( array $p_filter ) {
@@ -283,7 +287,7 @@ function print_filter_values_user_monitor( array $p_filter ) {
  * @return void
  * @global array     $g_filter
  */
-function print_filter_user_monitor( array $p_filter = null ) {
+function print_filter_user_monitor( ?array $p_filter = null ) {
 	global $g_filter;
 	if( null === $p_filter ) {
 		$p_filter = $g_filter;
@@ -310,8 +314,10 @@ function print_filter_user_monitor( array $p_filter = null ) {
 }
 
 /**
- * Print the current value of this filter field, as visible string, and as a hidden form input.
- * @param array $p_filter	Filter array
+ * Print the filter field's current value as a visible string and a hidden form input.
+ *
+ * @param array $p_filter Filter array
+ *
  * @return void
  */
 function print_filter_values_handler_id( array $p_filter ) {
@@ -361,7 +367,7 @@ function print_filter_values_handler_id( array $p_filter ) {
  * @return void
  * @global array     $g_filter
  */
-function print_filter_handler_id( array $p_filter = null ) {
+function print_filter_handler_id( ?array $p_filter = null ) {
 	global $g_filter;
 	if( null === $p_filter ) {
 		$p_filter = $g_filter;
@@ -386,8 +392,10 @@ function print_filter_handler_id( array $p_filter = null ) {
 }
 
 /**
- * Print the current value of this filter field, as visible string, and as a hidden form input.
- * @param array $p_filter	Filter array
+ * Print the filter field's current value as a visible string and a hidden form input.
+ *
+ * @param array $p_filter Filter array
+ *
  * @return void
  */
 function print_filter_values_show_category( array $p_filter ) {
@@ -434,7 +442,7 @@ function print_filter_values_show_category( array $p_filter ) {
  * @return void
  * @global array     $g_filter
  */
-function print_filter_show_category( array $p_filter = null ) {
+function print_filter_show_category( ?array $p_filter = null ) {
 	global $g_filter;
 	if( null === $p_filter ) {
 		$p_filter = $g_filter;
@@ -450,8 +458,10 @@ function print_filter_show_category( array $p_filter = null ) {
 }
 
 /**
- * Print the current value of this filter field, as visible string, and as a hidden form input.
- * @param array $p_filter	Filter array
+ * Print the filter field's current value as a visible string and a hidden form input.
+ *
+ * @param array $p_filter Filter array
+ *
  * @return void
  */
 function print_filter_values_platform( array $p_filter ) {
@@ -461,12 +471,12 @@ function print_filter_values_platform( array $p_filter ) {
 /**
  * Print the platform field.
  *
- * @param array|null $p_filter Filter array
+ * @param array|null $p_filter
  *
  * @return void
  * @global array     $g_filter
  */
-function print_filter_platform( array $p_filter = null ) {
+function print_filter_platform( ?array $p_filter = null ) {
 	global $g_filter;
 	if( null === $p_filter ) {
 		$p_filter = $g_filter;
@@ -484,8 +494,10 @@ function print_filter_platform( array $p_filter = null ) {
 }
 
 /**
- * Print the current value of this filter field, as visible string, and as a hidden form input.
- * @param array $p_filter	Filter array
+ * Print the filter field's current value as a visible string and a hidden form input.
+ *
+ * @param array $p_filter Filter array
+ *
  * @return void
  */
 function print_filter_values_os( array $p_filter ) {
@@ -500,7 +512,7 @@ function print_filter_values_os( array $p_filter ) {
  * @return void
  * @global array     $g_filter
  */
-function print_filter_os( array $p_filter = null ) {
+function print_filter_os( ?array $p_filter = null ) {
 	global $g_filter;
 	if( null === $p_filter ) {
 		$p_filter = $g_filter;
@@ -515,8 +527,10 @@ function print_filter_os( array $p_filter = null ) {
 }
 
 /**
- * Print the current value of this filter field, as visible string, and as a hidden form input.
- * @param array $p_filter	Filter array
+ * Print the filter field's current value as a visible string and a hidden form input.
+ *
+ * @param array $p_filter Filter array
+ *
  * @return void
  */
 function print_filter_values_os_build( array $p_filter ) {
@@ -531,7 +545,7 @@ function print_filter_values_os_build( array $p_filter ) {
  * @return void
  * @global array     $g_filter
  */
-function print_filter_os_build( array $p_filter = null ) {
+function print_filter_os_build( ?array $p_filter = null ) {
 	global $g_filter;
 	if( null === $p_filter ) {
 		$p_filter = $g_filter;
@@ -546,8 +560,10 @@ function print_filter_os_build( array $p_filter = null ) {
 }
 
 /**
- * Print the current value of this filter field, as visible string, and as a hidden form input.
- * @param array $p_filter	Filter array
+ * Print the filter field's current value as a visible string and a hidden form input.
+ *
+ * @param array $p_filter Filter array
+ *
  * @return void
  */
 function print_filter_values_show_severity( array $p_filter ) {
@@ -589,7 +605,7 @@ function print_filter_values_show_severity( array $p_filter ) {
  * @return void
  * @global array     $g_filter
  */
-function print_filter_show_severity( array $p_filter = null ) {
+function print_filter_show_severity( ?array $p_filter = null ) {
 	global $g_filter;
 	if( null === $p_filter ) {
 		$p_filter = $g_filter;
@@ -603,8 +619,10 @@ function print_filter_show_severity( array $p_filter = null ) {
 }
 
 /**
- * Print the current value of this filter field, as visible string, and as a hidden form input.
- * @param array $p_filter	Filter array
+ * Print the filter field's current value as a visible string and a hidden form input.
+ *
+ * @param array $p_filter Filter array
+ *
  * @return void
  */
 function print_filter_values_show_resolution( array $p_filter ) {
@@ -646,7 +664,7 @@ function print_filter_values_show_resolution( array $p_filter ) {
  * @return void
  * @global array     $g_filter
  */
-function print_filter_show_resolution( array $p_filter = null ) {
+function print_filter_show_resolution( ?array $p_filter = null ) {
 	global $g_filter;
 	if( null === $p_filter ) {
 		$p_filter = $g_filter;
@@ -660,8 +678,10 @@ function print_filter_show_resolution( array $p_filter = null ) {
 }
 
 /**
- * Print the current value of this filter field, as visible string, and as a hidden form input.
- * @param array $p_filter	Filter array
+ * Print the filter field's current value as a visible string and a hidden form input.
+ *
+ * @param array $p_filter Filter array
+ *
  * @return void
  */
 function print_filter_values_show_status( array $p_filter ) {
@@ -703,7 +723,7 @@ function print_filter_values_show_status( array $p_filter ) {
  * @return void
  * @global array     $g_filter
  */
-function print_filter_show_status( array $p_filter = null ) {
+function print_filter_show_status( ?array $p_filter = null ) {
 	global $g_filter;
 	if( null === $p_filter ) {
 		$p_filter = $g_filter;
@@ -717,8 +737,10 @@ function print_filter_show_status( array $p_filter = null ) {
 }
 
 /**
- * Print the current value of this filter field, as visible string, and as a hidden form input.
- * @param array $p_filter	Filter array
+ * Print the filter field's current value as a visible string and a hidden form input.
+ *
+ * @param array $p_filter Filter array
+ *
  * @return void
  */
 function print_filter_values_hide_status( array $p_filter ) {
@@ -764,7 +786,7 @@ function print_filter_values_hide_status( array $p_filter ) {
  * @return void
  * @global array     $g_filter
  */
-function print_filter_hide_status( array $p_filter = null ) {
+function print_filter_hide_status( ?array $p_filter = null ) {
 	global $g_filter;
 	if( null === $p_filter ) {
 		$p_filter = $g_filter;
@@ -778,8 +800,10 @@ function print_filter_hide_status( array $p_filter = null ) {
 }
 
 /**
- * Print the current value of this filter field, as visible string, and as a hidden form input.
- * @param array $p_filter	Filter array
+ * Print the filter field's current value as a visible string and a hidden form input.
+ *
+ * @param array $p_filter Filter array
+ *
  * @return void
  */
 function print_filter_values_show_build( array $p_filter ) {
@@ -824,7 +848,7 @@ function print_filter_values_show_build( array $p_filter ) {
  * @return void
  * @global array     $g_filter
  */
-function print_filter_show_build( array $p_filter = null ) {
+function print_filter_show_build( ?array $p_filter = null ) {
 	global $g_filter;
 	if( null === $p_filter ) {
 		$p_filter = $g_filter;
@@ -839,8 +863,10 @@ function print_filter_show_build( array $p_filter = null ) {
 }
 
 /**
- * Print the current value of this filter field, as visible string, and as a hidden form input.
- * @param array $p_filter	Filter array
+ * Print the filter field's current value as a visible string and a hidden form input.
+ *
+ * @param array $p_filter Filter array
+ *
  * @return void
  */
 function print_filter_values_show_version( array $p_filter ) {
@@ -885,7 +911,7 @@ function print_filter_values_show_version( array $p_filter ) {
  * @return void
  * @global array     $g_filter
  */
-function print_filter_show_version( array $p_filter = null ) {
+function print_filter_show_version( ?array $p_filter = null ) {
 	global $g_filter;
 	if( null === $p_filter ) {
 		$p_filter = $g_filter;
@@ -901,8 +927,10 @@ function print_filter_show_version( array $p_filter = null ) {
 }
 
 /**
- * Print the current value of this filter field, as visible string, and as a hidden form input.
- * @param array $p_filter	Filter array
+ * Print the filter field's current value as a visible string and a hidden form input.
+ *
+ * @param array $p_filter Filter array
+ *
  * @return void
  */
 function print_filter_values_show_fixed_in_version( array $p_filter ) {
@@ -947,7 +975,7 @@ function print_filter_values_show_fixed_in_version( array $p_filter ) {
  * @return void
  * @global array     $g_filter
  */
-function print_filter_show_fixed_in_version( array $p_filter = null ) {
+function print_filter_show_fixed_in_version( ?array $p_filter = null ) {
 	global $g_filter;
 	if( null === $p_filter ) {
 		$p_filter = $g_filter;
@@ -963,8 +991,10 @@ function print_filter_show_fixed_in_version( array $p_filter = null ) {
 }
 
 /**
- * Print the current value of this filter field, as visible string, and as a hidden form input.
- * @param array $p_filter	Filter array
+ * Print the filter field's current value as a visible string and a hidden form input.
+ *
+ * @param array $p_filter Filter array
+ *
  * @return void
  */
 function print_filter_values_show_target_version( array $p_filter ) {
@@ -1009,7 +1039,7 @@ function print_filter_values_show_target_version( array $p_filter ) {
  * @return void
  * @global array     $g_filter
  */
-function print_filter_show_target_version( array $p_filter = null ) {
+function print_filter_show_target_version( ?array $p_filter = null ) {
 	global $g_filter;
 	if( null === $p_filter ) {
 		$p_filter = $g_filter;
@@ -1025,8 +1055,10 @@ function print_filter_show_target_version( array $p_filter = null ) {
 }
 
 /**
- * Print the current value of this filter field, as visible string, and as a hidden form input.
- * @param array $p_filter	Filter array
+ * Print the filter field's current value as a visible string and a hidden form input.
+ *
+ * @param array $p_filter Filter array
+ *
  * @return void
  */
 function print_filter_values_show_priority( array $p_filter ) {
@@ -1068,7 +1100,7 @@ function print_filter_values_show_priority( array $p_filter ) {
  * @return void
  * @global array     $g_filter
  */
-function print_filter_show_priority( array $p_filter = null ) {
+function print_filter_show_priority( ?array $p_filter = null ) {
 	global $g_filter;
 	if( null === $p_filter ) {
 		$p_filter = $g_filter;
@@ -1082,8 +1114,10 @@ function print_filter_show_priority( array $p_filter = null ) {
 }
 
 /**
- * Print the current value of this filter field, as visible string, and as a hidden form input.
- * @param array $p_filter	Filter array
+ * Print the filter field's current value as a visible string and a hidden form input.
+ *
+ * @param array $p_filter Filter array
+ *
  * @return void
  * @throws ClientException
  */
@@ -1101,7 +1135,8 @@ function print_filter_values_show_profile( array $p_filter ) {
 			if( filter_field_is_any( $t_current ) ) {
 				$t_any_found = true;
 			} else {
-				$t_this_string = profile_get_name( $t_current );
+				$t_profile = new ProfileData( $t_current );
+				$t_this_string = $t_profile->get_name();
 			}
 			if( !$t_first_flag ) {
 				$t_output .= '<br />';
@@ -1126,7 +1161,7 @@ function print_filter_values_show_profile( array $p_filter ) {
  * @return void
  * @global array     $g_filter
  */
-function print_filter_show_profile( array $p_filter = null ) {
+function print_filter_show_profile( ?array $p_filter = null ) {
 	global $g_filter;
 	if( null === $p_filter ) {
 		$p_filter = $g_filter;
@@ -1140,8 +1175,10 @@ function print_filter_show_profile( array $p_filter = null ) {
 }
 
 /**
- * Print the current value of this filter field, as visible string, and as a hidden form input.
- * @param array $p_filter	Filter array
+ * Print the filter field's current value as a visible string and a hidden form input.
+ *
+ * @param array $p_filter Filter array
+ *
  * @return void
  */
 function print_filter_values_per_page( array $p_filter ) {
@@ -1158,7 +1195,7 @@ function print_filter_values_per_page( array $p_filter ) {
  * @return void
  * @global array     $g_filter
  */
-function print_filter_per_page( array $p_filter = null ) {
+function print_filter_per_page( ?array $p_filter = null ) {
 	global $g_filter;
 	if( null === $p_filter ) {
 		$p_filter = $g_filter;
@@ -1169,8 +1206,10 @@ function print_filter_per_page( array $p_filter = null ) {
 }
 
 /**
- * Print the current value of this filter field, as visible string, and as a hidden form input.
- * @param array $p_filter	Filter array
+ * Print the filter field's current value as a visible string and a hidden form input.
+ *
+ * @param array $p_filter Filter array
+ *
  * @return void
  */
 function print_filter_values_view_state( array $p_filter ) {
@@ -1194,7 +1233,7 @@ function print_filter_values_view_state( array $p_filter ) {
  * @return void
  * @global array     $g_filter
  */
-function print_filter_view_state( array $p_filter = null ) {
+function print_filter_view_state( ?array $p_filter = null ) {
 	global $g_filter;
 	if( null === $p_filter ) {
 		$p_filter = $g_filter;
@@ -1217,8 +1256,10 @@ function print_filter_view_state( array $p_filter = null ) {
 }
 
 /**
- * Print the current value of this filter field, as visible string, and as a hidden form input.
- * @param array $p_filter	Filter array
+ * Print the filter field's current value as a visible string and a hidden form input.
+ *
+ * @param array $p_filter Filter array
+ *
  * @return void
  */
 function print_filter_values_sticky_issues( array $p_filter ) {
@@ -1240,7 +1281,7 @@ function print_filter_values_sticky_issues( array $p_filter ) {
  * @return void
  * @global array     $g_filter
  */
-function print_filter_sticky_issues( array $p_filter = null ) {
+function print_filter_sticky_issues( ?array $p_filter = null ) {
 	global $g_filter;
 	if( null === $p_filter ) {
 		$p_filter = $g_filter;
@@ -1257,8 +1298,10 @@ function print_filter_sticky_issues( array $p_filter = null ) {
 }
 
 /**
- * Print the current value of this filter field, as visible string, and as a hidden form input.
- * @param array $p_filter	Filter array
+ * Print the filter field's current value as a visible string and a hidden form input.
+ *
+ * @param array $p_filter Filter array
+ *
  * @return void
  */
 function print_filter_values_highlight_changed( array $p_filter ) {
@@ -1279,7 +1322,7 @@ function print_filter_values_highlight_changed( array $p_filter ) {
  * @return void
  * @global array     $g_filter
  */
-function print_filter_highlight_changed( array $p_filter = null ) {
+function print_filter_highlight_changed( ?array $p_filter = null ) {
 	global $g_filter;
 	if( null === $p_filter ) {
 		$p_filter = $g_filter;
@@ -1290,8 +1333,10 @@ function print_filter_highlight_changed( array $p_filter = null ) {
 }
 
 /**
- * Print the current value of this filter field, as visible string, and as a hidden form input.
- * @param array $p_filter	Filter array
+ * Print the filter field's current value as a visible string and a hidden form input.
+ *
+ * @param array $p_filter Filter array
+ *
  * @return void
  */
 function print_filter_values_do_filter_by_date( array $p_filter ) {
@@ -1353,7 +1398,7 @@ function print_filter_values_do_filter_by_date( array $p_filter ) {
  * @return void
  * @global array     $g_filter
  */
-function print_filter_do_filter_by_date( $p_hide_checkbox = false, array $p_filter = null ) {
+function print_filter_do_filter_by_date( $p_hide_checkbox = false, ?array $p_filter = null ) {
 	global $g_filter;
 	if( null === $p_filter ) {
 		$p_filter = $g_filter;
@@ -1444,8 +1489,10 @@ function print_filter_do_filter_by_date( $p_hide_checkbox = false, array $p_filt
 }
 
 /**
- * Print the current value of this filter field, as visible string, and as a hidden form input.
- * @param array $p_filter	Filter array
+ * Print the filter field's current value as a visible string and a hidden form input.
+ *
+ * @param array $p_filter Filter array
+ *
  * @return void
  */
 function print_filter_values_do_filter_by_last_updated_date( array $p_filter ) {
@@ -1507,7 +1554,7 @@ function print_filter_values_do_filter_by_last_updated_date( array $p_filter ) {
  * @return void
  * @global array     $g_filter
  */
-function print_filter_do_filter_by_last_updated_date( $p_hide_checkbox = false, array $p_filter = null ) {
+function print_filter_do_filter_by_last_updated_date( $p_hide_checkbox = false, ?array $p_filter = null ) {
 	global $g_filter;
 	if( null === $p_filter ) {
 		$p_filter = $g_filter;
@@ -1598,7 +1645,7 @@ function print_filter_do_filter_by_last_updated_date( $p_hide_checkbox = false, 
 }
 
 /**
- * Print the current value of this filter field, as visible string, and as a hidden form input.
+ * Print the filter field's current value as a visible string and a hidden form input.
  *
  * @param array $p_filter Filter array
  *
@@ -1771,7 +1818,7 @@ function print_filter_values_relationship_type( array $p_filter ) {
 			case META_FILTER_ANY:
 				echo lang_get( 'any' );
 				break;
-			default;
+			default:
 				echo lang_get( 'any' ),' ' , lang_get( 'with' ), ' ', $c_rel_bug;
 		}
 	} elseif( BUG_REL_NONE == $c_rel_type ) {
@@ -1780,7 +1827,7 @@ function print_filter_values_relationship_type( array $p_filter ) {
 			case META_FILTER_NONE:
 			case META_FILTER_ANY:
 				break;
-			default;
+			default:
 				echo ' ', lang_get( 'with' ), ' ', $c_rel_bug;
 		}
 	} else {
@@ -1792,7 +1839,7 @@ function print_filter_values_relationship_type( array $p_filter ) {
 			case META_FILTER_ANY:
 				echo lang_get( 'any' );
 				break;
-			default;
+			default:
 				echo $c_rel_bug;
 		}
 	}
@@ -1806,7 +1853,7 @@ function print_filter_values_relationship_type( array $p_filter ) {
  * @return void
  * @global array     $g_filter
  */
-function print_filter_relationship_type( array $p_filter = null ) {
+function print_filter_relationship_type( ?array $p_filter = null ) {
 	global $g_filter;
 	if( null === $p_filter ) {
 		$p_filter = $g_filter;
@@ -1817,8 +1864,10 @@ function print_filter_relationship_type( array $p_filter = null ) {
 }
 
 /**
- * Print the current value of this filter field, as visible string, and as a hidden form input.
- * @param array $p_filter	Filter array
+ * Print the filter field's current value as a visible string and a hidden form input.
+ *
+ * @param array $p_filter Filter array
+ *
  * @return void
  */
 function print_filter_values_tag_string( array $p_filter ) {
@@ -1840,7 +1889,7 @@ function print_filter_values_tag_string( array $p_filter ) {
  * @return void
  * @global array     $g_filter
  */
-function print_filter_tag_string( array $p_filter = null ) {
+function print_filter_tag_string( ?array $p_filter = null ) {
 	global $g_filter;
 	if( !access_has_project_level( config_get( 'tag_view_threshold' ) ) ) {
 		return;
@@ -1863,8 +1912,11 @@ function print_filter_tag_string( array $p_filter = null ) {
 }
 
 /**
- * Print the current value of this filter field, as visible string, and as a hidden form input.
- * @param array $p_filter	Filter array
+ * Print the filter field's current value as a visible string and a hidden form input.
+ *
+ * @param array $p_filter Filter array
+ *
+ * @return void
  */
 function print_filter_values_note_user_id( array $p_filter ) {
 	$t_filter = $p_filter;
@@ -1913,7 +1965,7 @@ function print_filter_values_note_user_id( array $p_filter ) {
  * @return void
  * @global array     $g_filter
  */
-function print_filter_note_user_id( array $p_filter = null ) {
+function print_filter_note_user_id( ?array $p_filter = null ) {
 	global $g_filter;
 	if( null === $p_filter ) {
 		$p_filter = $g_filter;
@@ -1939,10 +1991,12 @@ function print_filter_note_user_id( array $p_filter = null ) {
 }
 
 /**
- * Print the current value of this filter field, as visible string, and as a hidden form input.
- * @param array $p_filter			Filter array
- * @param string $p_field_name		Field name
- * @param object $p_filter_object	Filter object
+ * Print the filter field's current value as a visible string and a hidden form input.
+ *
+ * @param array  $p_filter        Filter array
+ * @param string $p_field_name    Field name
+ * @param object $p_filter_object Filter object
+ *
  * @return void
  */
 function print_filter_values_plugin_field( array $p_filter, $p_field_name, $p_filter_object ) {
@@ -1996,7 +2050,7 @@ function print_filter_values_plugin_field( array $p_filter, $p_field_name, $p_fi
  * @return void
  * @global array     $g_filter
  */
-function print_filter_plugin_field( $p_field_name, $p_filter_object, array $p_filter = null ) {
+function print_filter_plugin_field( $p_field_name, $p_filter_object, ?array $p_filter = null ) {
 	global $g_filter;
 	if( null === $p_filter ) {
 		$p_filter = $g_filter;
@@ -2061,9 +2115,11 @@ function print_filter_plugin_field( $p_field_name, $p_filter_object, array $p_fi
 }
 
 /**
- * Print the current value of custom field, as visible string, and as a hidden form input.
- * @param array $p_filter	Filter array to use
- * @param integer $p_field_id	Custom field id
+ * Print the filter field's current value as a visible string and a hidden form input.
+ *
+ * @param array $p_filter Filter array
+ * @param integer $p_field_id Custom field id
+ *
  * @return void
  */
 function print_filter_values_custom_field( array $p_filter, $p_field_id ) {
@@ -2095,10 +2151,12 @@ function print_filter_values_custom_field( array $p_filter, $p_field_id ) {
 }
 
 /**
- * Print the current value of this filter field (for a date type field), as visible string,
- * and as a hidden form input.
- * @param array $p_filter	Filter array to use
- * @param integer $p_field_id	Custom field id
+ * Print the filter field's current value (for a date type field) as a visible
+ * string and a hidden form input.
+ *
+ * @param array $p_filter   Filter array to use
+ * @param int   $p_field_id	Custom field id
+ *
  * @return void
  */
 function print_filter_values_custom_field_date( array $p_filter, $p_field_id ) {
@@ -2163,7 +2221,7 @@ function print_filter_values_custom_field_date( array $p_filter, $p_field_id ) {
  * @return void
  * @global array     $g_filter
  */
-function print_filter_custom_field( $p_field_id, array $p_filter = null ) {
+function print_filter_custom_field( $p_field_id, ?array $p_filter = null ) {
 	global $g_filter;
 	if( null === $p_filter ) {
 		$p_filter = $g_filter;
@@ -2218,8 +2276,10 @@ function print_filter_custom_field( $p_field_id, array $p_filter = null ) {
 }
 
 /**
- * Print the current value of this filter field, as visible string, and as a hidden form input.
- * @param array $p_filter	Filter array
+ * Print the filter field's current value as a visible string and a hidden form input.
+ *
+ * @param array $p_filter Filter array
+ *
  * @return void
  */
 function print_filter_values_show_sort( array $p_filter ) {
@@ -2261,7 +2321,7 @@ function print_filter_values_show_sort( array $p_filter ) {
  * @return void
  * @global array     $g_filter
  */
-function print_filter_show_sort( array $p_filter = null ) {
+function print_filter_show_sort( ?array $p_filter = null ) {
 	global $g_filter;
 	if( null === $p_filter ) {
 		$p_filter = $g_filter;
@@ -2344,7 +2404,7 @@ function print_filter_show_sort( array $p_filter = null ) {
  * @return void
  * @global array     $g_filter
  */
-function print_filter_custom_field_date( $p_field_id, array $p_filter = null ) {
+function print_filter_custom_field_date( $p_field_id, ?array $p_filter = null ) {
 	global $g_filter;
 	if( null === $p_filter ) {
 		$p_filter = $g_filter;
@@ -2437,8 +2497,10 @@ function print_filter_custom_field_date( $p_field_id, array $p_filter = null ) {
 }
 
 /**
- * Print the current value of this filter field, as visible string, and as a hidden form input.
- * @param array $p_filter	Filter array
+ * Print the filter field's current value as a visible string and a hidden form input.
+ *
+ * @param array $p_filter Filter array
+ *
  * @return void
  */
 function print_filter_values_project_id( array $p_filter ) {
@@ -2480,7 +2542,7 @@ function print_filter_values_project_id( array $p_filter ) {
  * @return void
  * @global array     $g_filter
  */
-function print_filter_project_id( array $p_filter = null ) {
+function print_filter_project_id( ?array $p_filter = null ) {
 	global $g_filter;
 	if( null === $p_filter ) {
 		$p_filter = $g_filter;
@@ -2498,8 +2560,10 @@ function print_filter_project_id( array $p_filter = null ) {
 }
 
 /**
- * Print the current value of this filter field, as visible string, and as a hidden form input.
- * @param array $p_filter	Filter array
+ * Print the filter field's current value as a visible string and a hidden form input.
+ *
+ * @param array $p_filter Filter array
+ *
  * @return void
  */
 function print_filter_values_projection( array $p_filter ) {
@@ -2541,7 +2605,7 @@ function print_filter_values_projection( array $p_filter ) {
  * @return void
  * @global array     $g_filter
  */
-function print_filter_projection( array $p_filter = null ) {
+function print_filter_projection( ?array $p_filter = null ) {
 	global $g_filter;
 	if( null === $p_filter ) {
 		$p_filter = $g_filter;
@@ -2555,8 +2619,10 @@ function print_filter_projection( array $p_filter = null ) {
 }
 
 /**
- * Print the current value of this filter field, as visible string, and as a hidden form input.
- * @param array $p_filter	Filter array
+ * Print the filter field's current value as a visible string and a hidden form input.
+ *
+ * @param array $p_filter Filter array
+ *
  * @return void
  */
 function print_filter_values_match_type( array $p_filter ) {
@@ -2583,7 +2649,7 @@ function print_filter_values_match_type( array $p_filter ) {
  * @return void
  * @global array     $g_filter
  */
-function print_filter_match_type( array $p_filter = null ) {
+function print_filter_match_type( ?array $p_filter = null ) {
 	global $g_filter;
 	if( null === $p_filter ) {
 		$p_filter = $g_filter;
@@ -2702,7 +2768,7 @@ function filter_form_draw_inputs( $p_filter, $p_for_screen = true, $p_static = f
 	$t_get_params['view_type'] = ( FILTER_VIEW_TYPE_ADVANCED == $t_view_type )
 		? FILTER_VIEW_TYPE_ADVANCED
 		: FILTER_VIEW_TYPE_SIMPLE;
-	$t_filters_url .= '?' . http_build_query( $t_get_params );
+	$t_filters_url = helper_url_combine( $t_filters_url, $t_get_params );
 
 	$t_show_product_version =  version_should_show_product_version( $t_filter_projects );
 	$t_show_build = $t_show_product_version && ( config_get( 'enable_product_build' ) == ON );
@@ -3137,8 +3203,10 @@ class FilterBoxGridLayout extends TableGridLayout {
 
 
 /**
- * Print the current value of this filter field, as visible string, and as a hidden form input.
- * @param array $p_filter	Filter array
+ * Print the filter field's current value as a visible string and a hidden form input.
+ *
+ * @param array $p_filter Filter array
+ *
  * @return void
  */
 function print_filter_values_search( array $p_filter ) {
@@ -3154,7 +3222,7 @@ function print_filter_values_search( array $p_filter ) {
  * @return void
  * @global array     $g_filter
  */
-function print_filter_search( array $p_filter = null ) {
+function print_filter_search( ?array $p_filter = null ) {
 	global $g_filter;
 	if( null === $p_filter ) {
 		$p_filter = $g_filter;
