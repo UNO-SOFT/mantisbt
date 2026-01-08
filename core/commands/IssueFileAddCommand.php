@@ -155,8 +155,31 @@ class IssueFileAddCommand extends Command {
 			$g_project_override = $this->issue->project_id;
 		}
 
+		$t_note_id = 0;
+		// If already have a note, then attach with note
+		if( bug_get_bugnote_stats( $this->issue->id ) ) {
+			$t_names = array( );
+			foreach( $this->files as $t_file ) {
+				$t_names[] = $t_file['name'];
+			}
+			$t_note_id = bugnote_add(
+				$this->issue->id,
+				lang_get( 'bugnote_attached_files' ) . implode( ", ", $t_names ),
+				/* time_trackig */ '0:00',
+				/* private */ false,
+				/* type */ BUGNOTE,
+				/* attr */ '',
+				/* user_id */ $this->reporterId,
+				/* send_email */ false,
+				/* date_submitted */ 0,
+				/* last_modified */ 0,
+				/* skip_bug_update */ false,
+				/* log_history */ true,
+				/* trigger_event */ false );
+		}
+
 		# Handle the file upload
-		file_attach_files( $this->issue->id, $this->files );
+		file_attach_files( $this->issue->id, $this->files, $t_note_id );
 
 		return array();
 	}
