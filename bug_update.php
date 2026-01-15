@@ -371,6 +371,9 @@ foreach ( $t_related_custom_field_ids as $t_cf_id ) {
 	if( !custom_field_has_write_access( $t_cf_id, $f_bug_id ) ) {
 		trigger_error( ERROR_ACCESS_DENIED, ERROR );
 	}
+	if( $t_cf_def['name'] == 'CD3' && $t_existing_bug->status >= 30 ) {
+	  trigger_error( ERROR_ACCESS_DENIED, ERROR );
+	}
 
 	$t_new_custom_field_value = gpc_get_custom_field( 'custom_field_' . $t_cf_id, $t_cf_def['type'], '' );
 	$t_old_custom_field_value = custom_field_get_value( $t_cf_id, $f_bug_id );
