@@ -273,6 +273,8 @@ function relationship_prepare_for_assignment( $p_src_bug_id, $p_dest_bug_id, $p_
  * @return int The new bug relationship id.
  */
 function relationship_add( $p_src_bug_id, $p_dest_bug_id, $p_relationship_type, $p_email_for_source = true ) {
+	event_signal( 'EVENT_UPDATE_BUG_RELATIONSHIP', array( BUG_ADD_RELATIONSHIP, $p_src_bug_id, $p_dest_bug_id, $p_relationship_type ) );
+
 	db_param_push();
 	$t_query = 'INSERT INTO {bug_relationship}
 				( source_bug_id, destination_bug_id, relationship_type )
@@ -306,6 +308,8 @@ function relationship_add( $p_src_bug_id, $p_dest_bug_id, $p_relationship_type, 
  * @return void
  */
 function relationship_update( $p_relationship_id, $p_src_bug_id, $p_dest_bug_id, $p_relationship_type, $p_email_for_source = true ) {
+	event_signal( 'EVENT_UPDATE_BUG_RELATIONSHIP', array( BUG_REPLACE_RELATIONSHIP, $p_src_bug_id, $p_dest_bug_id, $p_relationship_type ) );
+
 	db_param_push();
 	$t_query = 'UPDATE {bug_relationship}
 				SET source_bug_id=' . db_param() . ',
@@ -371,6 +375,8 @@ function relationship_delete( $p_relationship_id, $p_send_email = true ) {
 	$t_src_bug_id = $t_relationship->src_bug_id;
 	$t_dest_bug_id = $t_relationship->dest_bug_id;
 	$t_rel_type = $t_relationship->type;
+
+	event_signal( 'EVENT_UPDATE_BUG_RELATIONSHIP', array( BUG_DEL_RELATIONSHIP, $p_src_bug_id, $p_dest_bug_id, $p_relationship_type ) );
 
 	bug_update_date( $t_src_bug_id );
 	bug_update_date( $t_dest_bug_id );
