@@ -1621,6 +1621,29 @@ function print_custom_field_input( array $p_field_def, $p_bug_id = null, $p_requ
 		}
 	}
 
+	if( !$t_custom_field_value && $p_bug_id &&
+	  $p_field_def['type'] == CUSTOM_FIELD_TYPE_NUMERIC &&
+	  $p_field_def['name'] == 'ráfordítás' &&
+    config_get('time_tracking_enabled')
+  ) {
+	  $t_status = bug_get_field( $p_bug_id, 'status' );
+	  $t_resolution = bug_get_field( $p_bug_id, 'resolution' );
+	  if( $t_status >= 80 && $t_resolution <> 50 ) {
+      $t_times = bugnote_stats_get_events_array( $p_bug_id, null, date('Y-m-d') );
+      foreach( $t_times as $t_user_id => $t_usage ) {
+          $t_minutes += $t_usage['sum_time_tracking'];  // minutes
+      }
+      $t_val = 0;
+      if ($p_new->projection < 50) {
+          $t_val = 0.3;
+      }
+      $t_val += floatval($t_minutes) / (8.0 * 60.0);
+      if( $t_val ) {
+  	    $t_custom_field_value = $t_val;
+  	  }
+    }
+  }
+
 	global $g_custom_field_type_definition;
 	if( isset( $g_custom_field_type_definition[$p_field_def['type']]['#function_print_input'] ) ) {
 		call_user_func( $g_custom_field_type_definition[$p_field_def['type']]['#function_print_input'], $p_field_def,
