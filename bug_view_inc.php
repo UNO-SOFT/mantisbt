@@ -576,8 +576,7 @@ if( $t_flags['steps_to_reproduce_show'] && isset( $t_issue['steps_to_reproduce']
 	echo '<tr>';
 	echo '<th class="bug-steps-to-reproduce category">', lang_get( 'steps_to_reproduce' ), '</th>';
 	echo '<td class="bug-steps-to-reproduce" colspan="5">';
-	$t_text = string_display_links( $t_issue['steps_to_reproduce'] );
-	print_long_text( $text );
+	print_long_text( string_display_links( $t_issue['steps_to_reproduce'] ) );
 	echo '</td>';
 	echo '</tr>';
 }
