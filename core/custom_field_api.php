@@ -51,6 +51,7 @@ require_api( 'error_api.php' );
 require_api( 'helper_api.php' );
 require_api( 'history_api.php' );
 require_api( 'project_api.php' );
+require_api( 'print_api.php' );
 require_api( 'string_api.php' );
 require_api( 'utility_api.php' );
 
@@ -1742,7 +1743,9 @@ function print_custom_field_value( array $p_def, $p_field_id, $p_bug_id ) {
 		return call_user_func( $g_custom_field_type_definition[$p_def['type']]['#function_print_value'], $t_custom_field_value );
 	}
 
-	echo string_display_line_links( string_custom_field_value( $p_def, $p_field_id, $p_bug_id ) );
+	print_long_text(
+	  string_display_line_links( string_custom_field_value( $p_def, $p_field_id, $p_bug_id ) )
+	);
 }
 
 /**

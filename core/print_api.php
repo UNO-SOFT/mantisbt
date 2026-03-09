@@ -2391,3 +2391,15 @@ function print_table_spacer( int $p_cols ) {
 		echo '<tr class="spacer"><td colspan="', $p_cols, '"></td></tr>';
 	}
 }
+
+function print_long_text( $p_text ) {
+	if( strlen( $p_text ) > 1000 ) {
+		$i = strpos( $p_text, "\n", 10 );
+		if( $i >= 10 ) {
+			echo "<details><summary>" . substr( $p_text, 0, $i ) .
+				"\n\u{2326}\n</summary>" . substr( $p_text, $i ) . "</details>";
+			return;
+		}
+	}
+	echo $p_text;
+}
