@@ -577,18 +577,7 @@ if( $t_flags['steps_to_reproduce_show'] && isset( $t_issue['steps_to_reproduce']
 	echo '<th class="bug-steps-to-reproduce category">', lang_get( 'steps_to_reproduce' ), '</th>';
 	echo '<td class="bug-steps-to-reproduce" colspan="5">';
 	$t_text = string_display_links( $t_issue['steps_to_reproduce'] );
-	$t_done = false;
-	if( strlen( $t_text ) > 1000 ) {
-		$i = strpos( $t_text, "\n", 10 );
-		if( $i >= 10 ) {
-			echo "<details><summary>" . substr( $t_text, 0, $i ) .
-				"\n\u{2326}\n</summary>" . substr( $t_text, $i ) . "</details>";
-			$t_done = true;
-		}
-	}
-	if( !$t_done ) {
-		echo $t_text;
-	}
+	print_long_text( $text );
 	echo '</td>';
 	echo '</tr>';
 }
@@ -952,7 +941,7 @@ function bug_view_relationship_get_details( $p_bug_id, BugRelationshipData $p_re
 	}
 
 	# add summary
-	$t_relationship_info_html .= $t_td 
+	$t_relationship_info_html .= $t_td
 		. '<span class="padding-right-4">' . string_display_line_links( $t_bug->summary ) . '</span>';
 	if( VS_PRIVATE == $t_bug->view_state ) {
 		$t_relationship_info_html .= icon_get( 'fa-lock', 'ace-icon', lang_get( 'private' ) );
