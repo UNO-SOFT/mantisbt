@@ -133,7 +133,6 @@ if( SYS_COMPANY === 'unosoft' ) {
 		'new' => '#FF9999',
 		'feedback' => '#FDA7FF',
 		'ask_proposal' => '#FFED75',
-		'to_be_proposed' => '#CF9770',
 		'proposal_feedback' => '#FDA7FF',
 		'proposal' => '#F7B267',
 		'acknowledged' => '#7EC4C6',
@@ -151,9 +150,9 @@ if( SYS_COMPANY === 'unosoft' ) {
   	$g_status_enum_workflow[U_ASK_PROPOSAL] = '29:to_be_proposed,27:proposal_feedback,90:closed,99:joker';
   	$g_status_enum_workflow[U_TO_BE_PROPOSED] = '30:proposal,25:ask_proposal,27:proposal_feedback,99:joker';
   	$g_status_enum_workflow[U_PROPOSAL_FEEDBACK] = '29:to_be_proposed,25:ask_proposal,90:closed,10:new,99:joker';
-  	$g_set_status_threshold[U_TO_BE_PROPOSED] = $g_set_status_proposed[U_PROPOSAL];
 		$g_status_enum_string = str_replace(',30:proposal,', ',29:to_be_proposed,30:proposal,', $g_status_enum_string);
-  	$g_status_enum_string = '10:new,25:ask_proposal,27:proposal_feedback,29:to_be_proposed,30:proposal,40:acknowledged,50:assigned,55:assigned_feedback,60:test,70:test_ok,80:resolved,90:closed,99:joker';
+  	$g_set_status_threshold[U_TO_BE_PROPOSED] = $g_set_status_proposed[U_PROPOSAL];
+		$g_status_colors['to_be_proposed'] = '#CF9770';
 
 	} elseif( SYS_COMPANY === 'kobe' ) {
 		define('U_SHIP', 85);
