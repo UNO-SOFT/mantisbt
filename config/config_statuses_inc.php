@@ -97,11 +97,8 @@ if( SYS_COMPANY === 'unosoft' ) {
 
 	require_once(dirname(__FILE__) . '/../config_defaults_inc.php');
 
-	//$g_status_enum_workflow[U_NEW] = '20:feedback,25:ask_proposal,50:assigned,90:closed';
 	$g_status_enum_workflow[U_NEW] = '25:ask_proposal,50:assigned,90:closed';
-	//$g_status_enum_workflow[U_FEEDBACK] = '25:ask_proposal,50:assigned,90:closed';
 	$g_status_enum_workflow[U_ASK_PROPOSAL] = '30:proposal,27:proposal_feedback,90:closed,99:joker';
-	//$g_status_enum_workflow[U_PROPOSAL_FEEDBACK] = '30:proposal,25:ask_proposal,90:closed,20:feedback';
 	$g_status_enum_workflow[U_PROPOSAL_FEEDBACK] = '30:proposal,25:ask_proposal,90:closed,10:new,99:joker';
 	$g_status_enum_workflow[U_PROPOSAL] = '40:acknowledged,25:ask_proposal,90:closed,99:joker';
 	$g_status_enum_workflow[U_ACKNOWLEDGED] = '50:assigned,90:closed,99:joker';
@@ -114,7 +111,6 @@ if( SYS_COMPANY === 'unosoft' ) {
 	//$g_status_enum_workflow[U_JOKER] = '10:new,20:feedback,25:ask_proposal,50:assigned,55:assigned_feedback,80:resolved,90:closed';
 	$g_status_enum_workflow[U_JOKER] = '10:new,25:ask_proposal,50:assigned,55:assigned_feedback,80:resolved,90:closed';
 
-	//$g_status_enum_string = '10:new,20:feedback,25:ask_proposal,27:proposal_feedback,30:proposal,40:acknowledged,50:assigned,55:assigned_feedback,60:test,70:test_ok,80:resolved,90:closed,99:joker';
 	$g_status_enum_string = '10:new,25:ask_proposal,27:proposal_feedback,30:proposal,40:acknowledged,50:assigned,55:assigned_feedback,60:test,70:test_ok,80:resolved,90:closed,99:joker';
 
 	$g_set_status_threshold = array (
@@ -137,9 +133,10 @@ if( SYS_COMPANY === 'unosoft' ) {
 		'new' => '#FF9999',
 		'feedback' => '#FDA7FF',
 		'ask_proposal' => '#FFED75',
+		'to_be_proposed' => '#CF9770',
 		'proposal_feedback' => '#FDA7FF',
-		'proposal' => '#F9FFA7',
-		'acknowledged' => '#ABEDEC',
+		'proposal' => '#F7B267',
+		'acknowledged' => '#7EC4C6',
 		'assigned' => '#ABEDEC',
 		'assigned_feedback' => '#FDA7FF',
 		'test' => '#CAFD8A',
@@ -148,7 +145,17 @@ if( SYS_COMPANY === 'unosoft' ) {
 		'closed' => '#FFFFFF',
 	);
 
-	if( SYS_COMPANY === 'kobe' ) {
+
+	if( SYS_COMPANY === 'aegon' || SYS_COMPANY === 'alfa' ) {
+  	define('U_TO_BE_PROPOSED', 29); // ajanlat adhato
+  	$g_status_enum_workflow[U_ASK_PROPOSAL] = '29:to_be_proposed,27:proposal_feedback,90:closed,99:joker';
+  	$g_status_enum_workflow[U_TO_BE_PROPOSED] = '30:proposal,25:ask_proposal,27:proposal_feedback,99:joker';
+  	$g_status_enum_workflow[U_PROPOSAL_FEEDBACK] = '29:to_be_proposed,25:ask_proposal,90:closed,10:new,99:joker';
+  	$g_set_status_threshold[U_TO_BE_PROPOSED] = $g_set_status_proposed[U_PROPOSAL];
+		$g_status_enum_string = str_replace(',30:proposal,', ',29:to_be_proposed,30:proposal,', $g_status_enum_string);
+  	$g_status_enum_string = '10:new,25:ask_proposal,27:proposal_feedback,29:to_be_proposed,30:proposal,40:acknowledged,50:assigned,55:assigned_feedback,60:test,70:test_ok,80:resolved,90:closed,99:joker';
+
+	} elseif( SYS_COMPANY === 'kobe' ) {
 		define('U_SHIP', 85);
 		$g_status_enum_workflow[U_RESOLVED] = '50:assigned,85:ship,90:closed';
 		$g_status_enum_workflow[U_SHIP] = '90:closed,80:resolved';
@@ -190,12 +197,12 @@ if( SYS_COMPANY === 'unosoft' ) {
 	UPDATE mantis_bug_table A
 		SET projection = (SELECT CASE C.value WHEN 'hibajavítás' THEN 20  WHEN 'Hibabejelentés' THEN 20
 		WHEN 'megrendelés' THEN 50 WHEN 'Fejlesztés' THEN 50
-		WHEN 'SPL-Fejlesztés' THEN 51 WHEN 'Lekérdezés' THEN 52 WHEN 'SPOOLSYS' THEN 51 WHEN 'oktatás' THEN 53 
+		WHEN 'SPL-Fejlesztés' THEN 51 WHEN 'Lekérdezés' THEN 52 WHEN 'SPOOLSYS' THEN 51 WHEN 'oktatás' THEN 53
 		WHEN 'konzultáció' THEN 55 WHEN 'Konzultáció' THEN 55
-		ELSE 10 END 
-		FROM mantis_custom_field_string_table C, mantis_custom_field_table B 
+		ELSE 10 END
+		FROM mantis_custom_field_string_table C, mantis_custom_field_table B
 		WHERE C.bug_id = A.id AND C.field_id = B.id AND B.name LIKE 't_pus')
-		WHERE EXISTS (SELECT 1 FROM mantis_custom_field_string_table C, mantis_custom_field_table B 
+		WHERE EXISTS (SELECT 1 FROM mantis_custom_field_string_table C, mantis_custom_field_table B
 			  WHERE C.bug_id = A.id AND C.value <> '' AND C.field_id = B.id AND B.name LIKE 't_pus');
 
 	UPDATE mantis_bug_table
