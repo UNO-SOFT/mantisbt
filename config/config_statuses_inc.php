@@ -146,12 +146,15 @@ if( SYS_COMPANY === 'unosoft' ) {
 
 
 	if( SYS_COMPANY === 'aegon' || SYS_COMPANY === 'alfa' ) {
+    define('ORGANIZER', 60); //szervezo
+    $g_access_levels_enum_string = '10:viewer,25:reporter,40:updater,55:developer,60:organizer,70:manager,90:administrator';
+
   	define('U_TO_BE_PROPOSED', 29); // ajanlat adhato
   	$g_status_enum_workflow[U_ASK_PROPOSAL] = '29:to_be_proposed,27:proposal_feedback,90:closed,99:joker';
   	$g_status_enum_workflow[U_TO_BE_PROPOSED] = '30:proposal,25:ask_proposal,27:proposal_feedback,99:joker';
   	$g_status_enum_workflow[U_PROPOSAL_FEEDBACK] = '29:to_be_proposed,25:ask_proposal,90:closed,10:new,99:joker';
 		$g_status_enum_string = str_replace(',30:proposal,', ',29:to_be_proposed,30:proposal,', $g_status_enum_string);
-  	$g_set_status_threshold[U_TO_BE_PROPOSED] = $g_set_status_proposed[U_PROPOSAL];
+  	$g_set_status_threshold[U_TO_BE_PROPOSED] = ORGANIZER;
 		$g_status_colors['to_be_proposed'] = '#CF9770';
 
 	} elseif( SYS_COMPANY === 'kobe' ) {

@@ -18,6 +18,7 @@ if( SYS_COMPANY == 'unosoft' ) {
     $s_status_enum_string = '10:új,25:ajánlat&nbsp;kérés,27:tisztázás,30:ajánlat,40:elfogadva,50:folyamatban,55:kérdés,60:teszt,70:teszt&nbsp;ok,80:átadva,90:lezárva';
 
   	if( SYS_COMPANY === 'aegon' || SYS_COMPANY === 'alfa' ) {
+      $s_access_levels_enum_string = '10:néző,25:bejelentő,40:frissítő,55:fejlesztő,60:szervező,70:menedzser,90:adminisztrátor';
       $s_status_enum_string = str_replace(',30:', ',29:ajánlat&nbsp;adható,30:', $s_status_enum_string);
     } elseif ( SYS_COMPANY === 'kobe' ) {
       $s_status_enum_string = str_replace(',90:', ',85:élesre&nbsp;tehető,90:', $s_status_enum_string);
