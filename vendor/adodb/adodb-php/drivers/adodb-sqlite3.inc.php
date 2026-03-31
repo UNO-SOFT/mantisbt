@@ -1,41 +1,50 @@
 <?php
-/*
-@version   v5.20.14  06-Jan-2019
-@copyright (c) 2000-2013 John Lim (jlim#natsoft.com). All rights reserved.
-@copyright (c) 2014      Damien Regad, Mark Newnham and the ADOdb community
-  Released under both BSD license and Lesser GPL library license.
-  Whenever there is any discrepancy between the two licenses,
-  the BSD license will take precedence.
-
-  Latest version is available at http://adodb.org/
-
-  SQLite info: http://www.hwaci.com/sw/sqlite/
-
-  Install Instructions:
-  ====================
-  1. Place this in adodb/drivers
-  2. Rename the file, remove the .txt prefix.
-*/
+/**
+ * SQLite3 driver
+ *
+ * @link https://www.sqlite.org/
+ *
+ * This file is part of ADOdb, a Database Abstraction Layer library for PHP.
+ *
+ * @package ADOdb
+ * @link https://adodb.org Project's web site and documentation
+ * @link https://github.com/ADOdb/ADOdb Source code and issue tracker
+ *
+ * The ADOdb Library is dual-licensed, released under both the BSD 3-Clause
+ * and the GNU Lesser General Public Licence (LGPL) v2.1 or, at your option,
+ * any later version. This means you can use it in proprietary products.
+ * See the LICENSE.md file distributed with this source code for details.
+ * @license BSD-3-Clause
+ * @license LGPL-2.1-or-later
+ *
+ * @copyright 2000-2013 John Lim
+ * @copyright 2014 Damien Regad, Mark Newnham and the ADOdb community
+ *
+ * @TODO Duplicate code is due to the legacy sqlite driver - delete this when removing the old driver
+ * @noinspection DuplicatedCode
+ */
 
 // security - hide paths
 if (!defined('ADODB_DIR')) die();
 
+/**
+ * Class ADODB_sqlite3
+ */
 class ADODB_sqlite3 extends ADOConnection {
 	var $databaseType = "sqlite3";
+	var $dataProvider = "sqlite";
 	var $replaceQuote = "''"; // string to use to replace quotes
 	var $concat_operator='||';
-	var $_errorNo = 0;
 	var $hasLimit = true;
 	var $hasInsertID = true; 		/// supports autoincrement ID?
 	var $hasAffectedRows = true; 	/// supports affected rows for update/delete?
 	var $metaTablesSQL = "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name";
-	var $sysDate = "adodb_date('Y-m-d')";
-	var $sysTimeStamp = "adodb_date('Y-m-d H:i:s')";
+	var $sysDate = "DATE('now','localtime')";
+	var $sysTimeStamp = "DATETIME('now','localtime')";
 	var $fmtTimeStamp = "'Y-m-d H:i:s'";
 
-	function __construct()
-	{
-	}
+	/** @var SQLite3 */
+	var $_connectionID;
 
 	function ServerInfo()
 	{
@@ -50,7 +59,7 @@ class ADODB_sqlite3 extends ADOConnection {
 		if ($this->transOff) {
 			return true;
 		}
-		$ret = $this->Execute("BEGIN TRANSACTION");
+		$this->Execute("BEGIN TRANSACTION");
 		$this->transCnt += 1;
 		return true;
 	}
@@ -82,32 +91,103 @@ class ADODB_sqlite3 extends ADOConnection {
 		return !empty($ret);
 	}
 
+	function metaType($t,$len=-1,$fieldobj=false)
+	{
+
+		if (is_object($t))
+		{
+			$fieldobj = $t;
+			$t = $fieldobj->type;
+		}
+
+		$t = strtoupper($t);
+
+		if (array_key_exists($t,$this->customActualTypes))
+			return  $this->customActualTypes[$t];
+
+		/*
+		* We are using the Sqlite affinity method here
+		* @link https://www.sqlite.org/datatype3.html
+		*/
+		$affinity = array(
+		'INT'=>'INTEGER',
+		'INTEGER'=>'INTEGER',
+		'TINYINT'=>'INTEGER',
+		'SMALLINT'=>'INTEGER',
+		'MEDIUMINT'=>'INTEGER',
+		'BIGINT'=>'INTEGER',
+		'UNSIGNED BIG INT'=>'INTEGER',
+		'INT2'=>'INTEGER',
+		'INT8'=>'INTEGER',
+
+		'CHARACTER'=>'TEXT',
+		'VARCHAR'=>'TEXT',
+		'VARYING CHARACTER'=>'TEXT',
+		'NCHAR'=>'TEXT',
+		'NATIVE CHARACTER'=>'TEXT',
+		'NVARCHAR'=>'TEXT',
+		'TEXT'=>'TEXT',
+		'CLOB'=>'TEXT',
+
+		'BLOB'=>'BLOB',
+
+		'REAL'=>'REAL',
+		'DOUBLE'=>'REAL',
+		'DOUBLE PRECISION'=>'REAL',
+		'FLOAT'=>'REAL',
+
+		'NUMERIC'=>'NUMERIC',
+		'DECIMAL'=>'NUMERIC',
+		'BOOLEAN'=>'NUMERIC',
+		'DATE'=>'NUMERIC',
+		'DATETIME'=>'NUMERIC'
+		);
+
+		if (!isset($affinity[$t]))
+			return ADODB_DEFAULT_METATYPE;
+
+		$subt = $affinity[$t];
+		/*
+		* Now that we have subclassed the provided data down
+		* the sqlite 'affinity', we convert to ADOdb metatype
+		*/
+
+		$subclass = array('INTEGER'=>'I',
+						  'TEXT'=>'X',
+						  'BLOB'=>'B',
+						  'REAL'=>'N',
+						  'NUMERIC'=>'N');
+
+		return $subclass[$subt];
+	}
 	// mark newnham
 	function MetaColumns($table, $normalize=true)
 	{
 		global $ADODB_FETCH_MODE;
-		$false = false;
 		$save = $ADODB_FETCH_MODE;
 		$ADODB_FETCH_MODE = ADODB_FETCH_ASSOC;
 		if ($this->fetchMode !== false) {
 			$savem = $this->SetFetchMode(false);
 		}
-		$rs = $this->Execute("PRAGMA table_info('$table')");
+
+		$rs = $this->execute("PRAGMA table_info(?)", array($table));
+
 		if (isset($savem)) {
 			$this->SetFetchMode($savem);
 		}
+
 		if (!$rs) {
 			$ADODB_FETCH_MODE = $save;
-			return $false;
+			return false;
 		}
+
 		$arr = array();
 		while ($r = $rs->FetchRow()) {
-			$type = explode('(',$r['type']);
+			$type = explode('(', $r['type']);
 			$size = '';
-			if (sizeof($type)==2) {
-				$size = trim($type[1],')');
+			if (sizeof($type) == 2) {
+				$size = trim($type[1], ')');
 			}
-			$fn = strtoupper($r['name']);
 			$fld = new ADOFieldObject;
 			$fld->name = $r['name'];
 			$fld->type = $type[0];
@@ -116,7 +196,7 @@ class ADODB_sqlite3 extends ADOConnection {
 			$fld->default_value = $r['dflt_value'];
 			$fld->scale = 0;
 			if (isset($r['pk']) && $r['pk']) {
-				$fld->primary_key=1;
+				$fld->primary_key = 1;
 			}
 			if ($save == ADODB_FETCH_NUM) {
 				$arr[] = $fld;
@@ -129,13 +209,53 @@ class ADODB_sqlite3 extends ADOConnection {
 		return $arr;
 	}
 
+	public function metaForeignKeys($table, $owner = '', $upper =  false, $associative =  false)
+	{
+		global $ADODB_FETCH_MODE;
+		if ($ADODB_FETCH_MODE == ADODB_FETCH_ASSOC || $this->fetchMode == ADODB_FETCH_ASSOC) {
+			$associative = true;
+		}
+
+		// Read sqlite master to find foreign keys
+		$sql = "SELECT sql
+				FROM sqlite_master
+				WHERE sql NOTNULL
+				  AND LOWER(name) = ?";
+		$tableSql = $this->getOne($sql, [strtolower($table)]);
+
+		// Regex will identify foreign keys in both column and table constraints
+		// Reference: https://sqlite.org/syntax/foreign-key-clause.html
+		// Subpatterns: 1/2 = source columns; 3 = parent table; 4 = parent columns.
+		preg_match_all(
+			'/[(,]\s*(?:FOREIGN\s+KEY\s*\(([^)]+)\)|(\w+).*?)\s*REFERENCES\s+(\w+|"[^"]+")\(([^)]+)\)/i',
+			$tableSql,
+			$fkeyMatches,
+			PREG_SET_ORDER
+		);
+
+		$fkeyList = array();
+		foreach ($fkeyMatches as $fkey) {
+			$src_col = $fkey[1] ?: $fkey[2];
+			$ref_table = $upper ? strtoupper($fkey[3]) : $fkey[3];
+			$ref_col = $fkey[4];
+
+			if ($associative) {
+				$fkeyList[$ref_table][$src_col] = $ref_col;
+			} else {
+				$fkeyList[$ref_table][] = $src_col . '=' . $ref_col;
+			}
+		}
+
+		return $fkeyList;
+	}
+
 	function _init($parentDriver)
 	{
 		$parentDriver->hasTransactions = false;
 		$parentDriver->hasInsertID = true;
 	}
 
-	function _insertid()
+	protected function _insertID($table = '', $column = '')
 	{
 		return $this->_connectionID->lastInsertRowID();
 	}
@@ -145,25 +265,39 @@ class ADODB_sqlite3 extends ADOConnection {
 		return $this->_connectionID->changes();
 	}
 
+	protected function lastError()
+	{
+		$this->_errorMsg = $this->_connectionID->lastErrorMsg();
+		$this->_errorCode = $this->_connectionID->lastErrorCode();
+	}
+
 	function ErrorMsg()
  	{
-		if ($this->_logsql) {
-			return $this->_errorMsg;
-		}
-		return ($this->_errorNo) ? $this->ErrorNo() : ''; //**tochange?
+		return $this->_errorMsg;
 	}
 
 	function ErrorNo()
 	{
-		return $this->_connectionID->lastErrorCode(); //**tochange??
+		return $this->_errorCode;
 	}
 
 	function SQLDate($fmt, $col=false)
 	{
+		/*
+		* In order to map the values correctly, we must ensure the proper
+		* casing for certain fields
+		* Y must be UC, because y is a 2 digit year
+		* d must be LC, because D is 3 char day
+		* A must be UC  because a is non-portable am
+		* Q must be UC  because q means nothing
+		*/
+		$fromChars = array('y','D','a','q');
+		$toChars   = array('Y','d','A','Q');
+		$fmt       = str_replace($fromChars,$toChars,$fmt);
+
 		$fmt = $this->qstr($fmt);
 		return ($col) ? "adodb_date2($fmt,$col)" : "adodb_date($fmt)";
 	}
-
 
 	function _createFunctions()
 	{
@@ -171,8 +305,7 @@ class ADODB_sqlite3 extends ADOConnection {
 		$this->_connectionID->createFunction('adodb_date2', 'adodb_date2', 2);
 	}
 
-
-	// returns true or false
+	/** @noinspection PhpUnusedParameterInspection */
 	function _connect($argHostname, $argUsername, $argPassword, $argDatabasename)
 	{
 		if (empty($argHostname) && $argDatabasename) {
@@ -184,19 +317,17 @@ class ADODB_sqlite3 extends ADOConnection {
 		return true;
 	}
 
-	// returns true or false
 	function _pconnect($argHostname, $argUsername, $argPassword, $argDatabasename)
 	{
 		// There's no permanent connect in SQLite3
 		return $this->_connect($argHostname, $argUsername, $argPassword, $argDatabasename);
 	}
 
-	// returns query ID if successful, otherwise false
 	function _query($sql,$inputarr=false)
 	{
 		$rez = $this->_connectionID->query($sql);
 		if ($rez === false) {
-			$this->_errorNo = $this->_connectionID->lastErrorCode();
+			$this->lastError();
 		}
 		// If no data was returned, we don't need to create a real recordset
 		elseif ($rez->numColumns() == 0) {
@@ -230,24 +361,24 @@ class ADODB_sqlite3 extends ADOConnection {
 	*/
 	var $_genSeqSQL = "create table %s (id integer)";
 
-	function GenID($seq='adodbseq',$start=1)
+	function GenID($seqname='adodbseq', $startID=1)
 	{
 		// if you have to modify the parameter below, your database is overloaded,
 		// or you need to implement generation of id's yourself!
 		$MAXLOOPS = 100;
 		//$this->debug=1;
 		while (--$MAXLOOPS>=0) {
-			@($num = $this->GetOne("select id from $seq"));
+			@($num = $this->GetOne("select id from $seqname"));
 			if ($num === false) {
-				$this->Execute(sprintf($this->_genSeqSQL ,$seq));
-				$start -= 1;
+				$this->Execute(sprintf($this->_genSeqSQL ,$seqname));
+				$startID -= 1;
 				$num = '0';
-				$ok = $this->Execute("insert into $seq values($start)");
+				$ok = $this->Execute("insert into $seqname values($startID)");
 				if (!$ok) {
 					return false;
 				}
 			}
-			$this->Execute("update $seq set id=id+1 where id=$num");
+			$this->Execute("update $seqname set id=id+1 where id=$num");
 
 			if ($this->affected_rows() > 0) {
 				$num += 1;
@@ -256,12 +387,12 @@ class ADODB_sqlite3 extends ADOConnection {
 			}
 		}
 		if ($fn = $this->raiseErrorFn) {
-			$fn($this->databaseType,'GENID',-32000,"Unable to generate unique id after $MAXLOOPS attempts",$seq,$num);
+			$fn($this->databaseType, 'GENID', -32000, "Unable to generate unique id after $MAXLOOPS attempts", $seqname, $num);
 		}
 		return false;
 	}
 
-	function CreateSequence($seqname='adodbseq',$start=1)
+	function createSequence($seqname='adodbseq', $startID=1)
 	{
 		if (empty($this->_genSeqSQL)) {
 			return false;
@@ -270,8 +401,8 @@ class ADODB_sqlite3 extends ADOConnection {
 		if (!$ok) {
 			return false;
 		}
-		$start -= 1;
-		return $this->Execute("insert into $seqname values($start)");
+		$startID -= 1;
+		return $this->Execute("insert into $seqname values($startID)");
 	}
 
 	var $_dropSeqSQL = 'drop table %s';
@@ -289,53 +420,243 @@ class ADODB_sqlite3 extends ADOConnection {
 		return $this->_connectionID->close();
 	}
 
-	function MetaIndexes($table, $primary = FALSE, $owner = false)
+	function metaIndexes($table, $primary = false, $owner = false)
 	{
-		$false = false;
 		// save old fetch mode
 		global $ADODB_FETCH_MODE;
 		$save = $ADODB_FETCH_MODE;
 		$ADODB_FETCH_MODE = ADODB_FETCH_NUM;
-		if ($this->fetchMode !== FALSE) {
-			$savem = $this->SetFetchMode(FALSE);
+		if ($this->fetchMode !== false) {
+			$savem = $this->SetFetchMode(false);
 		}
-		$SQL=sprintf("SELECT name,sql FROM sqlite_master WHERE type='index' AND tbl_name='%s'", strtolower($table));
-		$rs = $this->Execute($SQL);
+
+		$table = strtolower($table);
+
+		// Exclude the empty entry for the primary index
+		$sql = "SELECT name,sql
+				FROM sqlite_master
+				WHERE type='index'
+				  AND sql IS NOT NULL
+				  AND LOWER(tbl_name)=?";
+		$rs = $this->execute($sql, [$table]);
+
 		if (!is_object($rs)) {
 			if (isset($savem)) {
 				$this->SetFetchMode($savem);
 			}
 			$ADODB_FETCH_MODE = $save;
-			return $false;
+			return false;
 		}
 
-		$indexes = array ();
+		$indexes = array();
+
 		while ($row = $rs->FetchRow()) {
-			if ($primary && preg_match("/primary/i",$row[1]) == 0) {
-				continue;
-			}
 			if (!isset($indexes[$row[0]])) {
 				$indexes[$row[0]] = array(
-					'unique' => preg_match("/unique/i",$row[1]),
-					'columns' => array()
+					'unique' => preg_match("/unique/i", $row[1]),
 				);
 			}
-			/**
-			 * There must be a more elegant way of doing this,
-			 * the index elements appear in the SQL statement
-			 * in cols[1] between parentheses
-			 * e.g CREATE UNIQUE INDEX ware_0 ON warehouse (org,warehouse)
-			 */
-			$cols = explode("(",$row[1]);
-			$cols = explode(")",$cols[1]);
-			array_pop($cols);
-			$indexes[$row[0]]['columns'] = $cols;
+			// Index elements appear in the SQL statement in cols[1] between parentheses
+			// e.g CREATE UNIQUE INDEX ware_0 ON warehouse (org,warehouse)
+			preg_match_all('/\((.*)\)/', $row[1], $indexExpression);
+			$indexes[$row[0]]['columns'] = array_map('trim', explode(',', $indexExpression[1][0]));
 		}
+
+		// If we want the primary key, we must extract it from the pragma
+		if ($primary){
+			$pragmaData = $this->getAll('PRAGMA table_info(?);', [$table]);
+			$pkIndexData = array('unique'=>1,'columns'=>array());
+
+			$pkCallBack = function ($value, $key) use (&$pkIndexData) {
+				// As we iterate the elements check for pk index
+				if ($value[5] > 0) {
+					$pkIndexData['columns'][$value[5]] = strtolower($value[1]);
+				}
+			};
+			array_walk($pragmaData, $pkCallBack);
+
+			// If we found no columns, there is no primary index
+			if (count($pkIndexData['columns']) > 0) {
+				$indexes['PRIMARY'] = $pkIndexData;
+			}
+		}
+
 		if (isset($savem)) {
 			$this->SetFetchMode($savem);
 			$ADODB_FETCH_MODE = $save;
 		}
+
 		return $indexes;
+	}
+
+	/**
+	* Returns the maximum size of a MetaType C field. Because of the
+	* database design, sqlite places no limits on the size of data inserted
+	*
+	* @return int
+	*/
+	function charMax()
+	{
+		return ADODB_STRINGMAX_NOLIMIT;
+	}
+
+	/**
+	* Returns the maximum size of a MetaType X field. Because of the
+	* database design, sqlite places no limits on the size of data inserted
+	*
+	* @return int
+	*/
+	function textMax()
+	{
+		return ADODB_STRINGMAX_NOLIMIT;
+	}
+
+	/**
+	 * Converts a date to a month only field and pads it to 2 characters
+	 *
+	 * This uses the more efficient strftime native function to process
+	 *
+	 * @param string $fld	The name of the field to process
+	 *
+	 * @return string The SQL Statement
+	 */
+	function month($fld)
+	{
+		return "strftime('%m',$fld)";
+	}
+
+	/**
+	 * Converts a date to a day only field and pads it to 2 characters
+	 *
+	 * This uses the more efficient strftime native function to process
+	 *
+	 * @param string $fld	The name of the field to process
+	 *
+	 * @return string The SQL Statement
+	 */
+	function day($fld) {
+		return "strftime('%d',$fld)";
+	}
+
+	/**
+	 * Converts a date to a year only field
+	 *
+	 * This uses the more efficient strftime native function to process
+	 *
+	 * @param string $fld	The name of the field to process
+	 *
+	 * @return string The SQL Statement
+	 */
+	function year($fld)
+	{
+		return "strftime('%Y',$fld)";
+	}
+
+	/**
+	 * SQLite update for blob
+	 *
+	 * SQLite must be a fully prepared statement (all variables must be bound),
+	 * so $where can either be an array (array params) or a string that we will
+	 * do our best to unpack and turn into a prepared statement.
+	 *
+	 * @param string $table
+	 * @param string $column
+	 * @param string $val      Blob value to set
+	 * @param mixed  $where    An array of parameters (key => value pairs),
+	 *                         or a string (where clause).
+	 * @param string $blobtype ignored
+	 *
+	 * @return bool success
+	 */
+	function updateBlob($table, $column, $val, $where, $blobtype = 'BLOB')
+	{
+		if (is_array($where)) {
+			// We were passed a set of key=>value pairs
+			$params = $where;
+		} else {
+			// Given a where clause string, we have to disassemble the
+			// statements into keys and values
+			$params = array();
+			$temp = preg_split('/(where|and)/i', $where);
+			$where = array_filter($temp);
+
+			foreach ($where as $wValue) {
+				$wTemp = preg_split('/[= \']+/', $wValue);
+				$wTemp = array_filter($wTemp);
+				$wTemp = array_values($wTemp);
+				$params[$wTemp[0]] = $wTemp[1];
+			}
+		}
+
+		$paramWhere = array();
+		foreach ($params as $bindKey => $bindValue) {
+			$paramWhere[] = $bindKey . '=?';
+		}
+
+		$sql = "UPDATE $table SET $column=? WHERE "
+			. implode(' AND ', $paramWhere);
+
+		// Prepare the statement
+		$stmt = $this->_connectionID->prepare($sql);
+		if ($stmt === false) {
+			$this->lastError();
+			return false;
+		}
+
+		// Set the first bind value equal to value we want to update
+		if (!$stmt->bindValue(1, $val, SQLITE3_BLOB)) {
+			return false;
+		}
+
+		// Build as many keys as available
+		$bindIndex = 2;
+		foreach ($params as $bindValue) {
+			if (is_integer($bindValue) || is_bool($bindValue) || is_float($bindValue)) {
+				$type = SQLITE3_NUM;
+			} elseif (is_object($bindValue)) {
+				// Assume a blob, this should never appear in
+				// the binding for a where statement anyway
+				$type = SQLITE3_BLOB;
+			} else {
+				$type = SQLITE3_TEXT;
+			}
+
+			if (!$stmt->bindValue($bindIndex, $bindValue, $type)) {
+				return false;
+			}
+
+			$bindIndex++;
+		}
+
+		// Now execute the update. NB this is SQLite execute, not ADOdb
+		$ok = $stmt->execute();
+		return is_object($ok);
+	}
+
+	/**
+	 * SQLite update for blob from a file
+	 *
+	 * @param string $table
+	 * @param string $column
+	 * @param string $path      Filename containing blob data
+	 * @param mixed  $where    {@see updateBlob()}
+	 * @param string $blobtype ignored
+	 *
+	 * @return bool success
+	 */
+	function updateBlobFile($table, $column, $path, $where, $blobtype = 'BLOB')
+	{
+		if (!file_exists($path)) {
+			return false;
+		}
+
+		// Read file information
+		$fileContents = file_get_contents($path);
+		if ($fileContents === false)
+			// Distinguish between an empty file and failure
+			return false;
+
+		return $this->updateBlob($table, $column, $fileContents, $where, $blobtype);
 	}
 
 }
@@ -349,9 +670,12 @@ class ADORecordset_sqlite3 extends ADORecordSet {
 	var $databaseType = "sqlite3";
 	var $bind = false;
 
+	/** @var SQLite3Result */
+	var $_queryID;
+
+	/** @noinspection PhpMissingParentConstructorInspection */
 	function __construct($queryID,$mode=false)
 	{
-
 		if ($mode === false) {
 			global $ADODB_FETCH_MODE;
 			$mode = $ADODB_FETCH_MODE;

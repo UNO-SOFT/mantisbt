@@ -1,27 +1,27 @@
 <?php
-/*
+/**
+ * Active Record implementation. Superset of Zend Framework's.
+ *
+ * This is "Active Record eXtended" to support JOIN, WORK and LAZY mode
+ *
+ * This file is part of ADOdb, a Database Abstraction Layer library for PHP.
+ *
+ * @package ADOdb
+ * @link https://adodb.org Project's web site and documentation
+ * @link https://github.com/ADOdb/ADOdb Source code and issue tracker
+ *
+ * The ADOdb Library is dual-licensed, released under both the BSD 3-Clause
+ * and the GNU Lesser General Public Licence (LGPL) v2.1 or, at your option,
+ * any later version. This means you can use it in proprietary products.
+ * See the LICENSE.md file distributed with this source code for details.
+ * @license BSD-3-Clause
+ * @license LGPL-2.1-or-later
+ *
+ * @copyright 2000-2013 John Lim
+ * @copyright 2014 Damien Regad, Mark Newnham and the ADOdb community
+ */
 
-@version   v5.20.14  06-Jan-2019
-@copyright (c) 2000-2013 John Lim (jlim#natsoft.com). All rights reserved.
-@copyright (c) 2014      Damien Regad, Mark Newnham and the ADOdb community
-  Latest version is available at http://adodb.org/
-
-  Released under both BSD license and Lesser GPL library license.
-  Whenever there is any discrepancy between the two licenses,
-  the BSD license will take precedence.
-
-  Active Record implementation. Superset of Zend Framework's.
-
-  This is "Active Record eXtended" to support JOIN, WORK and LAZY mode by Chris Ravenscroft  chris#voilaweb.com
-
-  Version 0.9
-
-  See http://www-128.ibm.com/developerworks/java/library/j-cb03076/?ca=dgr-lnxw01ActiveRecord
-  	for info on Ruby on Rails Active Record implementation
-*/
-
-
-	// CFR: Active Records Definitions
+// CFR: Active Records Definitions
 define('ADODB_JOIN_AR', 0x01);
 define('ADODB_WORK_AR', 0x02);
 define('ADODB_LAZY_AR', 0x03);
@@ -66,28 +66,23 @@ function ADODB_SetDatabaseAdapter(&$db)
 {
 	global $_ADODB_ACTIVE_DBS;
 
-		foreach($_ADODB_ACTIVE_DBS as $k => $d) {
-			if (PHP_VERSION >= 5) {
-				if ($d->db === $db) {
-					return $k;
-				}
-			} else {
-				if ($d->db->_connectionID === $db->_connectionID && $db->database == $d->db->database) {
-					return $k;
-				}
-			}
+	foreach($_ADODB_ACTIVE_DBS as $k => $d) {
+		if ($d->db === $db) {
+			return $k;
 		}
+	}
 
-		$obj = new ADODB_Active_DB();
-		$obj->db = $db;
-		$obj->tables = array();
+	$obj = new ADODB_Active_DB();
+	$obj->db = $db;
+	$obj->tables = array();
 
-		$_ADODB_ACTIVE_DBS[] = $obj;
+	$_ADODB_ACTIVE_DBS[] = $obj;
 
-		return sizeof($_ADODB_ACTIVE_DBS)-1;
+	return sizeof($_ADODB_ACTIVE_DBS)-1;
 }
 
 
+#[\AllowDynamicProperties]
 class ADODB_Active_Record {
 	static $_changeNames = true; // dynamically pluralize table names
 	static $_foreignSuffix = '_id'; //
@@ -137,7 +132,7 @@ class ADODB_Active_Record {
 	// if $options['new'] is true, we forget all relations
 	function __construct($table = false, $pkeyarr=false, $db=false, $options=array())
 	{
-	global $ADODB_ASSOC_CASE,$_ADODB_ACTIVE_DBS;
+	global $_ADODB_ACTIVE_DBS;
 
 		if ($db == false && is_object($pkeyarr)) {
 			$db = $pkeyarr;
@@ -410,7 +405,7 @@ class ADODB_Active_Record {
 	// update metadata
 	function UpdateActiveTable($pkeys=false,$forceUpdate=false)
 	{
-	global $ADODB_ASSOC_CASE,$_ADODB_ACTIVE_DBS , $ADODB_CACHE_DIR, $ADODB_ACTIVE_CACHESECS;
+	global $_ADODB_ACTIVE_DBS , $ADODB_CACHE_DIR, $ADODB_ACTIVE_CACHESECS;
 	global $ADODB_ACTIVE_DEFVALS, $ADODB_FETCH_MODE;
 
 		$activedb = $_ADODB_ACTIVE_DBS[$this->_dbat];
@@ -491,8 +486,8 @@ class ADODB_Active_Record {
 		$attr = array();
 		$keys = array();
 
-		switch($ADODB_ASSOC_CASE) {
-		case 0:
+		switch (ADODB_ASSOC_CASE) {
+		case ADODB_ASSOC_CASE_LOWER:
 			foreach($cols as $name => $fldobj) {
 				$name = strtolower($name);
 				if ($ADODB_ACTIVE_DEFVALS && isset($fldobj->default_value)) {
@@ -508,7 +503,7 @@ class ADODB_Active_Record {
 			}
 			break;
 
-		case 1:
+		case ADODB_ASSOC_CASE_UPPER:
 			foreach($cols as $name => $fldobj) {
 				$name = strtoupper($name);
 
@@ -551,7 +546,7 @@ class ADODB_Active_Record {
 			$activetab->_created = time();
 			$s = serialize($activetab);
 			if (!function_exists('adodb_write_file')) {
-				include(ADODB_DIR.'/adodb-csvlib.inc.php');
+				include_once(ADODB_DIR.'/adodb-csvlib.inc.php');
 			}
 			adodb_write_file($fname,$s);
 		}
@@ -767,28 +762,36 @@ class ADODB_Active_Record {
 	}
 
 	// quote data in where clause
-	function doquote(&$db, $val,$t)
+	function doQuote($db, $val, $t)
 	{
-		switch($t) {
-		case 'D':
-		case 'T':
-			if (empty($val)) {
-				return 'null';
-			}
-		case 'C':
-		case 'X':
-			if (is_null($val)) {
-				return 'null';
-			}
-			if (strlen($val)>0 &&
-				(strncmp($val,"'",1) != 0 || substr($val,strlen($val)-1,1) != "'")
-			) {
-				return $db->qstr($val);
-				break;
-			}
-		default:
-			return $val;
-			break;
+		switch ($t) {
+			/** @noinspection PhpMissingBreakStatementInspection */
+			case 'L':
+				if (strpos($db->databaseType, 'postgres') !== false) {
+					return $db->qstr($val);
+				}
+			case 'D':
+			/** @noinspection PhpMissingBreakStatementInspection */
+			case 'T':
+				if (empty($val)) {
+					return 'null';
+				}
+			case 'B':
+			case 'N':
+			case 'C':
+			/** @noinspection PhpMissingBreakStatementInspection */
+			case 'X':
+				if (is_null($val)) {
+					return 'null';
+				}
+				if ('' === (string)$val) {
+					return "''";
+				}
+				if (substr($val, 0, 1) != "'" || substr($val,-1) != "'") {
+					return $db->qstr($val);
+				}
+			default:
+				return $val;
 		}
 	}
 
@@ -801,7 +804,7 @@ class ADODB_Active_Record {
 		foreach($keys as $k) {
 			$f = $table->flds[$k];
 			if ($f) {
-				$parr[] = $k.' = '.$this->doquote($db,$this->$k,$db->MetaType($f->type));
+				$parr[] = $k . ' = ' . $this->doQuote($db, $this->$k, $db->MetaType($f->type));
 			}
 		}
 		return implode(' and ', $parr);
@@ -1060,8 +1063,6 @@ class ADODB_Active_Record {
 	// returns 0 on error, 1 on update, 2 on insert
 	function Replace()
 	{
-	global $ADODB_ASSOC_CASE;
-
 		$db = $this->DB();
 		if (!$db) {
 			return false;
@@ -1088,7 +1089,7 @@ class ADODB_Active_Record {
 				continue;
 			}
 			$t = $db->MetaType($fld->type);
-			$arr[$name] = $this->doquote($db,$val,$t);
+			$arr[$name] = $this->doQuote($db, $val, $t);
 			$valarr[] = $val;
 		}
 
@@ -1097,7 +1098,7 @@ class ADODB_Active_Record {
 		}
 
 
-		switch ($ADODB_ASSOC_CASE == 0) {
+		switch (ADODB_ASSOC_CASE) {
 			case ADODB_ASSOC_CASE_LOWER:
 				foreach($pkey as $k => $v) {
 					$pkey[$k] = strtolower($v);
@@ -1150,10 +1151,10 @@ class ADODB_Active_Record {
 		$valarr = array();
 		$neworig = array();
 		$pairs = array();
-		$i = -1;
+		$i = 0;
 		$cnt = 0;
 		foreach($table->flds as $name=>$fld) {
-			$i += 1;
+			$orig = $this->_original[$i++] ?? null;
 			$val = $this->$name;
 			$neworig[] = $val;
 
@@ -1173,7 +1174,7 @@ class ADODB_Active_Record {
 				}
 			}
 
-			if (isset($this->_original[$i]) && $val === $this->_original[$i]) {
+			if ($val === $orig) {
 				continue;
 			}
 			$valarr[] = $val;
@@ -1300,7 +1301,7 @@ function adodb_GetActiveRecordsClass(&$db, $class, $tableObj,$whereOrderBy,$bind
 
 
 		if (!isset($_ADODB_ACTIVE_DBS)) {
-			include(ADODB_DIR.'/adodb-active-record.inc.php');
+			include_once(ADODB_DIR.'/adodb-active-record.inc.php');
 		}
 		if (!class_exists($class)) {
 			$db->outp_throw("Unknown class $class in GetActiveRecordsClass()",'GetActiveRecordsClass');
@@ -1311,7 +1312,7 @@ function adodb_GetActiveRecordsClass(&$db, $class, $tableObj,$whereOrderBy,$bind
 		// arrRef will be the structure that knows about our objects.
 		// It is an associative array.
 		// We will, however, return arr, preserving regular 0.. order so that
-		// obj[0] can be used by app developpers.
+		// obj[0] can be used by app developers.
 		$arrRef = array();
 		$bTos = array(); // Will store belongTo's indices if any
 		foreach($rows as $row) {

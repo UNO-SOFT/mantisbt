@@ -146,8 +146,8 @@ if( SYS_COMPANY === 'unosoft' ) {
 
 
 	if( SYS_COMPANY === 'aegon' || SYS_COMPANY === 'alfa' ) {
-    define('ORGANIZER', 60); //szervezo
-    $g_access_levels_enum_string = '10:viewer,25:reporter,40:updater,55:developer,60:organizer,70:manager,90:administrator';
+		define('ORGANIZER', 60); //szervezo
+		$g_access_levels_enum_string = '10:viewer,25:reporter,40:updater,55:developer,60:organizer,70:manager,90:administrator';
 
   	define('U_TO_BE_PROPOSED', 29); // ajanlat adhato
   	$g_status_enum_workflow[U_ASK_PROPOSAL] = '29:to_be_proposed,27:proposal_feedback,90:closed,99:joker';
