@@ -1141,11 +1141,18 @@ function bug_view_button_bug_change_status( BugData $p_bug ) {
 
 		echo ' <select name="new_status" class="input-sm">';
 
+		$t_to_be_proposed = defined('U_TO_BE_PROPOSED');
+		$t_incomplete = $t_be_proposed && FALSE;
 		# space at beginning of line is important
 		foreach( $t_enum_list as $t_key => $t_val ) {
+		  if( $t_to_be_proposed && $t_key == U_TO_BE_PROPOSED && $t_incomplete ) {
+  			echo '<option value="' . $t_key . '" ';
+  			echo ' disabled>' . $t_val . ' (hianyos!)</option>';
+			} else {
 			echo '<option value="' . $t_key . '" ';
 			check_selected( $t_key, $t_default );
 			echo '>' . $t_val . '</option>';
+			};
 		}
 		echo '</select>';
 
