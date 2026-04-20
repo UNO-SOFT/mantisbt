@@ -315,7 +315,20 @@ if( $t_flags['reporter_show'] || $t_flags['handler_show'] || $t_flags['due_date_
 		if( $t_issue_view['overdue'] !== false ) {
 			$t_css .= ' due-' . $t_issue_view['overdue'];
 		}
+		if(isset( $t_issue['target_version'])) {
+   $t_target_date = string_display_line($t_issue_view['target_version']);
+
+   preg_match('/\((.*?)\)/', $t_target_date, $matches);
+      $output = $matches[1];
+
+   if (str_contains($t_target_date), 'FIX') {
+    echo '<td class"' . $t_css . '">', $output, '</td>';
+   } else {
+    echo '<td class"' . $t_css . '">', $output, '</td>';
+   }
+  } else {
 		echo '<td class="' . $t_css . '">', $t_issue_view['due_date'], '</td>';
+		}
 	} else {
 		$t_spacer += 2;
 	}

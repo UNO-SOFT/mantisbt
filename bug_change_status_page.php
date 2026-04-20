@@ -120,6 +120,9 @@ if( config_get( 'bug_assigned_status' ) == $f_new_status ) {
 
 $t_status_label = str_replace( ' ', '_', MantisEnum::getLabel( config_get( 'status_enum_string' ), $f_new_status ) );
 
+
+$t_to_be_proposed = defined('U_TO_BE_PROPOSED') && $f_new_status == U_TO_BE_PROPOSED;
+
 layout_page_header( bug_format_summary( $f_bug_id, SUMMARY_CAPTION ) );
 
 layout_page_begin();
@@ -240,13 +243,15 @@ layout_page_begin();
 	<!-- Due date -->
 	<tr>
 		<th class="category">
+			<?php if( $t_to_be_proposed ) {?><span class="required">*</span><?php } ?>
 			<?php echo lang_get( 'due_date' ) ?>
 		</th>
 		<td>
 			<input type="text" id="due_date" name="due_date" class="datetimepicker input-sm" size="16" maxlength="16"
 				data-picker-locale="<?php lang_get_current_datetime_locale() ?>"
 				data-picker-format="<?php echo config_get( 'datetime_picker_format' ) ?>"
-				<?php helper_get_tab_index() ?> value="<?php echo $t_date_to_display ?>" />
+				<?php helper_get_tab_index() ?> value="<?php echo $t_date_to_display ?>"
+				<?php if( $t_to_be_proposed ) { echo 'required'; }; ?> />
 			<?php print_icon( 'fa-calendar', 'fa-xlg datetimepicker' ); ?>
 		</td>
 	</tr>
