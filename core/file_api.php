@@ -240,14 +240,20 @@ $g_file_can = array();
  * @internal Should not be used outside of File API.
  */
 function file_can_view_or_download( $p_action, $p_bug_id, $p_uploader_user_id, $p_bugnote_id = null ) {
+	# If user can't view the bug, then they can't access its attachments either
+	if( !access_has_bug_level( config_get( 'view_bug_threshold' ), $p_bug_id ) ) {
+		return false;
+	}
+
 	global $g_file_can;
 	$t_key = "$p_action;$p_bug_id;$p_uploader_user_id;$p_bugnote_id";
 	if( array_key_exists( $t_key, $g_file_can ) ) {
 		return $g_file_can[$t_key];
-	} 
+	}
 	if( count( $g_file_can ) > 10000 ) {
 		$g_file_can = array();
 	}
+
 	switch( $p_action ) {
 		case 'view':
 			$t_threshold_global = 'view_attachments_threshold';
@@ -317,7 +323,7 @@ function file_can_view_bugnote_attachments( $p_bugnote_id, $p_uploader_user_id =
 		$t_bug_id = (int)$p_bug_id;
 	}
 
-	return file_can_view_or_download( 'view', $t_bug_id, $p_uploader_user_id );
+	return file_can_view_or_download( 'view', $t_bug_id, $p_uploader_user_id, $p_bugnote_id );
 }
 
 /**
@@ -338,15 +344,21 @@ function file_can_download_bug_attachments( $p_bug_id, $p_uploader_user_id = nul
  *
  * @param int $p_bugnote_id       A bugnote identifier.
  * @param int $p_uploader_user_id The user who uploaded the attachment.
+ * @param int $p_bug_id           The bug id; if null (default), will be retrieved
+ *                                from bugnote record.
  *
  * @return bool
  * @throws ClientException
  */
-function file_can_download_bugnote_attachments( $p_bugnote_id, $p_uploader_user_id = null ) {
+function file_can_download_bugnote_attachments( $p_bugnote_id, $p_uploader_user_id = null, $p_bug_id = null ) {
 	if( $p_bugnote_id == 0 ) {
 		return true;
 	}
-	$t_bug_id = bugnote_get_field( $p_bugnote_id, 'bug_id' );
+	if( $p_bug_id === null ) {
+		$t_bug_id = bugnote_get_field( $p_bugnote_id, 'bug_id' );
+	} else {
+		$t_bug_id = (int)$p_bug_id;
+	}
 	return file_can_view_or_download( 'download', $t_bug_id, $p_uploader_user_id, $p_bugnote_id );
 }
 
@@ -572,9 +584,9 @@ function file_get_visible_attachments( $p_bug_id ) {
 
 /**
  * Delete all files that are associated with the given bug.
- * 
+ *
  * @param int $p_bug_id A bug identifier.
- *                          
+ *
  * @return bool
  * @throws ClientException
  */
@@ -611,7 +623,7 @@ function file_delete_attachments( $p_bug_id ) {
 
 /**
  * Delete all files that are associated with the given bug note.
- * 
+ *
  * @param int $p_bug_id     A bug identifier.
  * @param int $p_bugnote_id A bugnote identifier.
  *
@@ -633,7 +645,7 @@ function file_delete_bugnote_attachments( $p_bug_id, $p_bugnote_id ) {
 
 /**
  * Link the specified file to the specified bugnote.
- * 
+ *
  * @param int $p_file_id The file id.
  * @param int $p_bugnote_id A bugnote identifier.
  *
@@ -717,7 +729,7 @@ function file_get_field( $p_file_id, $p_field_name, $p_table = 'bug' ) {
 
 /**
  * Delete File.
- * 
+ *
  * @param int    $p_file_id    File identifier.
  * @param string $p_table      Table identifier.
  * @param int    $p_bugnote_id The bugnote id the file is attached to or 0 if
@@ -1186,7 +1198,13 @@ function file_allow_bug_upload( $p_bug_id = null, $p_user_id = null, $p_project_
 	}
 
 	# Check the access level against the config setting
-	return access_has_project_level( config_get( 'upload_bug_file_threshold' ), $t_project_id, $p_user_id );
+	$t_upload_bug_file_threshold = config_get( 'upload_bug_file_threshold' );
+	if( null !== $p_bug_id ) {
+		# Existing issue: if user can't view it, then they can't add attachments
+		return access_has_bug_level( $t_upload_bug_file_threshold, $p_bug_id, $p_user_id );
+	}
+	# New issue - check against project
+	return access_has_project_level( $t_upload_bug_file_threshold, $t_project_id, $p_user_id );
 }
 
 /**

@@ -2235,10 +2235,25 @@ function print_filter_custom_field( $p_field_id, ?array $p_filter = null ) {
 			break;
 
 		case CUSTOM_FIELD_TYPE_TEXTAREA:
-			echo '<input class="input-xs" type="text" name="custom_field_', $p_field_id, '" size="10" value="" >';
+			echo '<input class="input-xs" type="text" name="custom_field_',
+				string_html_specialchars( $p_field_id ),
+				'" size="10" value="" >';
 			break;
 
 		default:
+			echo '<select class="input-xs" ' . filter_select_modifier( $p_filter )
+				. ' name="custom_field_' . string_html_specialchars( $p_field_id ) . '[]">';
+			# Option META_FILTER_ANY
+			echo '<option value="' . META_FILTER_ANY . '"';
+			check_selected( $p_filter['custom_fields'][$p_field_id], META_FILTER_ANY, false );
+			echo '>[' . lang_get( 'any' ) . ']</option>';
+			# don't show META_FILTER_NONE for enumerated types as it's not possible for them to be blank
+			if( !in_array( $t_cfdef['type'], array( CUSTOM_FIELD_TYPE_ENUM, CUSTOM_FIELD_TYPE_LIST ) ) ) {
+				echo '<option value="' . META_FILTER_NONE . '"';
+				check_selected( $p_filter['custom_fields'][$p_field_id], META_FILTER_NONE, false );
+				echo '>[' . lang_get( 'none' ) . ']</option>';
+			}
+			# Print possible values
 			$t_max_length = config_get( 'max_dropdown_length' );
 			$t_included_projects = filter_get_included_projects( $p_filter );
 			$t_values = custom_field_distinct_values( $t_cfdef, $t_included_projects );
@@ -2461,7 +2476,8 @@ function print_filter_custom_field_date( $p_field_id, ?array $p_filter = null ) 
 	}
 
 	echo '<table><tr><td>' . "\n";
-	echo '<select class="input-xs" size="1" name="custom_field_' . $p_field_id . '_control">' . "\n";
+	echo '<select class="input-xs" size="1" name="custom_field_'
+		. string_html_specialchars( $p_field_id ) . '_control">' . "\n";
 	echo '<option value="' . CUSTOM_FIELD_DATE_ANY . '"';
 	check_selected( (int)$p_filter['custom_fields'][$p_field_id][0], CUSTOM_FIELD_DATE_ANY );
 	echo '>' . lang_get( 'any' ) . '</option>' . "\n";
