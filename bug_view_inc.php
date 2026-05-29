@@ -1152,6 +1152,9 @@ function bug_view_button_bug_change_status( BugData $p_bug ) {
 			if( $t_to_be_proposed && $t_key == U_TO_BE_PROPOSED && $t_incomplete ) {
   				echo '<option value="' . $t_key . '" ';
   				echo ' disabled>' . $t_val . ' (hianyos!)</option>';
+	  		} else if( $t_key == CLOSED && $p_bug->resolution == REOPENED ) {
+  				echo '<option value="' . $t_key . '" ';
+  				echo ' disabled>' . $t_val . ' (döntés: újranyitva!)</option>';
 			} else {
 				echo '<option value="' . $t_key . '" ';
 				check_selected( $t_key, $t_default );
