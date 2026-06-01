@@ -56,7 +56,7 @@ if ( substr(dirname(__FILE__), 0, 5) === '/home' ) {
 			define('SYS_COMPANY', 'alfa' );
 		} else if( substr($t_chunks[2], 0, -4) === 'waberer' ) {
 			define('SYS_COMPANY', 'granit' );
-		} else { 
+		} else {
 			define('SYS_COMPANY', substr($t_chunks[2], 0, -4) );
 		}
 		define('SYS_FLAVOR', 'dev');
@@ -187,24 +187,24 @@ $g_auto_set_status_to_assigned = OFF;
 if( SYS_COMPANY == 'unosoft' ) {
 
     $g_view_issues_page_columns = array(
-        'selection', 'edit', 
-        'priority', 
-        'id', 
+        'selection', 'edit',
+        'priority',
+        'id',
         //'sponsorship_total',
         'bugnotes_count',
         //'attachment_count',
-        //'category_id', 
-        'severity', 
+        //'category_id',
+        'severity',
         'status',
         'last_updated', 'summary'
     );
 
     $g_print_issues_page_columns = array(
-        'selection', 
-        'priority', 
+        'selection',
+        'priority',
         'id', 'sponsorship_total', 'bugnotes_count',
-        //'attachment_count', 'category_id', 
-        'severity', 
+        //'attachment_count', 'category_id',
+        'severity',
         'status', 'last_updated',
         'summary'
     );
@@ -282,14 +282,14 @@ if( SYS_COMPANY == 'unosoft' ) {
 
 } else {
 	if( SYS_COMPANY == 'alfa' ) {
-	    $g_view_issues_page_columns[] = 'custom_CD3'; 
+	    $g_view_issues_page_columns[] = 'custom_CD3';
 	    $g_print_issues_page_columns[] = 'custom_CD3';
 	}
 
 	$t_idx = array_search( 'severity', $g_view_issues_page_columns );
 	if( $t_idx >= 0 ) {
-		array_splice( $g_view_issues_page_columns, $t_idx, 
-			( SYS_COMPANY == 'alfa' ? 0 : 1 ), 
+		array_splice( $g_view_issues_page_columns, $t_idx,
+			( SYS_COMPANY == 'alfa' ? 0 : 1 ),
 			array( 'projection' ) );
 	} else {
 	    $g_view_issues_page_columns[] = 'projection';
@@ -445,8 +445,8 @@ $g_forward_year_count = 1;
 if( $g_path ) {
 	$g_path = preg_replace('/^http:/', 'https:', $g_path);
 } else {
-	$g_path = 'https://www.unosoft.hu/mantis/' . 
-		SYS_COMPANY . 
+	$g_path = 'https://www.unosoft.hu/mantis/' .
+		SYS_COMPANY .
 		( SYS_FLAVOR == 'dev' ? '_dev' : '' ) .
 		'/';
 }
@@ -500,6 +500,8 @@ $g_due_date_warning_levels = array(
 	1 * SECONDS_PER_DAY,
 	14 * SECONDS_PER_DAY,
 );
+
+$g_bug_reopen_resolution = OPEN;
 
 $g_create_permalink_threshold = REPORTER;
 $g_stored_query_create_threshold = REPORTER;
