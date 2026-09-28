@@ -1147,19 +1147,29 @@ function bug_view_button_bug_change_status( BugData $p_bug ) {
 			(int)$p_bug->due_date == 1 ||
 			is_blank($p_bug->steps_to_reproduce));
 
+		# disable "ask_fix" and "fix_ok" status options if target_verion is not a FIX
+		$t_is_fix = (!is_blank($p_bug->target_version) &&
+			str_starts_with($p_bug->target_version, 'FIX'));
+
 		# space at beginning of line is important
 		foreach( $t_enum_list as $t_key => $t_val ) {
+		  $t_disabled_reason = '';
 			if( $t_to_be_proposed && $t_key == U_TO_BE_PROPOSED && $t_incomplete ) {
-  				echo '<option value="' . $t_key . '" ';
-  				echo ' disabled>' . $t_val . ' (hianyos!)</option>';
-	  		} else if( $t_key == CLOSED && $p_bug->resolution == REOPENED ) {
-  				echo '<option value="' . $t_key . '" ';
-  				echo ' disabled>' . $t_val . ' (döntés: újranyitva!)</option>';
+			  $t_disabled_reason = 'hiányos';
+  		} else if( !$t_is_fix &&
+				($t_key == U_ASK_FIX || $t_key == U_FIX_OK)
+		  ) {
+		    $t_disabled_reason = 'nem FIX a cél VV';
+			} else if( $t_key == CLOSED && $p_bug->resolution == REOPENED ) {
+			  $t_disabled_reason = 'döntés: újranyitva';
+			}
+			echo '<option value="' . $t_key . '" ';
+			check_selected( $t_key, $t_default );
+			if( $t_disabled_reason ) {
+				echo ' disabled>' . $t_val . ' (' . $t_disabled_reason . '!)</option>';
 			} else {
-				echo '<option value="' . $t_key . '" ';
-				check_selected( $t_key, $t_default );
-				echo '>' . $t_val . '</option>';
-			};
+  			echo '>' . $t_val . '</option>';
+			}
 		}
 		echo '</select>';
 

@@ -90,6 +90,8 @@ if( SYS_COMPANY === 'unosoft' ) {
 	define('U_ASSIGNED_FEEDBACK', 55);  // kerdes2
 	define('U_TEST', 60);  // belso teszt
 	define('U_TEST_OK', 70);  // belso teszt ok
+	define('U_ASK_FIX', 74);  // fix keres
+	define('U_FIX_OK', 76);  // fix adhato
 	define('U_RESOLVED', 80);  // atadva
 	define('U_CLOSED', 90);  // lezarva
 	define('U_STORNO', 100);
@@ -105,13 +107,18 @@ if( SYS_COMPANY === 'unosoft' ) {
 	$g_status_enum_workflow[U_ASSIGNED] = '55:assigned_feedback,60:test,80:resolved,99:joker';
 	$g_status_enum_workflow[U_ASSIGNED_FEEDBACK] = '50:assigned,60:test,80:resolved,99:joker';
 	$g_status_enum_workflow[U_TEST] = '50:assigned,70:test_ok,99:joker';
-	$g_status_enum_workflow[U_TEST_OK] = '80:resolved,99:joker';
+	$g_status_enum_workflow[U_TEST_OK] = '80:resolved,74:ask_fix,99:joker';
+	$g_status_enum_workflow[U_ASK_FIX] = '76:fix_ok,50:assigned,99:joker';
+	$g_status_enum_workflow[U_FIX_OK] = '80:resolved,74:ask_fix,99:joker';
 	$g_status_enum_workflow[U_RESOLVED] = '50:assigned,90:closed,99:joker';
 	$g_status_enum_workflow[U_CLOSED] = '99:joker';
 	//$g_status_enum_workflow[U_JOKER] = '10:new,20:feedback,25:ask_proposal,50:assigned,55:assigned_feedback,80:resolved,90:closed';
 	$g_status_enum_workflow[U_JOKER] = '10:new,25:ask_proposal,50:assigned,55:assigned_feedback,80:resolved,90:closed';
 
-	$g_status_enum_string = '10:new,25:ask_proposal,27:proposal_feedback,30:proposal,40:acknowledged,50:assigned,55:assigned_feedback,60:test,70:test_ok,80:resolved,90:closed,99:joker';
+	$g_status_enum_string = '10:new,25:ask_proposal,27:proposal_feedback,30:proposal,40:acknowledged,50:assigned,55:assigned_feedback,60:test,70:test_ok,74:ask_fix,76:fix_ok,80:resolved,90:closed,99:joker';
+
+	define('ORGANIZER', 60); //szervezo
+	$g_access_levels_enum_string = '10:viewer,25:reporter,40:updater,55:developer,60:organizer,70:manager,90:administrator';
 
 	$g_set_status_threshold = array (
 		U_NEW => REPORTER,
@@ -124,6 +131,8 @@ if( SYS_COMPANY === 'unosoft' ) {
 		U_ASSIGNED_FEEDBACK => UPDATER,
 		U_TEST => UPDATER,
 		U_TEST_OK => UPDATER,
+		U_ASK_FIX => ORGANIZER,
+		U_FIX_OK => MANAGER,
 		U_RESOLVED => UPDATER,
 		U_CLOSED => UPDATER,
 		U_JOKER => MANAGER
@@ -140,13 +149,12 @@ if( SYS_COMPANY === 'unosoft' ) {
 		'assigned_feedback' => '#FDA7FF',
 		'test' => '#CAFD8A',
 		'test_ok' => '#9CE964',
+		'ask_fix' => '#D77A96',
+		'fix_ok' => '#CBB4D4',
 		'resolved' => '#D9D9D9',
 		'closed' => '#FFFFFF',
 	);
 
-
-	define('ORGANIZER', 60); //szervezo
-	$g_access_levels_enum_string = '10:viewer,25:reporter,40:updater,55:developer,60:organizer,70:manager,90:administrator';
 
 	if( SYS_COMPANY === 'aegon' || SYS_COMPANY === 'alfa' ) {
   	define('U_TO_BE_PROPOSED', 29); // ajanlat adhato

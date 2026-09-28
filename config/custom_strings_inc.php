@@ -15,7 +15,7 @@ if( SYS_COMPANY == 'unosoft' ) {
     $s_severity_enum_string = '10:eseti,50:ismétlődő';
     $s_projection_enum_string = '';
 } else {
-    $s_status_enum_string = '10:új,25:ajánlat&nbsp;kérés,27:tisztázás,30:ajánlat,40:elfogadva,50:folyamatban,55:kérdés,60:teszt,70:teszt&nbsp;ok,80:átadva,90:lezárva';
+    $s_status_enum_string = '10:új,25:ajánlat&nbsp;kérés,27:tisztázás,30:ajánlat,40:elfogadva,50:folyamatban,55:kérdés,60:teszt,70:teszt&nbsp;ok,74:fix&nbsp;kérés,76:fix&nbsp;adható,80:átadva,90:lezárva';
 
     $s_access_levels_enum_string = '10:néző,25:bejelentő,40:frissítő,55:fejlesztő,60:szervező,70:menedzser,90:adminisztrátor';
 
@@ -58,6 +58,10 @@ $s_test_bug_title = 'teszten';
 $s_test_bug_button = 'Tesztre átadás';
 $s_test_ok_bug_title = 'teszt OK';
 $s_test_ok_bug_button = 'Megfelelelt';
+$s_ask_fix_bug_title = 'fix kérés';
+$s_ask_fix_bug_button = 'Fix kérés';
+$s_fix_ok_bug_title = 'fix adható';
+$s_fix_ok_bug_button = 'Fix adható';
 $s_resolved_bug_title = 'átadva';
 $s_resolved_bug_button = 'Átadás';
 $s_ship_bug_title = 'élesre tehető';
