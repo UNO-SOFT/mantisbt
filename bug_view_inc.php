@@ -1157,7 +1157,8 @@ function bug_view_button_bug_change_status( BugData $p_bug ) {
 			if( $t_to_be_proposed && $t_key == U_TO_BE_PROPOSED && $t_incomplete ) {
 			  $t_disabled_reason = 'hiányos';
   		} else if( !$t_is_fix &&
-				($t_key == U_ASK_FIX || $t_key == U_FIX_OK)
+				(defined('U_ASK_FIX') && $t_key == U_ASK_FIX || 
+				 defined('U_FIX_OK')  && $t_key == U_FIX_OK)
 		  ) {
 		    $t_disabled_reason = 'nem FIX a cél VV';
 			} else if( $t_key == CLOSED && $p_bug->resolution == REOPENED ) {
