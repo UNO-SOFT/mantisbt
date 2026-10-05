@@ -106,10 +106,6 @@ $g_from_name = SYS_COMPANY_NAME.(SYS_FLAVOR == 'prd' ? '' : '-'.SYS_FLAVOR).' Ma
 #$g_return_path_email = str_replace('mantis-', 'noreply-', $g_from_email);
 $g_return_path_email = $g_from_email;
 $g_allow_blank_email = OFF;
-$g_show_user_email_threshold = NOBODY;
-if ( strcmp(SYS_FLAVOR, 'prd') != 0 ) { //nem PRD
-  $g_limit_email_domain = 'unosoft.hu';
-}
 $g_phpMailer_method = 0; //0 - mail(), 1 - sendmail 2 - SMTP
 //$g_email_send_using_cronjob = (strcmp(SYS_FLAVOR, 'prd') ? ON : OFF);
 $g_email_send_using_cronjob = ON;
@@ -135,7 +131,6 @@ $g_bugnote_order = 'DESC';
 
 $g_show_detailed_errors = OFF;
 if ( strcmp(SYS_FLAVOR, 'prd') != 0 ) { //nem PRD
-  $g_limit_email_domain = 'unosoft.hu';
   $g_show_detailed_errors = ON;
 }
 
@@ -183,6 +178,14 @@ $g_bug_revision_view_threshold = REPORTER;
 $g_show_product_version = ON;
 $g_show_version_dates_threshold = REPORTER;
 $g_auto_set_status_to_assigned = OFF;
+
+# többi felhasználó adatainak megtekintése
+$g_show_user_email_threshold = UPDATER;
+$g_show_user_realname_threshold = UPDATER;
+# Az envelope ikon az e-mail megjelenítés engedélyezése miatt jelenik meg.
+# Generálása: core/print_api.php print_email_link_with_subject(..., $p_show_as_button = true)
+#   -> core/prepare_api.php prepare_email_link
+# Később külön kezelendő, ha az e-mail maradjon látható, de az ikon ne jelenjen meg.
 
 if( SYS_COMPANY == 'unosoft' ) {
 
