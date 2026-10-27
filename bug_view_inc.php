@@ -1147,9 +1147,11 @@ function bug_view_button_bug_change_status( BugData $p_bug ) {
 			(int)$p_bug->due_date == 1 ||
 			is_blank($p_bug->steps_to_reproduce));
 
-		# disable "ask_fix" and "fix_ok" status options if target_verion is not a FIX
+		# disable "ask_fix" and "fix_ok" status options if target_verion or fixed_in_version is not a FIX
 		$t_is_fix = (!is_blank($p_bug->target_version) &&
-			str_starts_with($p_bug->target_version, 'FIX'));
+						(str_starts_with($p_bug->target_version, 'FIX') ||
+						str_starts_with($p_bug->fixed_in_version ?? '', 'FIX'))
+					);
 
 		# space at beginning of line is important
 		foreach( $t_enum_list as $t_key => $t_val ) {
@@ -1157,10 +1159,10 @@ function bug_view_button_bug_change_status( BugData $p_bug ) {
 			if( $t_to_be_proposed && $t_key == U_TO_BE_PROPOSED && $t_incomplete ) {
 			  $t_disabled_reason = 'hiányos';
   		} else if( !$t_is_fix &&
-				(defined('U_ASK_FIX') && $t_key == U_ASK_FIX || 
+				(defined('U_ASK_FIX') && $t_key == U_ASK_FIX ||
 				 defined('U_FIX_OK')  && $t_key == U_FIX_OK)
 		  ) {
-		    $t_disabled_reason = 'nem FIX a cél VV';
+		    $t_disabled_reason = 'nem FIX a cél/javítva VV';
 			} else if( $t_key == CLOSED && $p_bug->resolution == REOPENED ) {
 			  $t_disabled_reason = 'döntés: újranyitva';
 			}
