@@ -134,7 +134,7 @@ $t_form_title = $f_reauthenticate ? lang_get( 'reauthenticate_title' ) : lang_ge
 if( auth_is_user_authenticated() && !current_user_is_anonymous() && !$f_reauthenticate) {
 	# If return URL is specified redirect to it; otherwise use default page
 	if( !is_blank( $f_return ) ) {
-		print_header_redirect( $f_return, false, false, true );
+		print_header_redirect( $f_return, false, true );
 	} else {
 		print_header_redirect( config_get_global( 'default_home_page' ) );
 	}
@@ -165,7 +165,10 @@ if( $f_error || $f_cookie_error || $f_reauthenticate ) {
 	echo '<div class="alert alert-danger">';
 
 	if( $f_reauthenticate ) {
-		echo '<p>' . lang_get( 'reauthenticate_message' ) . '</p>';
+		echo '<p>'
+			. lang_get( 'reauthenticate_session_expired' ) . ' '
+			. lang_get( 'reauthenticate_message' )
+			. '</p>';
 	}
 
 	# Only echo error message if error variable is set

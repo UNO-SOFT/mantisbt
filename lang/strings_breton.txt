@@ -2,7 +2,7 @@
 /** MantisBT - a php based bugtracking system
  *
  * Copyright (C) 2000 - 2002  Kenzaburo Ito - kenito@300baud.org
- * Copyright (C) 2002 - 2016  MantisBT Team - mantisbt-dev@lists.sourceforge.net
+ * Copyright (C) 2002 - 2026  MantisBT Team - mantisbt-dev@lists.sourceforge.net
  *
  * MantisBT is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -114,7 +114,8 @@ $s_bug_relationships = 'Darempredoù';
 $s_empty_password_sure_msg = 'An implijer en deus ur ger-tremen goullo. Ha sur oc\'h ez eo ar pezh a fell deoc\'h ?';
 $s_empty_password_button = 'Implijout ur ger-tremen goullo';
 $s_reauthenticate_title = 'Gwiriekaat';
-$s_reauthenticate_message = 'O weladenniñ ur bajenn suraet emaoc\'h, hag aet eo ho talc\'h suraet d\'e dermen. Grit an dilesadur en-dro, mar plij.';
+$s_reauthenticate_session_expired = 'O weladenniñ ur bajenn suraet emaoc\'h, hag aet eo ho talc\'h suraet d\'e dermen.';
+$s_reauthenticate_message = 'Grit an dilesadur en-dro, mar plij.';
 $s_no_category = '(Rummad ebet)';
 $s_global_categories = 'Rummadoù hollek';
 $s_inherit = 'Kaout ar rummadoù da hêrezh';
@@ -184,8 +185,6 @@ $s_update_severity_title = 'Hizivaat ar c\'hrevusted';
 $s_update_severity_msg = 'Dibab grevusted an draen';
 $s_update_severity_button = 'Hizivaat ar c\'hrevusted';
 $s_hide_button = 'Diskwel ar re ziuzet hepken';
-$s_printing_preferences_title = 'Dibab ar maeziennoù da voullañ';
-$s_printing_options_link = 'Dibarzhioù moullañ';
 $s_bugnote_title = 'Aozer an notenn';
 $s_bugnote_date = 'Deiziad an notenn';
 $s_bugnote_description = 'Deskrivadur an notenn';
@@ -197,7 +196,6 @@ $s_prefix_for_deleted_users = 'implijer';
 $s_administrator = 'merour';
 $s_myself = 'Me ma-unan';
 $s_default_access_level = 'Live moned dre ziouer';
-$s_issue_status_percentage = 'Dregantad statud draen';
 $s_access_levels_enum_string = '10:gweler,25:titourer,40:amprouer,55:diorroer,70:merour,90:melestrour';
 $s_no_access = 'na c\'haller ket diraez';
 $s_project_status_enum_string = '10:diorroadur,30:embann,50:stabil,70:diamzeret';

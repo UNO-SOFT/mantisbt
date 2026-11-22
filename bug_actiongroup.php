@@ -41,6 +41,9 @@
  * @uses string_api.php
  * @uses utility_api.php
  * @uses version_api.php
+ *
+ * Unhandled exceptions will be caught by the default error handler
+ * @noinspection PhpUnhandledExceptionInspection
  */
 
 require_once( 'core.php' );
@@ -62,6 +65,8 @@ require_api( 'print_api.php' );
 require_api( 'string_api.php' );
 require_api( 'utility_api.php' );
 require_api( 'version_api.php' );
+
+use Mantis\Exceptions\ClientException;
 
 auth_ensure_user_authenticated();
 helper_begin_long_process();
@@ -134,18 +139,16 @@ foreach( $f_bug_arr as $t_bug_id ) {
 			break;
 		case 'MOVE':
 			$f_project_id = gpc_get_int( 'project_id' );
-			if( access_has_bug_level( config_get( 'move_bug_threshold' ), $t_bug_id ) &&
-				access_has_project_level( config_get( 'report_bug_threshold', null, null, $f_project_id ), $f_project_id ) ) {
-				# @todo we need to issue a helper_call_custom_function( 'issue_update_validate', array( $t_bug_id, $t_bug_data, $f_bugnote_text ) );
-
-				# Add bugnote if supplied
-				if( !is_blank( $f_bug_notetext ) ) {
-					$t_bugnote_id = bugnote_add( $t_bug_id, $f_bug_notetext, null, $f_bug_noteprivate );
-					bugnote_process_mentions( $t_bug_id, $t_bugnote_id, $f_bug_notetext );
-				}
-				bug_move( $t_bug_id, $f_project_id );
-				helper_call_custom_function( 'issue_update_notify', array( $t_bug_id ) );
-			} else {
+			try {
+				$t_data = array(
+					'query' => array( 'issue_id' => $t_bug_id ),
+					'payload' => array(
+						'project' => array( 'id' => $f_project_id ),
+						'note' => array( 'text' => $f_bug_notetext, 'view_state' => array( 'id' => $f_bug_noteprivate ? VS_PRIVATE : VS_PUBLIC ) ),
+					),
+				);
+				( new IssueMoveCommand( $t_data ) )->execute();
+			} catch( ClientException $e ) {
 				$t_failed_ids[$t_bug_id] = lang_get( 'bug_actiongroup_access' );
 			}
 			break;
@@ -333,9 +336,11 @@ foreach( $f_bug_arr as $t_bug_id ) {
 			break;
 		case 'CUSTOM':
 			if( 0 === $f_custom_field_id ) {
-				trigger_error( ERROR_GENERIC, ERROR );
+				throw new ClientException( "Invalid custom field Id", ERROR_CUSTOM_FIELD_NOT_FOUND );
 			}
-
+			if( !custom_field_has_write_access_to_project( $f_custom_field_id, $t_bug->project_id ) ) {
+				throw new ClientException( "Access denied", ERROR_ACCESS_DENIED );
+			}
 			# @todo we need to issue a helper_call_custom_function( 'issue_update_validate', array( $t_bug_id, $t_bug_data, $f_bugnote_text ) );
 			$t_form_var = 'custom_field_' . $f_custom_field_id;
 			$t_custom_field_value = gpc_get_custom_field( $t_form_var, $t_custom_field_def['type'], null );
@@ -345,7 +350,7 @@ foreach( $f_bug_arr as $t_bug_id ) {
 			helper_call_custom_function( 'issue_update_notify', array( $t_bug_id ) );
 			break;
 		default:
-			trigger_error( ERROR_GENERIC, ERROR );
+			throw new ClientException( "Unknown Group action", ERROR_GENERIC );
 	}
 
 	# Bug Action Event

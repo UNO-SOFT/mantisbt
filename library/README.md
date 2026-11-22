@@ -15,12 +15,12 @@ The version and status of each is summarized below:
 
 | library / plugin            | version | status      |
 |-----------------------------|---------|-------------|
-| jquery                      | 2.2.4   | unpatched   |
+| jquery                      | 3.7.1   | unpatched   |
 | bootstrap                   | 3.3.6   | unpatched   |
 | fontawesome                 | 4.7.0   | unpatched   |
 | ace-admin theme             | 1.4.0   | customized  |
 | moment.js                   | 2.29.4  | unpatched   |
-| bootstrap-datetimepicker    | 4.17.47 | unpatched   |
+| bootstrap-datetimepicker    | 4.17.49 | unpatched   |
 | dropzone.js                 | 5.5.0   | unpatched   |
 | chart.js                    | 3.9.1   | unpatched   |
 | chartjs-plugin-colorschemes | 0.5.4   | unpatched   |
@@ -29,15 +29,17 @@ The version and status of each is summarized below:
 
 **Notes**
 
-1. Next patches applied to rssbuilder:
+1. Patches applied to rssbuilder:
    - removed `__autoload` function
    - fixed SYSTEM NOTICE 'Only variables should be passed by reference' (#25213)
    - fixed TypeError when creating empty feed on PHP 8 (#33634)
    - fixed deprecated PHP 8 warnings about dynamic properties and changed return types,
-     removed trailing ?> (#35312)
-2. Next patch applied to list.js:
+     removed trailing `?>` (#35312)
+2. Patches applied to list.js:
    - fixed scrolling regression in navigation buttons (#30494), 
      patch submitted upstream https://github.com/javve/list.js/pull/750
+   - fixed search not working with special characters (#37374),
+     patch from https://github.com/javve/list.js/pull/721
 
 
 ## Upstream projects

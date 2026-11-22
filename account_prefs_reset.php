@@ -66,7 +66,7 @@ $f_redirect_url	= string_sanitize_url( gpc_get_string( 'redirect_url', 'account_
 form_security_validate( 'account_prefs_reset' );
 
 auth_ensure_user_authenticated();
-
+auth_reauthenticate( $f_redirect_url. '?user_id=' . $f_user_id );
 user_ensure_exists( $f_user_id );
 
 $t_user = user_get_row( $f_user_id );
@@ -88,4 +88,4 @@ user_pref_reset( $f_user_id, ALL_PROJECTS );
 
 form_security_purge( 'account_prefs_reset' );
 
-print_header_redirect( $f_redirect_url, true, true );
+print_header_redirect( $f_redirect_url, true );

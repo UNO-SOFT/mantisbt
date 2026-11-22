@@ -41,6 +41,7 @@ require_api( 'html_api.php' );
 require_api( 'lang_api.php' );
 require_api( 'string_api.php' );
 
+auth_reauthenticate();
 access_ensure_project_level( config_get( 'manage_configuration_threshold' ) );
 
 layout_page_header( lang_get( 'permissions_summary_report' ) );
@@ -80,7 +81,7 @@ function get_section_begin_apr( $p_section_name ) {
 	$t_output .= '<th class="bold">' . lang_get( 'perm_rpt_capability' ) . '</th>';
 
 	foreach( $t_access_levels as $t_access_level ) {
-		$t_output .= '<th class="bold" style="text-align:center">&#160;' . MantisEnum::getLabel( lang_get( 'access_levels_enum_string' ), $t_access_level ) . '&#160;</th>';
+		$t_output .= '<th class="bold" style="text-align:center">&#160;' . string_attribute( MantisEnum::getLabel( lang_get( 'access_levels_enum_string' ), $t_access_level ) ) . '&#160;</th>';
 	}
 
 	$t_output .= '</tr>' . "\n";
@@ -99,7 +100,7 @@ function get_section_begin_apr( $p_section_name ) {
 function get_capability_row( $p_caption, $p_access_level ) {
 	$t_access_levels = MantisEnum::getValues( config_get( 'access_levels_enum_string' ) );
 
-	$t_output = '<tr><td>' . string_display_line( $p_caption ) . '</td>';
+	$t_output = '<tr><td>' . string_attribute( $p_caption ) . '</td>';
 	foreach( $t_access_levels as $t_access_level ) {
 		if( $t_access_level >= (int)$p_access_level ) {
 			$t_value = icon_get( 'fa-check', 'fa-lg blue' );

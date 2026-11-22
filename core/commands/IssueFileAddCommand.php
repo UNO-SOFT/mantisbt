@@ -16,45 +16,46 @@
 
 require_api( 'authentication_api.php' );
 require_api( 'bug_api.php' );
-require_api( 'bugnote_api.php' );
 require_api( 'constant_inc.php' );
 require_api( 'config_api.php' );
 require_api( 'helper_api.php' );
 require_api( 'user_api.php' );
 
 use Mantis\Exceptions\ClientException;
-
-/**
- * Command data
- * - In files, `error` and `size` are used only by web UI.
- * - Reporter is optional, it is defaulted to logged in user.
- *
- * Sample:
- * {
- *   "query": {
- *     "issue_id": 12345
- *   },
- *   "payload": {
- *     "reporter": {
- *       "name": "vboctor"
- *     },
- *     "files": [
- *       {
- *         "name": "filename.ext",
- *         "type": "application/...",
- *         "tmp_name": "/tmp/php/phpRELws8",
- *         "error": 0,
- *         "size": 114
- *       }
- *     ]
- *   }
- * }
- */
+use Mantis\Exceptions\ServiceException;
 
 /**
  * A command that adds an issue attachment.
+ *
+ *  Command data
+ *  - In files, `error` and `size` are used only by web UI.
+ *  - Reporter is optional, it is defaulted to logged in user.
+ *
+ *  Sample:
+ *  ```
+ *  {
+ *    "query": {
+ *      "issue_id": 12345
+ *    },
+ *    "payload": {
+ *      "reporter": {
+ *        "name": "vboctor"
+ *      },
+ *      "files": [
+ *        {
+ *          "name": "filename.ext",
+ *          "type": "application/...",
+ *          "tmp_name": "/tmp/php/phpRELws8",
+ *          "error": 0,
+ *          "size": 114
+ *        }
+ *      ]
+ *    }
+ *  }
+ * ```
  */
-class IssueFileAddCommand extends Command {
+class IssueFileAddCommand extends Command
+{
 	/**
 	 * The issue to add the note to.
 	 *
@@ -88,6 +89,8 @@ class IssueFileAddCommand extends Command {
 
 	/**
 	 * Validate the data.
+	 *
+	 * @throws ClientException
 	 */
 	function validate() {
 		$t_issue_id = helper_parse_issue_id( $this->query( 'issue_id' ) );
@@ -97,7 +100,8 @@ class IssueFileAddCommand extends Command {
 			throw new ClientException(
 				sprintf( "Issue '%d' is read-only.", $t_issue_id ),
 				ERROR_BUG_READ_ONLY_ACTION_DENIED,
-				array( $t_issue_id ) );
+				array( $t_issue_id )
+			);
 		}
 
 		$this->parseFiles();
@@ -108,7 +112,8 @@ class IssueFileAddCommand extends Command {
 			throw new ClientException(
 				'Files not provided',
 				ERROR_INVALID_FIELD_VALUE,
-				array( 'files' ) );
+				array( 'files' )
+			);
 		}
 
 		$this->user_id = auth_get_current_user_id();
@@ -117,7 +122,8 @@ class IssueFileAddCommand extends Command {
 		$t_reporter = $this->payload( 'reporter' );
 		if( $t_reporter !== null ) {
 			$this->reporterId = user_get_id_by_user_info(
-				$t_reporter, /* throw_if_id_doesnt_exist */ true );
+				$t_reporter, /* throw_if_id_doesnt_exist */ true
+			);
 		} else {
 			$this->reporterId = $this->user_id;
 		}
@@ -131,13 +137,13 @@ class IssueFileAddCommand extends Command {
 			}
 		}
 
-		if( user_get_username( $this->user_id ) == 'jira' && bugnote_get_latest_id( $this->issue->id ) ) {
-			throw new ClientException( 'Access denied for changing issue attachments', ERROR_ACCESS_DENIED );
-		}
-
 		# Can reporter attach files
 		if( !file_allow_bug_upload( $this->issue->id, $this->reporterId ) ) {
 			throw new ClientException( 'access denied for uploading files', ERROR_ACCESS_DENIED );
+		}
+
+		foreach( $this->files as $t_file ) {
+			file_ensure_uploaded( $t_file );
 		}
 	}
 
@@ -145,6 +151,8 @@ class IssueFileAddCommand extends Command {
 	 * Process the command.
 	 *
 	 * @return array Command response
+	 * @throws ClientException
+	 * @throws ServiceException
 	 */
 	protected function process() {
 		if( $this->issue->project_id != helper_get_current_project() ) {
@@ -155,38 +163,17 @@ class IssueFileAddCommand extends Command {
 			$g_project_override = $this->issue->project_id;
 		}
 
-		$t_note_id = 0;
-		// If already have a note, then attach with note
-		if( bug_get_bugnote_stats( $this->issue->id ) ) {
-			$t_names = array( );
-			foreach( $this->files as $t_file ) {
-				$t_names[] = $t_file['name'];
-			}
-			$t_note_id = bugnote_add(
-				$this->issue->id,
-				lang_get( 'bugnote_attached_files' ) . implode( ", ", $t_names ),
-				/* time_trackig */ '0:00',
-				/* private */ false,
-				/* type */ BUGNOTE,
-				/* attr */ '',
-				/* user_id */ $this->reporterId,
-				/* send_email */ false,
-				/* date_submitted */ 0,
-				/* last_modified */ 0,
-				/* skip_bug_update */ false,
-				/* log_history */ true,
-				/* trigger_event */ false );
-		}
-
 		# Handle the file upload
-		file_attach_files( $this->issue->id, $this->files, $t_note_id );
+		file_attach_files( $this->issue->id, $this->files );
 
 		return array();
 	}
 
 	/**
 	 * Parse files from payload.
+	 *
 	 * @return void
+	 * @throws ClientException
 	 */
 	private function parseFiles() {
 		$this->files = $this->payload( 'files', array() );
@@ -201,7 +188,8 @@ class IssueFileAddCommand extends Command {
 					throw new ClientException(
 						sprintf( "File field '%s' is missing.", $t_field ),
 						ERROR_EMPTY_FIELD,
-						array( $t_field ) );
+						array( $t_field )
+					);
 				}
 			}
 		}

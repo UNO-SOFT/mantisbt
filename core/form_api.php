@@ -35,6 +35,8 @@
  * @uses session_api.php
  */
 
+use Mantis\Exceptions\ClientException;
+
 require_api( 'config_api.php' );
 require_api( 'constant_inc.php' );
 require_api( 'crypto_api.php' );
@@ -44,8 +46,9 @@ require_api( 'session_api.php' );
 
 /**
  * Helper function to generate a form action value when forms are designed
- * to be submitted to the same url that's is currently being used, such as
+ * to be submitted to the same url that is currently being used, such as
  * helper_ensure_confirmed() or auth_reauthenticate().
+ *
  * @return string Form action value
  */
 function form_action_self() {
@@ -54,10 +57,13 @@ function form_action_self() {
 }
 
 /**
- * Generate a random security token, prefixed by date, store it in the
- * user's session, and then return the string to be used as a form element
- * element with the security token as the value.
+ * Generate a random security token for the given form.
+ *
+ * Token will be prefixed by date, stored in the user's session and then
+ * returned as a string to be used as a form element's value.
+ *
  * @param string $p_form_name Form name.
+ *
  * @return string Security token string
  */
 function form_security_token( $p_form_name ) {
@@ -92,8 +98,10 @@ function form_security_token( $p_form_name ) {
 
 /**
  * Get a hidden form element containing a generated form security token.
+ *
  * @param string $p_form_name      Form name.
  * @param string $p_security_token Optional security token, previously generated for the same form.
+ *
  * @return string Hidden form element to output
  */
 function form_security_field( $p_form_name, $p_security_token = null ) {
@@ -118,8 +126,10 @@ function form_security_field( $p_form_name, $p_security_token = null ) {
 
 /**
  * Get a URL parameter containing a generated form security token.
+ *
  * @param string $p_form_name Form name.
  * @param string $p_security_token Optional security token, previously generated for the same form.
+ *
  * @return string URL parameter containing security token
  */
 function form_security_param( $p_form_name, $p_security_token = null ) {
@@ -139,10 +149,12 @@ function form_security_param( $p_form_name, $p_security_token = null ) {
 
 /**
  * Validate the security token for the given form name based on tokens
- * stored in the user's session.  While checking stored tokens, any that
- * are more than 3 days old will be purged.
+ * stored in the user's session.
+ *
  * @param string $p_form_name Form name.
- * @return boolean Form is valid
+ *
+ * @return bool True if Form is valid.
+ * @throws ClientException
  */
 function form_security_validate( $p_form_name ) {
 	if( PHP_CLI == php_mode() || OFF == config_get_global( 'form_security_validation' ) ) {
@@ -153,9 +165,9 @@ function form_security_validate( $p_form_name ) {
 
 	# Short-circuit if we don't have any tokens for the given form name
 	if( !isset( $t_tokens[$p_form_name] ) || !is_array( $t_tokens[$p_form_name] ) || count( $t_tokens[$p_form_name] ) < 1 ) {
-
-		trigger_error( ERROR_FORM_TOKEN_INVALID, ERROR );
-		return false;
+		throw new ClientException( "Invalid form security token",
+			ERROR_FORM_TOKEN_INVALID
+		);
 	}
 
 	# Get the form input
@@ -164,8 +176,9 @@ function form_security_validate( $p_form_name ) {
 
 	# No form input
 	if( '' == $t_input ) {
-		trigger_error( ERROR_FORM_TOKEN_INVALID, ERROR );
-		return false;
+		throw new ClientException( "Invalid form security token",
+			ERROR_FORM_TOKEN_INVALID
+		);
 	}
 
 	# Get the date claimed by the token
@@ -177,14 +190,17 @@ function form_security_validate( $p_form_name ) {
 	}
 
 	# Token does not exist
-	trigger_error( ERROR_FORM_TOKEN_INVALID, ERROR );
-	return false;
+	throw new ClientException( "Invalid form security token",
+		ERROR_FORM_TOKEN_INVALID
+	);
 }
 
 /**
  * Purge form security tokens that are older than 3 days, or used
  * for form validation.
+ *
  * @param string $p_form_name Form name.
+ *
  * @return void
  */
 function form_security_purge( $p_form_name ) {
@@ -209,9 +225,10 @@ function form_security_purge( $p_form_name ) {
 	# Generate a date string of three days ago
 	$t_purge_date = date( 'Ymd', time() - ( 3 * 24 * 60 * 60 ) );
 
-	# Purge old token data, and the currently-used token
+	# Purge currently-used token
 	unset( $t_tokens[$p_form_name][$t_date][$t_input] );
 
+	# Purge old token data
 	foreach( $t_tokens as $t_form_name => $t_dates ) {
 		foreach( $t_dates as $t_date => $t_date_tokens ) {
 			if( $t_date < $t_purge_date ) {
@@ -221,6 +238,4 @@ function form_security_purge( $p_form_name ) {
 	}
 
 	session_set( 'form_security_tokens', $t_tokens );
-
-	return;
 }

@@ -103,8 +103,7 @@ function auth_flags( $p_user_id = null, $p_username = '' ) {
 	}
 
 	if( !$t_user_id && is_blank( $p_username ) ) {
-		# If user is not in db, must supply the name.
-		trigger_error( ERROR_GENERIC, E_USER_ERROR );
+		throw new ClientException( "User is not in DB, username must be supplied", ERROR_GENERIC );
 	}
 
 	if( $t_user_id ) {
@@ -1111,25 +1110,29 @@ function auth_reauthentication_expiry() {
 }
 
 /**
- * Check for authentication tokens, and redirect to login page for
- * re-authentication. Currently, if using BASIC or HTTP authentication methods,
- * or if logged in anonymously, this function will always "authenticate" the
- * user (do nothing).
+ * Check for authentication tokens, and redirect to login page for re-authentication.
  *
- * @return boolean
- * @access public
+ * Currently, if using BASIC or HTTP authentication methods, or if logged in
+ * anonymously, this function will always "authenticate" the user (do nothing).
+ *
+ * @param string $p_return_page The page to redirect to after authentication.
+ *                              If not specified, will redirect to the current
+ *                              page (REQUEST_URI).
+ *
+ * @return void
  * @throws ClientException
+ * @access public
  */
-function auth_reauthenticate() {
+function auth_reauthenticate( $p_return_page = '' ) {
 	$t_login_method = config_get_global( 'login_method' );
 	if( !auth_reauthentication_enabled() || BASIC_AUTH == $t_login_method || HTTP_AUTH == $t_login_method ) {
-		return true;
+		return;
 	}
 
 	$t_auth_token = token_get( TOKEN_AUTHENTICATED );
 	if( null != $t_auth_token ) {
 		token_touch( $t_auth_token['id'], auth_reauthentication_expiry() );
-		return true;
+		return;
 	} else {
 		$t_anon_account = auth_anonymous_account();
 		$t_anon_allowed = auth_anonymous_enabled();
@@ -1139,17 +1142,17 @@ function auth_reauthenticate() {
 
 		# check for anonymous login
 		if( ON == $t_anon_allowed && $t_anon_account == $t_username ) {
-			return true;
+			return;
 		}
 
 		$t_query_params = [
 			'reauthenticate' => 1,
 			'username' => $t_username,
-			'return' => $_SERVER['REQUEST_URI'],
+			'return' => $p_return_page ?: $_SERVER['REQUEST_URI'],
 		];
 
 		# redirect to login page
-		return print_header_redirect( auth_credential_page( $t_query_params ) );
+		print_header_redirect( auth_credential_page( $t_query_params ) );
 	}
 }
 

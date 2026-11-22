@@ -32,7 +32,12 @@
  * @uses print_api.php
  * @uses project_api.php
  * @uses utility_api.php
+ *
+ * Unhandled exceptions will be caught by the default error handler
+ * @noinspection PhpUnhandledExceptionInspection
  */
+
+use Mantis\Exceptions\ClientException;
 
 require_once( 'core.php' );
 require_api( 'form_api.php' );
@@ -40,6 +45,7 @@ require_api( 'gpc_api.php' );
 require_api( 'print_api.php' );
 require_api( 'utility_api.php' );
 
+auth_reauthenticate( 'adm_config_report.php' );
 form_security_validate( 'adm_config_set' );
 
 $f_user_id = gpc_get_int( 'user_id' );
@@ -92,8 +98,10 @@ if( $t_type != CONFIG_TYPE_STRING ) {
 		}
 	}
 	catch (Exception $e) {
-		error_parameters( $f_config_option, $e->getMessage() );
-		trigger_error(ERROR_CONFIG_OPT_BAD_SYNTAX, ERROR);
+		throw new ClientException( "Syntax error",
+			ERROR_CONFIG_OPT_BAD_SYNTAX,
+			[ $f_config_option, $e->getMessage() ]
+		);
 	}
 }
 

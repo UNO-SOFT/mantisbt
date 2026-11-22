@@ -36,7 +36,12 @@
  * @uses lang_api.php
  * @uses print_api.php
  * @uses profile_api.php
+ *
+ * Unhandled exceptions will be caught by the default error handler
+ * @noinspection PhpUnhandledExceptionInspection
  */
+
+use Mantis\Exceptions\ClientException;
 
 require_once( 'core.php' );
 require_api( 'access_api.php' );
@@ -51,17 +56,18 @@ require_api( 'print_api.php' );
 require_api( 'profile_api.php' );
 
 if( !config_get( 'enable_profiles' ) ) {
-	trigger_error( ERROR_ACCESS_DENIED, ERROR );
+	throw new ClientException( "Access denied", ERROR_ACCESS_DENIED );
 }
 
-if( isset( $g_global_profiles ) ) {
-	$g_global_profiles = true;
-} else {
+# This script manages user-specific profiles by default. To work with global profiles,
+# manage_prof_menu_page.php sets $g_global_profiles = true before including this file.
+if( !isset( $g_global_profiles ) ) {
 	$g_global_profiles = false;
 }
 
 auth_ensure_user_authenticated();
 current_user_ensure_unprotected();
+auth_reauthenticate();
 
 $t_manage_global_profile_threshold = config_get( 'manage_global_profile_threshold' );
 $t_can_manage_global_profile = access_has_global_level( $t_manage_global_profile_threshold );
@@ -143,9 +149,9 @@ if( $g_global_profiles ) {
 				$t_is_default_profile = $t_default_profile == $v_id
 ?>
 							<tr>
-								<td><?php echo string_display_line( $v_platform ); ?></td>
-								<td><?php echo string_display_line( $v_os ); ?></td>
-								<td><?php echo string_display_line( $v_os_build );  ?></td>
+								<td><?php echo string_attribute( $v_platform ); ?></td>
+								<td><?php echo string_attribute( $v_os ); ?></td>
+								<td><?php echo string_attribute( $v_os_build );  ?></td>
 <?php
 				if( !$g_global_profiles ) {
 ?>

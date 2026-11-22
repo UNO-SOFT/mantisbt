@@ -92,7 +92,7 @@ $t_public_key = crypto_generate_uri_safe_nonce( 64 );
 			<label for="email-field" class="block clearfix">
 				<span class="block input-icon input-icon-right">
 					<input id="email-field" name="email" type="text" placeholder="<?php echo lang_get( 'email_label' ) ?>"
-						size="32" maxlength="64" class="form-control">
+						size="32" maxlength="<?php echo DB_FIELD_SIZE_EMAIL;?>" class="form-control">
 					<?php print_icon( 'fa-envelope', 'ace-icon' ); ?>
 				</span>
 			</label>
@@ -101,7 +101,10 @@ $t_public_key = crypto_generate_uri_safe_nonce( 64 );
 	$t_allow_passwd_change = helper_call_custom_function( 'auth_can_change_password', array() );
 
 	# captcha image requires GD library and related option to ON
-	if( ON == config_get( 'signup_use_captcha' ) && get_gd_version() > 0 && $t_allow_passwd_change ) {
+	if( ON == config_get( 'signup_use_captcha' )
+		&& get_gd_version()
+		&& $t_allow_passwd_change
+	) {
 		$t_securimage_path = 'vendor/dapphp/securimage';
 		$t_securimage_show = $t_securimage_path . '/securimage_show.php';
 		# Unique id prevents caching issues with audio captcha

@@ -30,7 +30,7 @@
  */
 
 error_reporting( E_ALL );
-@set_time_limit( 0 );
+set_time_limit( 0 );
 
 # Load the MantisDB core in maintenance mode. This mode will assume that
 # config/config_inc.php hasn't been specified. Thus the database will not be opened
@@ -330,15 +330,7 @@ if( 0 == $t_install_state ) {
 		true,
 		'Please install or enable the PHP mbstring extension'
 	);
-?>
-<!-- Check Safe Mode -->
-<?php
-print_test( 'Checking if safe mode is enabled for install script',
-	!ini_get( 'SAFE_MODE' ),
-	true,
-	'Disable safe_mode in php.ini before proceeding' ) ?>
 
-<?php
 	# Check for custom config files in obsolete locations
 	$t_config_files = array(
 		'config_inc.php' => 'move',
@@ -555,25 +547,24 @@ if( 2 == $t_install_state ) {
 <?php
 		$t_warning = '';
 		$t_error = '';
-		switch( $f_db_type ) {
-			case 'mysqli':
-				if( version_compare( $t_version_info['version'], DB_MIN_VERSION_MYSQL, '<' ) ) {
-					$t_error = 'MySQL ' . DB_MIN_VERSION_MYSQL . ' or later is required for installation';
-				}
-				break;
-			case 'mssqlnative':
-				if( version_compare( $t_version_info['version'], DB_MIN_VERSION_MSSQL, '<' ) ) {
-					$t_error = 'SQL Server (' . DB_MIN_VERSION_MSSQL . ') or later is required for installation';
-				}
-				break;
-			case 'pgsql':
-			default:
-				break;
-		}
-
 		if( is_null( $t_version_info ) ) {
-			$t_warning = "Unable to determine '$f_db_type' version. ($t_error).";
-			$t_error = '';
+			$t_warning = "Unable to determine '$f_db_type' version.";
+		} else {
+			switch( $f_db_type ) {
+				case 'mysqli':
+					if( version_compare( $t_version_info['version'], DB_MIN_VERSION_MYSQL, '<' ) ) {
+						$t_error = 'MySQL ' . DB_MIN_VERSION_MYSQL . ' or later is required for installation';
+					}
+					break;
+				case 'mssqlnative':
+					if( version_compare( $t_version_info['version'], DB_MIN_VERSION_MSSQL, '<' ) ) {
+						$t_error = 'SQL Server (' . DB_MIN_VERSION_MSSQL . ') or later is required for installation';
+					}
+					break;
+				case 'pgsql':
+				default:
+					break;
+			}
 		}
 		print_test_result(
 			( '' == $t_error ) && ( '' == $t_warning ),
@@ -619,7 +610,7 @@ if( 1 == $t_install_state ) {
 		<h4 class="widget-title lighter">
 			<?php echo
 				( $g_database_upgrade ? 'Upgrade Options' : 'Installation Options' ),
-				( $g_failed ? ': Checks Failed ' : '' )
+				( $g_failed ? ': Checks Failed - fix problems and try again' : '' )
 			?>
 		</h4>
 </div>
@@ -655,7 +646,7 @@ if( !$g_database_upgrade ) {
 ?>
 		</div>
 
-		<select id="db_type" name="db_type" class="input-sm">
+		<select id="db_type" name="db_type">
 <?php
 			# Build selection list of available DB types
 			$t_db_list = array(
@@ -766,11 +757,12 @@ if( !$g_database_upgrade ) {
 		echo "\t</td>\n\t<td>\n\t\t";
 		$t_required = $t_key == 'db_table_plugin_prefix' ? 'required' : '';
 		/** @noinspection HtmlUnknownAttribute */
-		printf( '<input id="%1$s" name="%1$s" type="text" class="table-prefix reset" %2$s value="%3$s">',
+		printf( '<input id="%1$s" name="%1$s" type="text" class="table-prefix reset" %2$s value="%3$s" data-defval="%4$s">',
 			$t_key,
 			$t_key == 'db_table_plugin_prefix' ? 'required' : '',
 			// The actual value of the corresponding form variable
-			string_html_specialchars( ${'f_' . $t_key} )
+			string_html_specialchars( ${'f_' . $t_key} ),
+			string_html_specialchars( $t_value )
 		);
 		echo "\n&nbsp;";
 		printf( '<button id="%s" type="button" class="btn btn-sm btn-primary btn-white btn-round reset">%s</button>',
