@@ -154,7 +154,7 @@ $(function() {
 		try {
 			zone_object = new Dropzone( form[0], options );
 		} catch (e) {
-			alert( zone.data('dropzone-not-supported') );
+			console.log( zone.data('dropzone-not-supported') );
 		}
 
 		return zone_object;
