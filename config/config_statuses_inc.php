@@ -84,6 +84,7 @@ if( SYS_COMPANY === 'unosoft' ) {
 	//define('U_FEEDBACK', 20);  // tajekozodas
 	define('U_ASK_PROPOSAL', 25);  // ajanlat keres
 	define('U_PROPOSAL_FEEDBACK', 27); // tisztazas
+	define('U_TO_BE_PROPOSED', 29); // ajanlat adhato
 	define('U_PROPOSAL', 30);  // ajanlat
 	define('U_ACKNOWLEDGED', 40);  // elfogadva
 	define('U_ASSIGNED', 50);  // folyamatban
@@ -100,8 +101,9 @@ if( SYS_COMPANY === 'unosoft' ) {
 	require_once(dirname(__FILE__) . '/../config_defaults_inc.php');
 
 	$g_status_enum_workflow[U_NEW] = '25:ask_proposal,50:assigned,90:closed';
-	$g_status_enum_workflow[U_ASK_PROPOSAL] = '30:proposal,27:proposal_feedback,90:closed,99:joker';
-	$g_status_enum_workflow[U_PROPOSAL_FEEDBACK] = '30:proposal,25:ask_proposal,90:closed,10:new,99:joker';
+	$g_status_enum_workflow[U_ASK_PROPOSAL] = '29:to_be_proposed,27:proposal_feedback,90:closed,99:joker';
+	$g_status_enum_workflow[U_PROPOSAL_FEEDBACK] = '29:to_be_proposed,25:ask_proposal,90:closed,10:new,99:joker';
+	$g_status_enum_workflow[U_TO_BE_PROPOSED] = '30:proposal,25:ask_proposal,27:proposal_feedback,99:joker';
 	$g_status_enum_workflow[U_PROPOSAL] = '40:acknowledged,25:ask_proposal,90:closed,99:joker';
 	$g_status_enum_workflow[U_ACKNOWLEDGED] = '50:assigned,90:closed,99:joker';
 	$g_status_enum_workflow[U_ASSIGNED] = '55:assigned_feedback,60:test,80:resolved,99:joker';
@@ -115,7 +117,7 @@ if( SYS_COMPANY === 'unosoft' ) {
 	//$g_status_enum_workflow[U_JOKER] = '10:new,20:feedback,25:ask_proposal,50:assigned,55:assigned_feedback,80:resolved,90:closed';
 	$g_status_enum_workflow[U_JOKER] = '10:new,25:ask_proposal,50:assigned,55:assigned_feedback,80:resolved,90:closed';
 
-	$g_status_enum_string = '10:new,25:ask_proposal,27:proposal_feedback,30:proposal,40:acknowledged,50:assigned,55:assigned_feedback,60:test,70:test_ok,74:ask_fix,76:fix_ok,80:resolved,90:closed,99:joker';
+	$g_status_enum_string = '10:new,25:ask_proposal,27:proposal_feedback,29:to_be_proposed,30:proposal,40:acknowledged,50:assigned,55:assigned_feedback,60:test,70:test_ok,74:ask_fix,76:fix_ok,80:resolved,90:closed,99:joker';
 
 	define('ORGANIZER', 60); //szervezo
 	$g_access_levels_enum_string = '10:viewer,25:reporter,40:updater,55:developer,60:organizer,70:manager,90:administrator';
@@ -125,6 +127,7 @@ if( SYS_COMPANY === 'unosoft' ) {
 		// U_FEEDBACK => UPDATER,  // ilyen nincs
 		U_ASK_PROPOSAL => REPORTER,
 		U_PROPOSAL_FEEDBACK => UPDATER,
+		U_TO_BE_PROPOSED => ORGANIZER,
 		U_PROPOSAL => MANAGER,
 		U_ACKNOWLEDGED => REPORTER,
 		U_ASSIGNED => REPORTER,
@@ -143,6 +146,7 @@ if( SYS_COMPANY === 'unosoft' ) {
 		'feedback' => '#FDA7FF',
 		'ask_proposal' => '#FFED75',
 		'proposal_feedback' => '#FDA7FF',
+		'to_be_proposed' => '#CF9770',
 		'proposal' => '#F7B267',
 		'acknowledged' => '#7EC4C6',
 		'assigned' => '#ABEDEC',
@@ -155,17 +159,7 @@ if( SYS_COMPANY === 'unosoft' ) {
 		'closed' => '#FFFFFF',
 	);
 
-
-	if( SYS_COMPANY === 'aegon' || SYS_COMPANY === 'alfa' ) {
-  	define('U_TO_BE_PROPOSED', 29); // ajanlat adhato
-  	$g_status_enum_workflow[U_ASK_PROPOSAL] = '29:to_be_proposed,27:proposal_feedback,90:closed,99:joker';
-  	$g_status_enum_workflow[U_TO_BE_PROPOSED] = '30:proposal,25:ask_proposal,27:proposal_feedback,99:joker';
-  	$g_status_enum_workflow[U_PROPOSAL_FEEDBACK] = '29:to_be_proposed,25:ask_proposal,90:closed,10:new,99:joker';
-		$g_status_enum_string = str_replace(',30:proposal,', ',29:to_be_proposed,30:proposal,', $g_status_enum_string);
-  	$g_set_status_threshold[U_TO_BE_PROPOSED] = ORGANIZER;
-		$g_status_colors['to_be_proposed'] = '#CF9770';
-
-	} elseif( SYS_COMPANY === 'kobe' ) {
+	if( SYS_COMPANY === 'kobe' ) {
 		define('U_SHIP', 85);
 		$g_status_enum_workflow[U_RESOLVED] = '50:assigned,85:ship,90:closed';
 		$g_status_enum_workflow[U_SHIP] = '90:closed,80:resolved';

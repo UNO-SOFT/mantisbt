@@ -323,6 +323,7 @@ if( SYS_COMPANY == 'unosoft' ) {
         //'severity',
         #'steps_to_reproduce',
         'tags',
+        'target_version',
         'view_state',
     );
     if( SYS_COMPANY == 'alfa' ) {

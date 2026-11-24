@@ -15,18 +15,16 @@ if( SYS_COMPANY == 'unosoft' ) {
     $s_severity_enum_string = '10:eseti,50:ismétlődő';
     $s_projection_enum_string = '';
 } else {
-    $s_status_enum_string = '10:új,25:ajánlat&nbsp;kérés,27:tisztázás,30:ajánlat,40:elfogadva,50:folyamatban,55:kérdés,60:teszt,70:teszt&nbsp;ok,74:fix&nbsp;kérés,76:fix&nbsp;adható,80:átadva,90:lezárva';
+    $s_status_enum_string = '10:új,25:ajánlat&nbsp;kérés,27:tisztázás,29:ajánlat&nbsp;adható,30:ajánlat,40:elfogadva,50:folyamatban,55:kérdés,60:teszt,70:teszt&nbsp;ok,74:fix&nbsp;kérés,76:fix&nbsp;adható,80:átadva,90:lezárva';
 
     $s_access_levels_enum_string = '10:néző,25:bejelentő,40:frissítő,55:fejlesztő,60:szervező,70:menedzser,90:adminisztrátor';
 
-  	if( SYS_COMPANY === 'aegon' || SYS_COMPANY === 'alfa' ) {
-      $s_status_enum_string = str_replace(',30:', ',29:ajánlat&nbsp;adható,30:', $s_status_enum_string);
-    } elseif ( SYS_COMPANY === 'kobe' ) {
+    if ( SYS_COMPANY === 'kobe' ) {
       $s_status_enum_string = str_replace(',90:', ',85:élesre&nbsp;tehető,90:', $s_status_enum_string);
     }
 
     $s_resolution_enum_string = '10:nyitott,20:kijavítva,21:storno,29:végrehajtva,30:újranyitva,40:reprodukálhatatlan,50:javíthatatlan,60:másolat,70:nem&nbsp;kell változtatni,80:felfüggesztve,90:nem lesz kijavítva';
-// $s_severity_enum_string = '10:kérés,20:triviális,30:szöveghiba,40:zavar,50:apró hiba,60:nagyobb hiba,70:összeomlás,80:akadály';
+    // $s_severity_enum_string = '10:kérés,20:triviális,30:szöveghiba,40:zavar,50:apró hiba,60:nagyobb hiba,70:összeomlás,80:akadály';
     // $s_severity_enum_string = '10:kérés,50:hiba';
     $s_projection = 'Besorolás';
     $s_projection_enum_string = '10:támogatás,20:hiba,50:megrendelés,51:SPL-Fejlesztés,52:Lekérdezés,53:adatmódosítás,54:oktatás,55:tanácsadás';
